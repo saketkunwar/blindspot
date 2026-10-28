@@ -1,0 +1,6 @@
+pydantic>=2
+shapely>=2
+pyyaml
+fastapi
+uvicorn
+pytest

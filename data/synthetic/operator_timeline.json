@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "note": "Illustrative operator timeline and claim for the demo. Not real operator data.",
+  "site": "Kalimantan",
+  "phases": [
+    {"id": "mobilization", "start": "2026-09-16", "end": "2026-09-17"},
+    {"id": "clearing", "start": "2026-09-17", "end": "2026-09-21"}
+  ],
+  "claim": {"id": "cessation_claim", "text": "Operations ceased at Site Kalimantan on 2026-09-20", "start": "2026-09-20", "end": "2026-09-22"}
+}

@@ -1,0 +1,24 @@
+# Pre-registered parameters. Locked for the builder.
+# Commit this file and run `git tag prereg` BEFORE any pipeline run. Do not change values after you have seen results.
+# null = not decided yet. Code must raise ConfigIncomplete, never use a default.
+# Decisions below were made from rules BEFORE any pipeline run / before inspecting demo-cell results.
+# Full rationale in QUESTIONS.md (D-1..D-6). Frozen at tag `prereg`.
+version: 1
+grid:
+  cell_deg: 0.5                # from the spec
+tolerance:
+  ingest_deg: 0                # D-1: source coords carry 5 decimals (not grid-rounded); exact predicates, no snapping
+distance:
+  immediate_envelope_m: 50     # from the spec
+  near_km: 5                   # from the spec
+  medium_km: 25                # from the spec (FAR = at or beyond this)
+fire:
+  viirs_pixel_area_ha: 14.06   # nominal 375 m x 375 m at nadir; larger away from nadir
+  min_detections: 3            # D-2: FIRMS noise rule — isolated 1-2 detections = noise, cluster >=3 = presence
+  footprint_buffer_m: 187.5    # D-3: half a VIIRS pixel (375/2)
+  evasion_ha_total: 150        # from the spec
+  evasion_ha_per_cell: 140.6   # D-4: 10 VIIRS pixels (10 x 14.06); just below total so >=2 connected cells can evade
+flood:
+  blind_window_hours: 48       # from the spec
+  v_max_m_per_hr: 3600         # D-5: 1 m/s flood-wave celerity, conservative riverine bound
+  neck_rule: "neck=intersect(flood_extent); upstream=north_of(flood_centroid) outside extent; downstream=south_of(flood_centroid) outside extent"  # D-6

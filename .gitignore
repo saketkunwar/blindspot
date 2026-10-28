@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.next/
+node_modules/
+results/*.json
+!results/.gitkeep
+meta_usage.json
+
+# private judge material — never in repo (README-FIRST)
+blindspot-spec-kit/private/

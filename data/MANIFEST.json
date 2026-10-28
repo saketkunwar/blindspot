@@ -1,0 +1,278 @@
+{
+ "cassettes/.gitkeep": {
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "kind": "synthetic",
+  "source_url": "recorded Meta API cassettes",
+  "license": "project synthetic"
+ },
+ "fire_kalimantan/firms_amazon_sep2026.json": {
+  "sha256": "f081421d1cd780d1fe2787386a203b11a6a5bc9885799c4478b61c4de05593c2",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_attica.json": {
+  "sha256": "1dd6f41da89facbb27d46b3c100327ac7150a208258705b49707892a48bbdf28",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_canada202507.json": {
+  "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_cerrado_15d.json": {
+  "sha256": "957c4fef67f9a680800ac02f932919aeb0d2ec33cbabcbb39dc16fbe3bdc186b",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_chaco_sep2026.json": {
+  "sha256": "be8cd65e2da5c95c2ce3bb6edf806219b49d357c2838fd3fbc906df859d3432b",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_europe.json": {
+  "sha256": "5ccc638d311f319ef88a467627f3f609edc1a89772cb01979de88318a27e7a2c",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_iberia_15d.json": {
+  "sha256": "ddf0686de462a2a503d856f146f1ce15f44e510c953e983f6605a9e6628c6ba8",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_kalimantan_c.json": {
+  "sha256": "62880f99f2425c18b311b4c7ab402b72b730bafd6bc31ab8083a5f0e57616364",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_mozambique_10d.json": {
+  "sha256": "68115e0ef2b14e3c8efa5655c9a8f14050af004806b4c17dde58f8711d71843f",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_naustralia.json": {
+  "sha256": "a2ce119456c0ae82d7bb3a17baa22d10962f6ab05105505b4f5e6ad8a16aaa1b",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_texas_10d.json": {
+  "sha256": "6b4b077e6687fecfd4951c007a116fd60ce8463311732045f10a6a752300b0fc",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_wusa.json": {
+  "sha256": "eecef692adb842cf121c47e4e1b6e9a409a29ea6a211c7199676a73d95cf6c00",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "fire_kalimantan/firms_zambia_sep2026.json": {
+  "sha256": "cff17628d8d95b5926238291d8887b8c610ed57ed6139f8b022e0ae1ac1b5e1d",
+  "kind": "real",
+  "source_url": "NASA FIRMS VIIRS NRT local export",
+  "license": "NASA FIRMS terms of use"
+ },
+ "flood_nepal/bridges.geojson": {
+  "sha256": "dc892f287552b04331ac180a663e83a8c23541bdbde4f324a6d7fd4340edb0a8",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "flood_nepal/destroyed_after.geojson": {
+  "sha256": "cb0cfdd60344cf70d340a610229e4c184c5cb25b85856b3e1f431f10c262f636",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "flood_nepal/destroyed_before.geojson": {
+  "sha256": "e39450d419caf304d5d54573c22652a47c794de10befc8649060a9831a29345a",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "flood_nepal/flood_extent.geojson": {
+  "sha256": "e939c0c1502d7cfbf0e4f5bf99e1ceeca0db0cdef3026cbf74b395ced74e96b2",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "flood_nepal/helipads.geojson": {
+  "sha256": "953a55d2260c65831875ecc6515741cafce8e7196790e432bec95febdf452844",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "flood_nepal/hydropowers.geojson": {
+  "sha256": "c2ebe0e24b131154ac14433ef63c924f4c6368d6fbd9a80e4b93eea2f7f85ecc",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "flood_nepal/waterways.geojson": {
+  "sha256": "60a47444325444de329c855ec7f0cea7344fb8c71835dae842df409b1e8ec15f",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed/hot_flood_npl_destroyed_features_osm.geojson": {
+  "sha256": "b64ece004421db58dd06a18a3115cd41f56c612abe54d405b25cdecc27f66784",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed/hot_flood_npl_flood_extent.geojson": {
+  "sha256": "e939c0c1502d7cfbf0e4f5bf99e1ceeca0db0cdef3026cbf74b395ced74e96b2",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed/hot_flood_npl_waterways_osm.geojson": {
+  "sha256": "6185fad0e76c3ef2f34041d72227e51426e66ffa9fc9f91a87046efe5fa2c1c4",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep14/hot_flood_npl_destroyed_features_osm.geojson": {
+  "sha256": "cb0cfdd60344cf70d340a610229e4c184c5cb25b85856b3e1f431f10c262f636",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_aoi.geojson": {
+  "sha256": "2e30166e56d7d8bffc2a8cfa24643cd72a4245dd13cc028e664120a60345aecd",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_bridge_damage.geojson": {
+  "sha256": "a1331735bd0016f42e42fe44abaa605116bb5b4d726fd41563aec0b02564885a",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_bridges_osm.geojson": {
+  "sha256": "dc892f287552b04331ac180a663e83a8c23541bdbde4f324a6d7fd4340edb0a8",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_destroyed_features_osm.geojson": {
+  "sha256": "e39450d419caf304d5d54573c22652a47c794de10befc8649060a9831a29345a",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_education_facilities_osm.geojson": {
+  "sha256": "2e0c5512a5ca3e3591b50095f676683e87400a30d11b9103300bf36f6a60171c",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_education_facilities_overture.geojson": {
+  "sha256": "4b412a2ee6c26f256cb681421c786b43cd0d7a4b011c733b92033507cd5c776f",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_exposed_hydropowers.geojson": {
+  "sha256": "c2ebe0e24b131154ac14433ef63c924f4c6368d6fbd9a80e4b93eea2f7f85ecc",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_financial_services_osm.geojson": {
+  "sha256": "9c20e7e993731669d7e7cfbc0737090d91a2a0f61b9e8589c4bdcddb6ec7e29a",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_flood_extent.geojson": {
+  "sha256": "e939c0c1502d7cfbf0e4f5bf99e1ceeca0db0cdef3026cbf74b395ced74e96b2",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_health_facilities_osm.geojson": {
+  "sha256": "48260de27bd2c95b60b8e6f1921e1864ebfa6713a86fb10dce1491baef4e2b09",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_health_facilities_overture.geojson": {
+  "sha256": "92353e6e27e2f4dc5a9fb0cc2d5033c3e9703fc8287e497d9a8f1660b4e2a454",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_helipads_osm.geojson": {
+  "sha256": "953a55d2260c65831875ecc6515741cafce8e7196790e432bec95febdf452844",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_open_spaces_osm.geojson": {
+  "sha256": "fadf58c5ada4c2030076c642d8d984fcb7e8b6710547d49b1d1dbb0c3070f55d",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_points_of_interest_osm.geojson": {
+  "sha256": "6179af3bec30931badd0141d4cdf46e04906ffe96e3c9a599e513e582b22347b",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_points_of_interest_overture.geojson": {
+  "sha256": "e42fd420c92fe26d2e47fdc8ac850919816ac4bef24d4c5e86c2071f73a842cb",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_police_stations_osm.geojson": {
+  "sha256": "1b79c7ae715d10fa0fde72f9c51fbac142053315d2a79f2e671108e5241f97f8",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_populated_places_osm.geojson": {
+  "sha256": "b9940a5dcd362a6ada655a87791394ffe05a3cfee32a876a67428976c0fe7867",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_residential_areas_osm.geojson": {
+  "sha256": "0b9f36b380ab6eaaffca2f8a4c76959331335b28d7bff7fca8954b3ac59f28cb",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_tm_projects.geojson": {
+  "sha256": "1e613298bd28c121e9674b4a75b0e3dc05fce03340358b202792b0bb0289f630",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "nepflood_cascade/flood_data_processed_sep9/hot_flood_npl_waterways_osm.geojson": {
+  "sha256": "60a47444325444de329c855ec7f0cea7344fb8c71835dae842df409b1e8ec15f",
+  "kind": "real",
+  "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)",
+  "license": "ODbL (OSM) / source export terms"
+ },
+ "synthetic/operator_timeline.json": {
+  "sha256": "a5c9fe16820aba4d88541be2f2ebbc65aeda5ce96038e256dc07b877cb07deed",
+  "kind": "synthetic",
+  "source_url": "synthetic demo fixture (operator_timeline)",
+  "license": "project synthetic"
+ }
+}

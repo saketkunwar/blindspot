@@ -1,0 +1,141 @@
+{
+ "tag": "attica",
+ "bbox": [
+  23.0,
+  37.8,
+  24.2,
+  38.4
+ ],
+ "day_range": 5,
+ "fetched_at": "2026-09-20T10:11:02.037694+00:00",
+ "detections": [
+  {
+   "lat": 38.3762,
+   "lon": 24.06338,
+   "valid_time": "2026-09-17T00:01:00+00:00",
+   "payload": {
+    "bright_ti4": "301.27",
+    "acq_date": "2026-09-17",
+    "acq_time": "1",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "1.12",
+    "daynight": "N"
+   }
+  },
+  {
+   "lat": 38.37304,
+   "lon": 24.06113,
+   "valid_time": "2026-09-17T23:39:00+00:00",
+   "payload": {
+    "bright_ti4": "303.08",
+    "acq_date": "2026-09-17",
+    "acq_time": "2339",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "0.73",
+    "daynight": "N"
+   }
+  },
+  {
+   "lat": 38.37237,
+   "lon": 24.05877,
+   "valid_time": "2026-09-18T01:20:00+00:00",
+   "payload": {
+    "bright_ti4": "301.54",
+    "acq_date": "2026-09-18",
+    "acq_time": "120",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "1.06",
+    "daynight": "N"
+   }
+  },
+  {
+   "lat": 37.91866,
+   "lon": 23.07213,
+   "valid_time": "2026-09-18T01:22:00+00:00",
+   "payload": {
+    "bright_ti4": "303.12",
+    "acq_date": "2026-09-18",
+    "acq_time": "122",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "1.45",
+    "daynight": "N"
+   }
+  },
+  {
+   "lat": 38.37316,
+   "lon": 24.06028,
+   "valid_time": "2026-09-19T01:02:00+00:00",
+   "payload": {
+    "bright_ti4": "297.09",
+    "acq_date": "2026-09-19",
+    "acq_time": "102",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "1.13",
+    "daynight": "N"
+   }
+  },
+  {
+   "lat": 38.03506,
+   "lon": 23.59155,
+   "valid_time": "2026-09-20T00:43:00+00:00",
+   "payload": {
+    "bright_ti4": "303.84",
+    "acq_date": "2026-09-20",
+    "acq_time": "43",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "0.73",
+    "daynight": "N"
+   }
+  },
+  {
+   "lat": 38.12871,
+   "lon": 23.52269,
+   "valid_time": "2026-09-20T00:43:00+00:00",
+   "payload": {
+    "bright_ti4": "304.36",
+    "acq_date": "2026-09-20",
+    "acq_time": "43",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "0.9",
+    "daynight": "N"
+   }
+  },
+  {
+   "lat": 38.37456,
+   "lon": 24.05926,
+   "valid_time": "2026-09-20T00:43:00+00:00",
+   "payload": {
+    "bright_ti4": "300.11",
+    "acq_date": "2026-09-20",
+    "acq_time": "43",
+    "satellite": "N",
+    "instrument": "VIIRS",
+    "confidence": "n",
+    "version": "2.0NRT",
+    "frp": "0.75",
+    "daynight": "N"
+   }
+  }
+ ]
+}
