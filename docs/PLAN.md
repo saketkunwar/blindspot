@@ -34,7 +34,7 @@ Commands: `python scripts/validate_hardened.py --setup-only` (setup) · `python 
 - [ ] **Gate 0 (needs your explicit go): `git add` named files (never `blindspot-spec-kit/private/`), `git commit`, `git tag prereg`. No pipeline may run before this tag.**
 
 ## Build phases (in order, one task per run, gate after each)
-- Phase 1 Kernel `engine/`: T-1.1 schemas (Pydantic v2, ConfigIncomplete) → T-1.2 RCC-8 exact predicates → T-1.3 composition/path-consistency → T-1.4 own Allen + 169 rectangle labels → T-1.5 9-tiles/bearing → T-1.6 Haversine/bands → T-1.7 neighbourhood graph generator in `engine/tools/`. Gate: property tests (inverse symmetry, MEETS≠BEFORE, band boundaries).
+- [x] Phase 1 Kernel `engine/` (DONE this run, uncommitted pending review): T-1.1 schemas (Pydantic v2, ConfigIncomplete) → T-1.2 RCC-8 exact predicates → T-1.3 composition/path-consistency → T-1.4 own Allen + 169 rectangle labels → T-1.5 9-tiles/bearing → T-1.6 Haversine/bands → T-1.7 neighbourhood graph generator in `engine/tools/`. Gate: property tests (inverse symmetry, MEETS≠BEFORE, band boundaries).
 - Phase 2 Gap auditor: T-2.1 continuity/shortest-path → T-2.2 MUST_BE/MAY_BE bands → T-2.3 Detector A (rivals from t0 before t1) → T-2.4 Detector B (Allen falsification, 3 rivals, evasion D-4).
 - Phase 3 Pipelines: T-3.1 loader (manifest+hash, both FIRMS layouts, select by tag/bbox) → T-3.2 flood Act1 (fwd/inv, split_alert) Act2 bands Act3 `missing_input` honesty → T-3.3 fire (floor binning, footprint RCC-8, continuity, timeline Allen). Gate: **full hardened run incl. G7 invariance.**
 - Phase 4 Meta `agents/`: T-4.1 SAM cassettes+`meta_usage.json` → T-4.2 three schema-validated Muse roles → T-4.3 default-deny verification gate.

@@ -44,5 +44,11 @@ Raw sources kept untouched under `data/nepflood_cascade/` and listed in the mani
 - Gemini pitch wording conflicts (data wins): Mobilization/Clearing is MEETS not BEFORE; <50 m gap is IMMEDIATE_ENVELOPE not NEAR; "all 9 tiles" is `inv` direction. Implement per BUILDER_SPEC §3.
 - Scoreboard/"Paper §13" numbers: not produced by this repo; come from judge `evidence.json`.
 
+## Phase 1 verification notes (kernel, this run)
+- RCC-8 composition table transcribed from Wikipedia "Region connection calculus" (Randell/Cui/Cohn lineage); self-checks in-test: converse symmetry over all 64 cells, EQ identity, worked example TPP;EC = {DC, EC}. Allen composition is NOT transcribed — it is generated at import by exhaustive 6-endpoint order enumeration (exact by order-isomorphism), with identity/spot/converse checks in-test.
+- Transcription incident caught by the durable tests: table rows were zipped against `RCC8_RELATIONS` (EQ sorts 4th) instead of table order; fixed with an explicit `_TABLE_ORDER` + comment. This is the workflow working as designed.
+- Neighborhood graph derived by `engine/tools/generate_neighborhood.py` (two enums merged, 4.6k+ toggles witnessed): textbook 8 edges all present; extras PO<->NTPPi (hole-closing, continuous at the completion instant) kept as evidence; teleport jumps (DC<->PO, NTPP<->DC, ...) absent. Artifact: `engine/neighborhood.json`.
+- G3 manual scan on `engine/`: no hardcoded scenario literals.
+
 ## Spec-literal hygiene
 Builder code must never contain expected counts/distances/cell ids from any pitch text. Enforced by gate G-3 (see `docs/PLAN.md`, `scripts/validate_hardened.py`).

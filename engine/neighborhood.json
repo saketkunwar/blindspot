@@ -1,0 +1,59 @@
+{
+ "method": "connected single-cell toggles, no boundary-crossing toggle cells; two enums merged",
+ "neighbors": {
+  "DC": [
+   "EC"
+  ],
+  "EC": [
+   "DC",
+   "PO"
+  ],
+  "PO": [
+   "EC",
+   "NTPPi",
+   "TPP",
+   "TPPi"
+  ],
+  "EQ": [
+   "TPP",
+   "TPPi"
+  ],
+  "TPP": [
+   "EQ",
+   "NTPP",
+   "PO"
+  ],
+  "NTPP": [
+   "TPP"
+  ],
+  "TPPi": [
+   "EQ",
+   "NTPPi",
+   "PO"
+  ],
+  "NTPPi": [
+   "PO",
+   "TPPi"
+  ]
+ },
+ "witness_counts": {
+  "DC>EC": 1,
+  "EC>DC": 1,
+  "EC>PO": 428,
+  "EQ>TPP": 13,
+  "EQ>TPPi": 14,
+  "NTPP>TPP": 4,
+  "NTPPi>PO": 4,
+  "NTPPi>TPPi": 12,
+  "PO>EC": 428,
+  "PO>NTPPi": 4,
+  "PO>TPP": 704,
+  "PO>TPPi": 7371,
+  "TPP>EQ": 13,
+  "TPP>NTPP": 4,
+  "TPP>PO": 704,
+  "TPPi>EQ": 14,
+  "TPPi>NTPPi": 12,
+  "TPPi>PO": 7371
+ }
+}
