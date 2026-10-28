@@ -37,3 +37,18 @@ table.kv td { border-top: 1px solid var(--line); padding: 3px 4px; vertical-alig
 table.kv td:first-child { color: var(--muted); width: 40%; }
 .mode { display: inline-block; font-size: 11px; border: 1px solid var(--line);
   padding: 1px 6px; border-radius: 3px; color: var(--muted); }
+.demo { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; background: var(--wash); }
+.hero { background: var(--panel); border: 1px solid var(--line); padding: 20px; margin-bottom: 16px; }
+.hero h1 { font-size: 22px; margin: 6px 0; }
+.lede { font-size: 15px; }
+.demo section { background: var(--panel); border: 1px solid var(--line); padding: 16px 20px; margin-bottom: 16px; }
+.demo section h2 { font-size: 14px; margin: 0 0 10px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--line); padding: 10px 12px; background: var(--wash); }
+.bar-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+.bar-label { width: 280px; font-size: 13px; }
+.bar-track { flex: 1; height: 12px; background: var(--wash); border: 1px solid var(--line); }
+.bar-fill { display: block; height: 100%; background: var(--accent); }
+.bar-num { width: 56px; text-align: right; font-size: 12px; color: var(--muted); }
+.mapwrap { position: relative; height: 420px; border: 1px solid var(--line); }
+.mapwrap .mapbox { position: absolute; inset: 0; }

@@ -68,3 +68,46 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   "recorded_at": ...}}`. Two seed fixtures ship (flood chip, fire chip).
 - Runtime cache lives in `results/sam_cache/` (outside the manifest);
   `meta_usage.json` is a git-ignored run log at the repo root.
+
+## Demo Step-0 source notes (2026-10-28)
+- T1/T2 from the cascade file's own interval ends: T1 = 2026-09-04T03:56:20Z
+  (earliest end; cutoff = min end), T2 = 2026-09-09 (two boundaries that day).
+  2092 / 754 / 1568 features per group. T3 bound fenced, not load-bearing.
+- Flood extent is static ("Observed 27 August") — no time signal; change
+  evidence comes from damage geometry only.
+- Chilime Khola present in staged waterways (2 pieces of 400 named 38).
+- Model: 1.2-Contributor primary (shipped 5 Aug 2026 pre-flood; independent
+  probes measure effective knowledge late 2025/Jan 2026; Meta publishes no
+  cutoff). Fallback 1.3-Contributor + anonymization (shipped Sep 2026).
+  Live probe (`demo/nepal_cascade/probe_model.py`) pending key; symbolic
+  path shipped (zero model memory).
+- Web: Chilime/secondary-dam reporting confirms a real barrier-lake burst
+  narrative post-cutoff — that is GT, quarantined, never in prompts.
+- Open: live 1.2 call recording; T3 exact bound; presentation manual
+  open-and-look against the live page.
+
+## Demo live-call results (2026-10-28, key provided by user)
+- Endpoint found by user pointer: Meta Model API docs (dev.meta.ai) give
+  base `https://api.meta.ai`, key as `MODEL_API_KEY` Bearer, model id
+  `muse-spark-1.2-contributor` listed. Transport speaks chat-completions.
+- The provided `LLM|...` key authenticates on api.meta.ai (it failed on
+  api.llama.com: empty model list, all names invalid — wrong endpoint, not
+  a bad key). Never written to disk; passed via env only.
+- Step-0 probe (`demo/nepal_cascade/probe_result.json`, live-recorded):
+  flood question -> "I have no knowledge of this." Control -> cutoff stated
+  as January 4, 2026. Verdict: CLEAN (empirical, not just structural).
+- Insight model round (cassette `87d24316...`, live-recorded): the clean
+  model ranks `safe_drainage` first from the anonymized evidence while the
+  symbolic ledger scores burst highest (0.94). Disagreement recorded as
+  `agreement:false` — the model reasoned, not recalled. Frozen probabilities
+  are symbolic-only by design; the model round is advisory and gate-checked.
+
+## Setup-round results (2026-10-28, three live rounds on 1.2-Contributor)
+- R1 (ledger only): generic M_fluvial/M_null/M_other, no flood physics.
+- R2 (+ flood ontology): all six flood stories adopted; rejected on
+  abbreviated fact ids (30+ cite errors).
+- R3 (+ cite-format line): valid, null PASS; same stories, timid cluster
+  weight (0.5 vs frozen 2.0) -> draft top downstream-only, burst 4th.
+  Cluster threshold 34 likely anchored on the ledger's reported count
+  (frozen-rule parameter leak into setup input, not GT leak).
+- Standing: LLM frames vocabulary, human sets conviction, kernel computes.

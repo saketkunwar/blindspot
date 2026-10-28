@@ -1,0 +1,84 @@
+{
+ "draft": {
+  "cluster_rule": {
+   "max_distance_m": 300,
+   "min_features": 30
+  },
+  "mechanisms": [
+   {
+    "id": "M_null",
+    "opposes": [
+     "F3_channel_adjacent_share",
+     "F4_cluster_hit"
+    ],
+    "prior": 0.4,
+    "supports": [
+     "F1_total_pre_cutoff_damage",
+     "F2_upstream_share",
+     "F5_upstream_density_ratio",
+     "F7_target_reach_share"
+    ],
+    "title": "Baseline / nothing-happens - pre-cutoff background distributed without single-event clustering"
+   },
+   {
+    "id": "M_fluvial",
+    "opposes": [
+     "F7_target_reach_share"
+    ],
+    "prior": 0.3,
+    "supports": [
+     "F3_channel_adjacent_share",
+     "F4_cluster_hit",
+     "F6_extent_context"
+    ],
+    "title": "Distributed channel-associated processes"
+   },
+   {
+    "id": "M_other",
+    "opposes": [
+     "F3_channel_adjacent_share"
+    ],
+    "prior": 0.3,
+    "supports": [
+     "F1_total_pre_cutoff_damage",
+     "F7_target_reach_share"
+    ],
+    "title": "Heterogeneous / other causes (open category)"
+   }
+  ],
+  "weights": {
+   "F1_total_pre_cutoff_damage": 0.9,
+   "F2_upstream_share": 0.6,
+   "F3_channel_adjacent_share": 0.7,
+   "F4_cluster_hit": 0.75,
+   "F5_upstream_density_ratio": 0.6,
+   "F6_extent_context": 0.2,
+   "F7_target_reach_share": 0.8,
+   "F8_inputs_audit_clean": 1.0
+  }
+ },
+ "draft_errors": [],
+ "draft_ranking_on_real_ledger": [
+  "M_fluvial",
+  "M_null",
+  "M_other"
+ ],
+ "draft_top": "M_fluvial",
+ "frozen_mechanisms": [
+  "safe_drainage",
+  "dam_holds",
+  "impoundment_then_burst",
+  "upstream_slope_failure_elsewhere",
+  "downstream_only_flooding",
+  "no_further_event"
+ ],
+ "frozen_top": "impoundment_then_burst",
+ "model": "muse-spark-1.2-contributor",
+ "null_test_pass": false,
+ "overlap": [],
+ "prompt_audit_violations": [],
+ "prompt_sha256": "eaf2d3dec99a5a871b39d1b353dc14d08d7cc0ede5f05096398faa4daeb75d8f",
+ "request_hash": "a1528a49715eb3be782d28523fc87e8a8038f22dda3dedefefebcc242aa14c06",
+ "source": "live-recorded",
+ "top_agrees": false
+}

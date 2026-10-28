@@ -1,0 +1,21 @@
+{
+ "as_of_label": "pre-T1",
+ "cutoff_derivation": "earliest destruction_interval_end found in the cascade file",
+ "cutoff_value": "2026-09-04T03:56:20Z",
+ "later_boundaries_ignored": [
+  "2026-09-09T03:54:39Z",
+  "2026-09-09T21:55:52Z"
+ ],
+ "sources": {
+  "data/raw/temporal_data/osm_temporal_cascades.geojson": "9235c4459ee9720b7ef3a40b06adc2b112cbb96c2a164c2a6b8cf069ec406b35",
+  "data/flood_nepal/waterways.geojson": "60a47444325444de329c855ec7f0cea7344fb8c71835dae842df409b1e8ec15f",
+  "data/flood_nepal/flood_extent.geojson": "e939c0c1502d7cfbf0e4f5bf99e1ceeca0db0cdef3026cbf74b395ced74e96b2"
+ },
+ "filter": "kept features with destruction_interval_end <= cutoff; stripped all timestamps and stage labels",
+ "counts": {
+  "cascade_total": 4414,
+  "kept_pre_cutoff": 2092,
+  "waterways": 400,
+  "target_reach_pieces": 2
+ }
+}

@@ -1,0 +1,19 @@
+Here is evidence from a river valley survey. All observations come from a single pre-cutoff snapshot S1; no later data was admitted.
+Reaches are anonymous: Reach Alpha is upstream of the surveyed flood centroid, Reach Beta is downstream. Tributary T-1 is one named tributary reach whose name is withheld.
+Candidate mechanisms (hypotheses to score, not facts):
+- safe_drainage: Water drains safely through the debris
+- dam_holds: Natural dam forms and holds
+- impoundment_then_burst: Impoundment grows, then the dam bursts
+- upstream_slope_failure_elsewhere: New slope failure on a different reach
+- downstream_only_flooding: Flooding continues downstream only
+- no_further_event: Nothing further happens
+Ledger facts:
+- F1_total_pre_cutoff_damage: 2092 destroyed features predate the cutoff
+- F2_upstream_share: upstream reach holds 51.5% of pre-cutoff damage
+- F3_channel_adjacent_share: 72.8% of pre-cutoff damage lies within channel-adjacent distance of mapped waterways
+- F4_cluster_hit: frozen tributary-cluster rule: HIT (34 pre-cutoff features near the target reach)
+- F5_upstream_density_ratio: upstream damage density is 1.06x downstream density
+- F6_extent_context: static observed flood outline present as context (no time signal)
+- F7_target_reach_share: 1.6% of pre-cutoff damage lies near the target tributary reach
+- F8_inputs_audit_clean: input audit verifies: every prediction byte pinned pre-cutoff
+Task: rank every candidate mechanism by how strongly this evidence alone supports it, from strongest to weakest. Reply with JSON only: {"ranking": [{"mechanism": id, "cites": [fact ids]}]}. Cite only the ledger facts above. Assert no outcome as fact.

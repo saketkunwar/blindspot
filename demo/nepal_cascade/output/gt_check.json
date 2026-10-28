@@ -1,0 +1,25 @@
+{
+ "discipline": "read-only; no weights, rules, or brief bytes were touched",
+ "frozen_ranking": [
+  "impoundment_then_burst",
+  "upstream_slope_failure_elsewhere",
+  "downstream_only_flooding",
+  "safe_drainage",
+  "dam_holds",
+  "no_further_event"
+ ],
+ "frozen_top_mechanism": "impoundment_then_burst",
+ "frozen_top_support": 0.9426,
+ "gt_signature": {
+  "gt_channel_adjacent_share": 0.8687,
+  "gt_cluster_hit": false,
+  "gt_near_target": 2,
+  "gt_newly_destroyed": 754,
+  "gt_upstream_share": 0.5438,
+  "gt_window": "(2026-09-04T03:56:20Z, 2026-09-09T03:54:39Z]",
+  "sar_lake_between_snapshots": true,
+  "sar_max_area_km2": 3.4089
+ },
+ "true_outcome_rank": 1,
+ "verdict": "MATCH: the frozen top story (impoundment_then_burst) is consistent with the quarantined T1->T2 delta and SAR log"
+}

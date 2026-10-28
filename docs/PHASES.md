@@ -498,3 +498,41 @@ build), but no server is left running.
   `--fast-cache` semantics at the CLI layer.
 - Map tiles stream from the network at view time; offline viewing shows
   panels and detail but no basemap.
+
+## Demo — Nepal cascade autoinsight (uncommitted work)
+
+Self-contained demo in `demo/nepal_cascade/` plus a hindsight-free
+prediction loop in `agents/autoinsight.py` + `agents/model_call.py`, served
+by `GET /api/demo/nepal-cascade` (cached/live) and `GET
+/api/demo/nepal-cascade/geo`, presented at `/demo/nepal-cascade` (hero →
+evidence cards → how-it-works → mechanism ranking → findings → legend map,
+rendered only from the pipeline payload; flat panels, no gradients).
+
+### Why this shape
+
+The prediction world is pre-T1 only; the actual event is GT checked after
+freezing. Five contamination controls compose: (1) the prompt builder takes
+only the ledger (leaking the future is a type error — no GT parameter
+exists); (2) outcome-free instruction text; (3) anonymized context (relative
+snapshots, anonymous reaches — the model's memory cannot key on the event);
+(4) verbatim prompt audit scanned against name/date tokens drawn from the
+inputs themselves; (5) single-turn memory-free rounds plus a null red-team
+(quiet synthetic world must rank nothing-first).
+
+### Results (frozen brief, symbolic path)
+
+Pre-cutoff evidence most supports impoundment-then-burst (support 0.94),
+then upstream slope failure elsewhere (0.05); nothing-further carries live
+weight (0.0005) and wins the null test. The frozen cluster rule fires
+(34 pre-cutoff features near the target reach ≥ 8 = HIT) — the *test* of the
+hindsight claim, not its number. Probabilities are labeled support strength,
+not calibrated frequency. The live 1.2-Contributor call is one command away
+(`--model-round on` + key); until then the shipped artifact uses no model
+memory at all.
+
+### Verification
+
+G12 (cutoff-invariance: data/raw hidden ⇒ byte-identical output) +
+quarantine (no timestamps/stages in curated inputs; prompt re-audit clean);
+6 durable tests in `tests/properties/test_demo_nepal.py`; 43/43 suite green,
+`judge.sh` OK, `next build` clean.

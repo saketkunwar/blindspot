@@ -227,13 +227,83 @@ def g10():
     files = list((ROOT/"tests/properties").glob("test_*.py"))
     gate("G10", len(files) >= 2, f"durable tests: {[f.name for f in files]}")
 
+def g12(tmp):
+    """Cutoff invariance + GT quarantine for the Nepal-cascade demo.
+
+    G12a: hiding ALL of data/raw (the ground-truth side) must leave the
+    demo insight byte-identical -- proving the prediction read no
+    post-cutoff byte. G12b (quarantine): curated inputs carry no timestamps
+    or stage labels, and the saved verbatim prompt passes a re-scan against
+    name/date tokens drawn from the inputs themselves.
+    """
+    import shutil
+    demo = ROOT / "demo" / "nepal_cascade"
+    brief = demo / "output" / "brief.json"
+    if not brief.exists():
+        gate("G12", False, "no frozen demo brief to check against"); return
+    frozen = brief.read_bytes()
+
+    def run_autoinsight(out):
+        # Model round ON: replays the committed live-recorded cassette offline,
+        # so the gate exercises the full neuro-symbolic path deterministically.
+        r = subprocess.run(
+            [sys.executable, "-m", "agents.autoinsight", "--model-round", "on",
+             "--out", str(out), "--prompt-log", str(tmp / "prompts")],
+            cwd=ROOT, capture_output=True, text=True, timeout=900)
+        return r
+
+    r1 = run_autoinsight(tmp / "a.json")
+    if r1.returncode != 0 or not (tmp / "a.json").exists():
+        gate("G12", False, f"autoinsight rerun failed: {r1.stderr[-300:]}"); return
+    raw = ROOT / "data" / "raw"
+    hidden = ROOT / "data" / "raw_hidden_for_g12"
+    if hidden.exists():
+        gate("G12", False, "leftover raw_hidden_for_g12: delete it and re-run"); return
+    try:
+        raw.rename(hidden)
+        r2 = run_autoinsight(tmp / "b.json")
+    finally:
+        if hidden.exists():
+            hidden.rename(raw)
+    if r2.returncode != 0 or not (tmp / "b.json").exists():
+        gate("G12", False, f"autoinsight without data/raw failed: {r2.stderr[-300:]}"); return
+    a, b = (tmp / "a.json").read_bytes(), (tmp / "b.json").read_bytes()
+    if a != b:
+        gate("G12", False, "output changes when data/raw is hidden: prediction reads GT"); return
+    if a != frozen:
+        gate("G12", False, "fresh run differs from frozen brief: regenerate output/brief.json"); return
+
+    bad = []
+    sys.path.insert(0, str(ROOT / "agents"))
+    import autoinsight as _ai
+    rules = json.loads((demo / "rules.json").read_text())
+    inputs = demo / "inputs"
+    feats = json.loads((inputs / "pre_t1_features.geojson").read_text())["features"]
+    keys = {k for f in feats for k in (f.get("properties") or {})}
+    if keys - {"src_id", "feature_type"}:
+        bad.append(f"curated features leak extra properties: {sorted(keys)}")
+    blob = (inputs / "pre_t1_features.geojson").read_text()
+    if re.search(r"\d{4}-\d{2}-\d{2}", blob):
+        bad.append("curated features contain date strings")
+    prompt_files = sorted((demo / "output").glob("prompt-*.txt"))
+    if not prompt_files:
+        bad.append("no verbatim prompt artifact")
+    else:
+        forbidden = _ai._input_tokens(inputs, rules)
+        for pf in prompt_files:
+            v = _ai.audit_prompt(pf.read_text(), forbidden)
+            if v:
+                bad.append(f"{pf.name}: " + "; ".join(v[:3]))
+    gate("G12", not bad, "cutoff-invariant, quarantined, prompt re-audit clean"
+         if not bad else "; ".join(bad))
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--setup-only", action="store_true"); a = ap.parse_args()
     g1(); g2(); g8(); g9(a.setup_only); g10()
     if not a.setup_only:
         g3()
         with tempfile.TemporaryDirectory() as td:
-            tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp)
+            tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp); g12(tmp)
     print("HARDENED:", "FAIL " + ",".join(FAIL) if FAIL else "ALL PASS")
     sys.exit(1 if FAIL else 0)
 

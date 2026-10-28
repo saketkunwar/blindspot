@@ -1,0 +1,132 @@
+{
+ "draft": {
+  "cluster_rule": {
+   "max_distance_m": 300,
+   "min_features": 34
+  },
+  "mechanisms": [
+   {
+    "id": "M1",
+    "opposes": [
+     "F4_cluster_hit"
+    ],
+    "prior": 0.17,
+    "supports": [
+     "F3_channel_adjacent_share",
+     "F7_target_reach_share",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "Water drains safely through debris with no sustained ponding"
+   },
+   {
+    "id": "M2",
+    "opposes": [
+     "F7_target_reach_share"
+    ],
+    "prior": 0.16,
+    "supports": [
+     "F3_channel_adjacent_share",
+     "F4_cluster_hit",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "Debris forms a stable dam that holds and ponds water without sudden release"
+   },
+   {
+    "id": "M3",
+    "opposes": [
+     "F7_target_reach_share",
+     "F6_extent_context"
+    ],
+    "prior": 0.17,
+    "supports": [
+     "F3_channel_adjacent_share",
+     "F4_cluster_hit",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "Water ponds behind debris and later releases suddenly"
+   },
+   {
+    "id": "M4",
+    "opposes": [
+     "F3_channel_adjacent_share"
+    ],
+    "prior": 0.16,
+    "supports": [
+     "F1_total_pre_cutoff_damage",
+     "F2_upstream_share",
+     "F5_upstream_density_ratio",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "New slope failures or damage on other reaches unrelated to target tributary"
+   },
+   {
+    "id": "M5",
+    "opposes": [
+     "F7_target_reach_share"
+    ],
+    "prior": 0.17,
+    "supports": [
+     "F2_upstream_share",
+     "F5_upstream_density_ratio",
+     "F3_channel_adjacent_share",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "Continued flooding downstream only without upstream dam-related release"
+   },
+   {
+    "id": "M6",
+    "opposes": [
+     "F3_channel_adjacent_share",
+     "F4_cluster_hit"
+    ],
+    "prior": 0.17,
+    "supports": [
+     "F7_target_reach_share",
+     "F2_upstream_share",
+     "F5_upstream_density_ratio",
+     "F6_extent_context",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "Nothing further happens - quiescence with no additional dam-related flooding or failures"
+   }
+  ],
+  "weights": {
+   "F1_total_pre_cutoff_damage": 0.6,
+   "F2_upstream_share": 0.7,
+   "F3_channel_adjacent_share": 0.8,
+   "F4_cluster_hit": 0.5,
+   "F5_upstream_density_ratio": 0.7,
+   "F6_extent_context": 0.15,
+   "F7_target_reach_share": 0.75,
+   "F8_inputs_audit_clean": 0.9
+  }
+ },
+ "draft_errors": [],
+ "draft_ranking_on_real_ledger": [
+  "M5",
+  "M2",
+  "M4",
+  "M3",
+  "M1",
+  "M6"
+ ],
+ "draft_top": "M5",
+ "frozen_mechanisms": [
+  "safe_drainage",
+  "dam_holds",
+  "impoundment_then_burst",
+  "upstream_slope_failure_elsewhere",
+  "downstream_only_flooding",
+  "no_further_event"
+ ],
+ "frozen_top": "impoundment_then_burst",
+ "model": "muse-spark-1.2-contributor",
+ "null_test_pass": true,
+ "null_test_top": "M6",
+ "overlap": [],
+ "prompt_audit_violations": [],
+ "prompt_sha256": "732235118baa11aaa380f1295122108ee6e4d499f711c7912352d81257840e59",
+ "request_hash": "ac2c76d1396e2b1816860d4cac583eb8379d348161cd71578d4a29f00ef27f73",
+ "source": "live-recorded",
+ "top_agrees": false
+}

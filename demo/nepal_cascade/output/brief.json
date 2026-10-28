@@ -1,0 +1,146 @@
+{
+ "as_of_label": "pre-T1",
+ "cluster_finding": "frozen tributary-cluster rule: HIT (34 pre-cutoff features near the target reach)",
+ "inputs_audit": {
+  "as_of_label": "pre-T1",
+  "counts": {
+   "cascade_total": 4414,
+   "kept_pre_cutoff": 2092,
+   "target_reach_pieces": 2,
+   "waterways": 400
+  },
+  "cutoff_derivation": "earliest destruction_interval_end found in the cascade file",
+  "cutoff_value": "2026-09-04T03:56:20Z",
+  "filter": "kept features with destruction_interval_end <= cutoff; stripped all timestamps and stage labels",
+  "later_boundaries_ignored": [
+   "2026-09-09T03:54:39Z",
+   "2026-09-09T21:55:52Z"
+  ],
+  "sources": {
+   "data/flood_nepal/flood_extent.geojson": "e939c0c1502d7cfbf0e4f5bf99e1ceeca0db0cdef3026cbf74b395ced74e96b2",
+   "data/flood_nepal/waterways.geojson": "60a47444325444de329c855ec7f0cea7344fb8c71835dae842df409b1e8ec15f",
+   "data/raw/temporal_data/osm_temporal_cascades.geojson": "9235c4459ee9720b7ef3a40b06adc2b112cbb96c2a164c2a6b8cf069ec406b35"
+  }
+ },
+ "ledger": {
+  "diagnostics": {
+   "bbox": [
+    84.556395,
+    27.79515,
+    85.379843,
+    28.280699
+   ],
+   "rcc8_vs_outline": {
+    "DC": 7,
+    "NTPP": 2075,
+    "PO": 10
+   }
+  },
+  "facts": {
+   "F1_total_pre_cutoff_damage": {
+    "active": true,
+    "text": "2092 destroyed features predate the cutoff",
+    "value": 2092
+   },
+   "F2_upstream_share": {
+    "active": true,
+    "text": "upstream reach holds 51.5% of pre-cutoff damage",
+    "value": 0.5148
+   },
+   "F3_channel_adjacent_share": {
+    "active": true,
+    "text": "72.8% of pre-cutoff damage lies within channel-adjacent distance of mapped waterways",
+    "value": 0.7285
+   },
+   "F4_cluster_hit": {
+    "active": true,
+    "text": "frozen tributary-cluster rule: HIT (34 pre-cutoff features near the target reach)",
+    "value": 34
+   },
+   "F5_upstream_density_ratio": {
+    "active": true,
+    "text": "upstream damage density is 1.06x downstream density",
+    "value": 1.061
+   },
+   "F6_extent_context": {
+    "active": true,
+    "text": "static observed flood outline present as context (no time signal)",
+    "value": 4342540316.7
+   },
+   "F7_target_reach_share": {
+    "active": false,
+    "text": "1.6% of pre-cutoff damage lies near the target tributary reach",
+    "value": 0.0163
+   },
+   "F8_inputs_audit_clean": {
+    "active": true,
+    "text": "input audit verifies: every prediction byte pinned pre-cutoff",
+    "value": 1
+   }
+  },
+  "numbers": [
+   2092.0,
+   0.5148,
+   0.7285,
+   34.0,
+   1.061,
+   4342540316.7,
+   0.0163,
+   1.0
+  ]
+ },
+ "mechanisms": [
+  {
+   "id": "impoundment_then_burst",
+   "probability": 0.9426,
+   "score": 6.0,
+   "title": "Impoundment grows, then the dam bursts"
+  },
+  {
+   "id": "upstream_slope_failure_elsewhere",
+   "probability": 0.0469,
+   "score": 3.0,
+   "title": "New slope failure on a different reach"
+  },
+  {
+   "id": "downstream_only_flooding",
+   "probability": 0.0082,
+   "score": 1.25,
+   "title": "Flooding continues downstream only"
+  },
+  {
+   "id": "safe_drainage",
+   "probability": 0.0009,
+   "score": -1.0,
+   "title": "Water drains safely through the debris"
+  },
+  {
+   "id": "dam_holds",
+   "probability": 0.0009,
+   "score": -1.0,
+   "title": "Natural dam forms and holds"
+  },
+  {
+   "id": "no_further_event",
+   "probability": 0.0005,
+   "score": -1.5,
+   "title": "Nothing further happens"
+  }
+ ],
+ "model_round": {
+  "agreement": false,
+  "errors": [],
+  "model": "muse-spark-1.2-contributor",
+  "reason": null,
+  "request_hash": "87d243167ddb4dd51a22612e0cbcc77a76f7a124e15e10449242c46b5ec80928",
+  "status": "cassette"
+ },
+ "prediction": "nepal_cascade_demo",
+ "probability_semantics": "support strength from pre-cutoff evidence only; NOT calibrated frequency",
+ "prompt_audit": {
+  "forbidden_tokens_checked": 88,
+  "prompt_sha256": "7fd2046e952b0fa2440554e200ec186326fb56cafbfec74ee9df97b5c84a1eb5",
+  "violations": []
+ },
+ "verdict": "Pre-cutoff evidence most supports 'Impoundment grows, then the dam bursts' (support 94%). Probabilities are support strengths, not forecasts."
+}

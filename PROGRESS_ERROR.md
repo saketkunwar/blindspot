@@ -184,3 +184,86 @@ annotated entities before the text scan, not by weakening the rule.
 - `[hardened]` Full run G1–G11 ALL PASS, 33/33 green, numeric-aware G3 clean
   over the new `agents/` code with nothing to waive. The seed cassettes rode
   the normal manifest flow (48 files, `manifest ok`).
+
+## Demo — Nepal cascade autoinsight
+
+Top finding: the honest density fix mattered — the first upstream/downstream
+density ratio came out 313269x because region areas were feature areas, not
+ground areas. A plain eyeball caught it; the frozen number is now a sane
+1.06x, and burst support comes from the cluster hit plus channel adjacency,
+not from a bug.
+
+- `[plain]` Prompt-anonymity check initially allowed counts freely, which
+  risked year-like 4-digit evidence (2092) tripping a naive year denylist.
+  Fixed by deriving forbidden date strings from the inputs themselves
+  (exact strings + prefixes) instead of numeric ranges. Usefulness: medium;
+  precision beats paranoia in a gate.
+- `[plain]` Probabilities rounded to 4dp summed to 1.0001, failing the
+  plan's own "sums to 1" contract. Fixed in the artifact (largest-residual
+  correction on the top entry), not in the test tolerance. Usefulness:
+  medium; the output contract is the deliverable.
+- `[plain]` G12's hide-raw step failed cross-device (`/tmp` vs the media
+  mount). Fixed by hiding in place (`data/raw_hidden_for_g12`) with a
+  leftover guard and `finally` restore. Usefulness: low; plumbing.
+- `[hardened]` Full run G1–G12 ALL PASS, 43/43 green (37 old + 6 new),
+  `judge.sh` OK, `next build` clean with the new `/demo/nepal-cascade`
+  route. G12 proves the prediction reads no post-cutoff byte (hidden-raw
+  re-run byte-identical); the quarantine half proves curated inputs carry no
+  timestamps/stages and the verbatim prompt re-scans clean. The null
+  red-team test (quiet synthetic world ranks nothing-first) is the gate that
+  proves the outcome was not pre-loaded — the single most valuable check of
+  this demo.
+
+## Demo live call
+
+Top finding: the knowledge-clean model disagrees with our scorer — asked
+from anonymized evidence alone, 1.2-Contributor ranks safe drainage first
+while the symbolic ledger puts burst at 0.94. That disagreement is the
+autoinsight loop working as designed: a model with no memory of the event
+reasons cautiously, the ledger scores evidence mechanically, and the brief
+reports both instead of hiding the gap.
+
+- `[plain]` The user key failed on api.llama.com (empty model list, every
+  name invalid) — wrong endpoint, not a bad key. The user-pointed
+  dev.meta.ai docs gave the real one (api.meta.ai, Bearer MODEL_API_KEY).
+  Usefulness: high; docs beat guessing.
+- `[plain]` Live backend initially assumed a bespoke prompt-in/text-out
+  shape; the real API is OpenAI-style chat-completions. Rewrote to
+  messages-in/choices-out with a text fallback. Usefulness: medium.
+- `[hardened]` Step-0 probe empirically CLEAN (flood: "no knowledge";
+  self-stated cutoff Jan 4 2026, pre-flood) and G12 now replays the
+  committed live cassette, so the gate exercises the full neuro-symbolic
+  path offline and deterministically. Cassettes ride the normal manifest
+  flow (986 files, `manifest ok`).
+
+## Demo cassette collision (caught by an old test, not a new one)
+
+Top finding: the pre-existing `test_seed_cassettes_loadable` failed the
+moment model cassettes landed in `data/cassettes/` — it assumes every
+cassette there is a SAM mask cassette. That is exactly the kind of
+cross-feature collision the durable suite exists for.
+
+- `[hardened]` The fix was separation, not test-weakening: model cassettes
+  live in `data/model_cassettes/` now, manifest re-pinned (986 files ok),
+  12/12 affected tests green, G12 still ALL PASS. Usefulness: high — it
+  proved the old tests guard the repo against the new code, not just the
+  other way round.
+
+## Setup round (three live rounds, one standing result)
+
+Top finding: the LLM can frame the study but not weight it. Given flood
+ontology + anonymized ledger, round 3 drafted the same six stories as the
+frozen rules with same-family weights — yet cluster weight 0.5 vs frozen
+2.0 puts burst 4th instead of 1st. Conviction, not vocabulary, is the human
+contribution. No gaming possible: all three rounds recorded, the two
+rejections (thin framing; abbreviated cites) kept as audit trail.
+
+- `[plain]` Round-2 draft validated against full ledger ids while the model
+  wrote short ones — 30+ cite errors, correctly rejected. One instruction
+  line fixed it. Usefulness: high; format discipline is load-bearing.
+- `[plain]` `null_test` first checked a hardcoded `no_further_event` id the
+  draft never uses. Fixed to detect the quiet story by id/title keywords.
+  Usefulness: medium; the harness must meet drafts on their own terms.
+- `[hardened]` G1–G12 ALL PASS (989 files), 5 new offline setup tests
+  green. The setup prompt re-uses the ledger-token audit; no GT strings in
+  the new agents code (G3 clean).

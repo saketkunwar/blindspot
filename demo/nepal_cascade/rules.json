@@ -1,0 +1,145 @@
+{
+ "caution_prior": {
+  "mechanism": "no_further_event",
+  "rationale": "Absence of post-cutoff evidence favors restraint: with only a pre-cutoff snapshot, the pipeline must earn an alarming ranking from positive evidence, not from the absence of contradiction.",
+  "weight": 0.5
+ },
+ "cluster_rule": {
+  "max_distance_m": 500,
+  "min_features": 8,
+  "rationale": "A debris-cascade lead is a spatial concentration of fresh damage along one tributary reach, not scattered valley-wide damage. Thresholds are round investigative values chosen before the run; the rule is applied once and its hit/miss reported as-is.",
+  "target_property": "name",
+  "target_value": "Chilime Khola"
+ },
+ "cutoff": {
+  "description": "Prediction world ends at the earliest snapshot boundary found in the temporal cascade file (derived from the data at curation time, never typed into prediction code). Everything after that boundary is ground truth and is unreadable from the prediction path.",
+  "label": "pre-T1"
+ },
+ "facts": {
+  "F1_total_pre_cutoff_damage": {
+   "description": "Count of destroyed features dated at or before the cutoff.",
+   "weight": 1.0
+  },
+  "F2_upstream_share": {
+   "description": "Share of pre-cutoff damage lying upstream of the flood centroid (neck rule: valley drains south, so upstream = north of centroid).",
+   "weight": 1.0
+  },
+  "F3_channel_adjacent_share": {
+   "description": "Share of pre-cutoff damage within channel-adjacent distance of mapped waterways.",
+   "weight": 1.0
+  },
+  "F4_cluster_hit": {
+   "description": "Whether the frozen tributary-cluster rule fires (single application).",
+   "weight": 2.0
+  },
+  "F5_upstream_density_ratio": {
+   "description": "Upstream damage density divided by downstream damage density.",
+   "weight": 1.0
+  },
+  "F6_extent_context": {
+   "description": "Static observed flood extent area (context only: the outline is dated to the first flood and carries no time signal).",
+   "weight": 0.25
+  },
+  "F7_target_reach_share": {
+   "description": "Share of pre-cutoff damage within cluster distance of the target tributary reach.",
+   "weight": 1.5
+  },
+  "F8_inputs_audit_clean": {
+   "description": "Procedural fact: every prediction input byte is pinned to a manifest entry at or before the cutoff; no post-cutoff byte was read.",
+   "weight": 0.0
+  }
+ },
+ "mechanisms": [
+  {
+   "id": "safe_drainage",
+   "opposes": [
+    "F4_cluster_hit"
+   ],
+   "prior": 1.0,
+   "supports": [
+    "F8_inputs_audit_clean"
+   ],
+   "title": "Water drains safely through the debris"
+  },
+  {
+   "id": "dam_holds",
+   "opposes": [
+    "F4_cluster_hit",
+    "F5_upstream_density_ratio"
+   ],
+   "prior": 1.0,
+   "supports": [
+    "F2_upstream_share"
+   ],
+   "title": "Natural dam forms and holds"
+  },
+  {
+   "id": "impoundment_then_burst",
+   "opposes": [],
+   "prior": 1.0,
+   "supports": [
+    "F2_upstream_share",
+    "F3_channel_adjacent_share",
+    "F4_cluster_hit",
+    "F5_upstream_density_ratio",
+    "F7_target_reach_share"
+   ],
+   "title": "Impoundment grows, then the dam bursts"
+  },
+  {
+   "id": "upstream_slope_failure_elsewhere",
+   "opposes": [
+    "F7_target_reach_share"
+   ],
+   "prior": 1.0,
+   "supports": [
+    "F1_total_pre_cutoff_damage",
+    "F3_channel_adjacent_share"
+   ],
+   "title": "New slope failure on a different reach"
+  },
+  {
+   "id": "downstream_only_flooding",
+   "opposes": [
+    "F2_upstream_share"
+   ],
+   "prior": 1.0,
+   "supports": [
+    "F3_channel_adjacent_share",
+    "F6_extent_context"
+   ],
+   "title": "Flooding continues downstream only"
+  },
+  {
+   "id": "no_further_event",
+   "opposes": [
+    "F4_cluster_hit",
+    "F1_total_pre_cutoff_damage"
+   ],
+   "prior": 1.0,
+   "supports": [
+    "F8_inputs_audit_clean"
+   ],
+   "title": "Nothing further happens"
+  }
+ ],
+ "meta": {
+  "frozen": "Fill in date + commit when the insight run is executed. After that moment, changing any value requires a new tag and a full re-run.",
+  "note": "FROZEN BEFORE THE INSIGHT RUN. Mechanism set, weights, and the cluster rule are fixed here, reviewed, and committed before agents/autoinsight.py ever runs on the demo inputs. Scores normalize to support strength (how strongly the pre-cutoff evidence supports each story), NOT calibrated frequency. The set is open by construction: no_further_event carries real prior weight plus the documented caution prior, and a run in which it cannot win is a failed run by definition."
+ },
+ "scoring": {
+  "method": "score(m) = prior(m) + caution_prior(m) + sum(weight(f) for f in supports(m) if active(f)) - sum(weight(f) for f in opposes(m) if active(f)); probabilities = softmax(scores), reported as support strength, not calibrated frequency",
+  "softmax": true
+ },
+ "activation": {
+  "F1_total_pre_cutoff_damage": "count > 0",
+  "F2_upstream_share": "share > 0.5",
+  "F3_channel_adjacent_share": "share > 0.05",
+  "F4_cluster_hit": "hit is true",
+  "F5_upstream_density_ratio": "ratio > 1",
+  "F6_extent_context": "area_m2 > 0 (context only, always active)",
+  "F7_target_reach_share": "share > 0.05",
+  "F8_inputs_audit_clean": "audit verifies (always active once verified)"
+ },
+ "channel_adjacent_m": 250
+}
