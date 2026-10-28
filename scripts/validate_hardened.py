@@ -173,7 +173,25 @@ def g11(outs):
         bad.append("no fire scenario input reported")
     else:
         sys.path.insert(0, str(ROOT / "pipelines"))
-        from loader import parse_firms_detections
+        from loader import firms_tag, parse_firms_detections
+        tl_sel = json.loads((ROOT / "data/synthetic/operator_timeline.json").read_text())
+        site = str(tl_sel.get("site", ""))
+        window = {iv for p in tl_sel["phases"] + [tl_sel["claim"]] for iv in (p["start"], p["end"])}
+        scored = []
+        for path in sorted((ROOT / "data/fire_kalimantan").glob("*.json")):
+            try:
+                obj = json.loads(path.read_text())
+                ds = parse_firms_detections(obj)
+            except Exception:
+                continue
+            scored.append((site.lower() in firms_tag(obj).lower(),
+                           sum(1 for d, _, _ in ds if d in window), len(ds),
+                           str(path.relative_to(ROOT / "data"))))
+        if not scored:
+            bad.append("no readable FIRMS files for selection check")
+        elif sorted(scored, key=lambda s: (s[0], s[1], s[2], s[3]))[-1][3] != scen["file"]:
+            bad.append(f"scenario file {scen['file']} != recomputed selection; "
+                       "the pipeline may be reading the wrong file")
         dets = parse_firms_detections(json.loads((ROOT / "data" / scen["file"]).read_text()))
         if sum(sum(c["counts"].values()) for c in fire["cells"]) != len(dets):
             bad.append("cell counts do not sum to input detections")

@@ -1,0 +1,39 @@
+{
+ "request": {
+  "image": "fire_kalimantan/sample chip",
+  "prompt": "active fire front",
+  "model": "sam-3.1"
+ },
+ "response": {
+  "masks": [
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       112.4,
+       -3.0
+      ],
+      [
+       112.6,
+       -3.0
+      ],
+      [
+       112.6,
+       -2.8
+      ],
+      [
+       112.4,
+       -2.8
+      ],
+      [
+       112.4,
+       -3.0
+      ]
+     ]
+    ]
+   }
+  ],
+  "recorded_at": "2026-10-28T00:00:00+00:00"
+ }
+}

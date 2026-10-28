@@ -2,7 +2,19 @@
  "cassettes/.gitkeep": {
   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "kind": "synthetic",
-  "source_url": "recorded Meta API cassettes",
+  "source_url": "recorded SAM 3.1 cassette fixture",
+  "license": "project synthetic"
+ },
+ "cassettes/5420c435bfd3839cdcf447adf0df41eb6581f9435ef2ca2747702efcc944964d.json": {
+  "sha256": "c0b986e040855d5808ad8f88721b91a79cde15bf739fcb9f97eaf0b8673cfef1",
+  "kind": "synthetic",
+  "source_url": "recorded SAM 3.1 cassette fixture",
+  "license": "project synthetic"
+ },
+ "cassettes/65a6608719bfef43c1a6e3ee483c989c41a97f4ad2890485fd557c39e42bc8b7.json": {
+  "sha256": "b2b9fa67bb818208e23888eadea2e7f6d4224cf5fe9d3bcf913c8fb98b4f9627",
+  "kind": "synthetic",
+  "source_url": "recorded SAM 3.1 cassette fixture",
   "license": "project synthetic"
  },
  "fire_kalimantan/firms_amazon_sep2026.json": {

@@ -61,3 +61,10 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   against FIRMS `tag` (case-insensitive containment), fallback most
   detections inside the timeline window, then most overall. No filename or
   count is embedded in code.
+
+## Phase 4 cassette format (T-4.1)
+- `data/cassettes/<sha256(request)>.json` holds `{"request": {image, prompt,
+  model}, "response": {"masks": [GeoJSON Polygon/MultiPolygon...],
+  "recorded_at": ...}}`. Two seed fixtures ship (flood chip, fire chip).
+- Runtime cache lives in `results/sam_cache/` (outside the manifest);
+  `meta_usage.json` is a git-ignored run log at the repo root.

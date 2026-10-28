@@ -137,3 +137,36 @@ content-empty result passed everything. It is now closed by construction.
   (shifted dir built twice) — test bug, not product.
 - Cost of the hardening: full suite now 27 tests / ~70 s. Accepted; the
   slow tests are the perturbation runs, and they are the point.
+
+## Hardening follow-up — scenario selection check (G11)
+
+Top finding: G11 has now caught something first-hand — on a negative
+control. A doctored but self-consistent result (wrong FIRMS file, zero
+cells, otherwise valid) fails the new selection check with the exact
+message the original payload-date incident deserved.
+
+- `[hardened]` G11 recomputes the file-selection rule (timeline site ↔ tag,
+  fallback most-in-window, then most overall) and rejects any reported
+  scenario file that does not match. Verified both directions in one run:
+  real outputs ALL PASS, doctored wrong-file output FAILs on selection
+  (plus the verdict recompute as second witness).
+- Honest scope note: this checks the *rule*, not the *world* — if the data
+  dir itself contained the wrong files, all gates would still agree with
+  each other. That final mile remains human judgment (and the manifest).
+
+## Phase 4 — Meta stack
+
+Top finding: the gate's number rule initially criminalised entity ids —
+digits inside `bridges:7` read as unverified measurements. Fixed by masking
+annotated entities before the text scan, not by weakening the rule.
+
+- `[plain]` `shapely.mapping` does not exist (same import slip as Phase 2,
+  same one-line fix). Usefulness: low; notable only as a repeat — the Phase 2
+  entry already paid for this lesson once.
+- `[plain]` Entity-masking fix above, plus a test that asserted a filtering
+  policy the extractor deliberately lacks (harvest everything, let the gate
+  judge). Usefulness: medium; it pinned down the harvest-vs-judge separation
+  that the whole stack relies on.
+- `[hardened]` Full run G1–G11 ALL PASS, 33/33 green, numeric-aware G3 clean
+  over the new `agents/` code with nothing to waive. The seed cassettes rode
+  the normal manifest flow (48 files, `manifest ok`).

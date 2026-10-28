@@ -376,12 +376,75 @@ identically (probe evidence above); input point order cannot leak through
   differ from the pitch's illustrative sequences — data plus frozen rule win
   (those expectations are soft).
 
-## Phase 4 — Meta stack (upcoming)
+## Phase 4 — Meta stack
 
-`agents/`: T-4.1 SAM 3.1 via Meta Model API with cassette cache +
-`meta_usage.json`; T-4.2 three schema-validated Muse roles; T-4.3 default-deny
-verification gate. Docs to add: cache key scheme, role schemas, gate
-allow/deny semantics with examples.
+Uncommitted pending review. `agents/` holds perception, abduction, and the
+default-deny gate (T-4.1–T-4.3). No live model is called anywhere: every role
+is deterministic, schema-validated, and tested, with the same interfaces a
+model-backed version would satisfy.
+
+### T-4.1 Perception (`agents/sam_perception.py`)
+
+`perceive(image_ref, prompt)` serves SAM 3.1 masks offline-first: disk cache
+(`results/sam_cache/<sha256>.json`, outside the manifest) → recorded
+cassette (`data/cassettes/<sha256>.json`, manifested as synthetic) → loud
+`CassetteMiss` (never an invented mask). The cache key is the SHA-256 of the
+canonical request JSON; each cache entry and the two seed cassettes carry
+timestamps. Every call — hit or miss — appends `{ts, request_hash, model,
+hit, source, n_polygons}` to `meta_usage.json` (git-ignored by design, as a
+run log, not a deliverable). Masks are GeoJSON polygons returned as Shapely
+geometries.
+
+### T-4.2 Abductor (`agents/muse_abductor.py`, `agents/ledger.py`)
+
+Three single-turn, Pydantic-validated roles with no loop or hidden state:
+`extract_claims` harvests per-sentence `Claim`s (entities, RCC-8 codes,
+numbers) from prose; `write_rivals` frames the canonical rival set per
+scenario (fire: extinction/smoldering/boundary-hopping/evasion; flood:
+free_drainage/impoundment — predicates live in the auditor, this role only
+names what to test); `write_brief` composes annotated `Statement`s whose
+every number, relation, and entity the gate can check. `build_ledger`
+collects the verified fact set from both pipeline outputs plus the timeline:
+observed RCC-8/Allen/rectangle labels, all walked numbers, and every feature,
+cell, claim, site, scenario, and layer id.
+
+### T-4.3 Verification gate (`agents/verification_gate.py`)
+
+Default deny. `check(brief, ledger, mode)` validates each statement's
+annotations against the ledger, then scans the masked text (annotated entity
+ids blanked out, so digits inside `bridges:7` or `10.0,0.0` are not claims)
+for RCC-8 codes, quoted Allen codes, and numbers — every text number must be
+annotated and ledger-true. Strip mode drops offending statements with
+reasons; block mode rejects the brief on the first violation. An empty ledger
+verifies nothing, so all numeric statements strip out and the brief comes
+back number-free, per spec. ISO dates and bare years are carved out of the
+number rule (documented).
+
+### Verification evidence (observed)
+
+- `tests/properties/test_meta_stack.py`: 6 passed — cassette hit → cache
+  hit → polygons, miss raises and still logs, seeds loadable and
+  hash-addressed, roles schema-validated, verified statement kept while an
+  invented entity/relation/number/unannotated-number statement is stripped
+  (4 violations) and blocked, empty ledger yields an empty brief.
+- Hardened: full run G1–G11 ALL PASS; G3 (now numeric-aware) clean over
+  `agents/`; 33/33 durable tests green.
+- Incidents: `shapely.mapping` does not exist (fixed import); digits inside
+  entity ids tripped the number rule (fixed by entity masking, not by
+  weakening the rule); extractor test initially asserted a filtering policy
+  the extractor deliberately does not have (harvest vs judge separation
+  clarified). All in `PROGRESS_ERROR.md`.
+
+### Limitations
+
+- No live SAM transport exists in this build; a present API key is logged but
+  cannot conjure a transport — a miss is still a miss. Wiring a real endpoint
+  later changes only the last branch of `perceive`.
+- The abductor roles are deterministic framings, not a language model; they
+  satisfy the single-turn schema-validated contract but do not generate free
+  prose.
+- The gate checks annotated ids and codes, not open-vocabulary name
+  resolution ("the big bridge" is unverifiable by design).
 
 ## Phase 5 — Serving and UI (upcoming)
 

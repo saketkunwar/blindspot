@@ -1,0 +1,39 @@
+{
+ "request": {
+  "image": "flood_nepal/flood_extent chip",
+  "prompt": "flood water extent",
+  "model": "sam-3.1"
+ },
+ "response": {
+  "masks": [
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       84.5,
+       27.8
+      ],
+      [
+       84.7,
+       27.8
+      ],
+      [
+       84.7,
+       27.9
+      ],
+      [
+       84.5,
+       27.9
+      ],
+      [
+       84.5,
+       27.8
+      ]
+     ]
+    ]
+   }
+  ],
+  "recorded_at": "2026-10-28T00:00:00+00:00"
+ }
+}
