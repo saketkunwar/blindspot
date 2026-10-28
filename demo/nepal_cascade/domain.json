@@ -1,0 +1,45 @@
+{
+  "domain_id": "river_valley_flood",
+  "ontology": "Domain: river-valley flood damage (this is a flood study, not fire, not earthquake \u2014 frame accordingly). Processes such surveys consider include: water draining safely through debris; debris forming a dam that holds; water ponding behind debris and later releasing suddenly; new slope failures on other reaches; continued flooding downstream only; or nothing further happening. These are vocabulary, not answers: you may adopt, adapt, or reject any of them, but your set must stay open and include a nothing-happens story with real weight. Ground every weight in the ledger below, not in the vocabulary above.",
+  "prompt_framing": "Context: a river-valley damage survey, one pre-cutoff snapshot, anonymous reaches (Alpha upstream, Beta downstream), one anonymized tributary. Below is the evidence ledger (pre-cutoff aggregates only).",
+  "cutoff": {
+    "rule": "earliest_end",
+    "time_field": "destruction_interval_end"
+  },
+  "inputs": [
+    {
+      "role": "damage",
+      "path": "inputs/pre_t1_features.geojson",
+      "kind": "featurecollection"
+    },
+    {
+      "role": "network",
+      "path": "inputs/waterways.geojson",
+      "kind": "featurecollection"
+    },
+    {
+      "role": "boundary",
+      "path": "inputs/extent.json",
+      "kind": "extent"
+    }
+  ],
+  "target": {
+    "role": "network",
+    "name_field": "name",
+    "values_from": "setup"
+  },
+  "geometry": {
+    "channel_adjacent_m": 250,
+    "cluster": {
+      "distance_m": 500,
+      "min_features": 8
+    }
+  },
+  "quiet_keywords": [
+    "nothing",
+    "quiescen",
+    "null",
+    "baseline",
+    "no_further"
+  ]
+}

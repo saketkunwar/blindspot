@@ -267,3 +267,59 @@ rejections (thin framing; abbreviated cites) kept as audit trail.
 - `[hardened]` G1–G12 ALL PASS (989 files), 5 new offline setup tests
   green. The setup prompt re-uses the ledger-token audit; no GT strings in
   the new agents code (G3 clean).
+
+## P0 flexible core (Steps 0–4; execution-verification pending)
+
+Top finding: the plan's own execution exposed the environment boundary —
+Steps 0–1 landed via the agent workflow (baseline freeze, fact catalog +
+parity tests), Step 2's extraction landed on disk
+(`engine/ledger.py`, thin `agents/autoinsight.py` CLI), and Steps 3–4
+(Context Card, generic setup, freeze script) were finished inline. The
+Step-2 agent stalled at the verification stage (long run, zero output
+files), and this session cannot execute shell commands, so no test, gate,
+or byte-diff has been observed in-session. Everything below is
+static-verified only (imports resolve, names match across call sites,
+rounding kept off activation boundaries); execution remains mandatory
+before any done claim.
+
+- `[plain]` Static review of the extraction: moved `compute_ledger`
+  preserves fact texts/flags; catalog op rounding matches the frozen
+  values with margin (F2 0.515, F3 0.728, F5 1.061, F7 0.0163 — none near
+  an activation edge). Usefulness: medium; raises confidence, proves
+  nothing.
+- `[plain]` New surface: `agents/context_card.py` (redacted inventory +
+  fail-closed on date strings), generic `agents/setup_study.py` (all
+  domain words from `domain.json`, incl. new `prompt_framing`), and
+  `scripts/freeze_study.py` (copy-never-edit + hash pins + human tag).
+  Usefulness: pending execution.
+- `[hardened]` NOT YET RUN — required before close: `pytest`
+  `tests/properties/test_facts.py` `test_context_card.py`
+  `test_setup_study.py` `test_demo_nepal.py`; `python -m
+  agents.autoinsight --model-round on --out /tmp/p0check.json` + byte-diff
+  vs `demo/nepal_cascade/output/brief.json`; full
+  `scripts/validate_hardened.py` + `bash scripts/judge.sh`.
+
+## P0 verification executed (2026-10-28)
+
+Top finding: the P0 code was correct except one over-strict guard — the
+Context Card aborted on a provenance date in the waterway metadata instead
+of redacting it. One small fix, then every pending check went green.
+
+- `[plain]` `test_context_card.py` 3/3 failed: `build_card` raised
+  `SystemExit` on `'2015-05-03'` from a waterway `source` tag
+  (`Digital Globe,2015-05-03`). Root cause: curation copies waterways
+  verbatim (correct — it is reference geometry, not a time signal) while
+  the card treated any ISO date as contamination. Fix: redact ISO
+  substrings in value labels to `[date]`; guard now checks the redacted
+  card. Usefulness: high; the plan (Step 3) requires redaction, not a
+  crash, and the tests enforce exactly that.
+- `[hardened]` P0 set 25/25 green (`test_facts`, `test_context_card`,
+  `test_setup_study`, `test_demo_nepal`).
+- `[hardened]` Step-2 parity: `autoinsight --model-round on` output
+  byte-identical to `demo/nepal_cascade/output/brief.json`
+  (top=impoundment_then_burst p=0.9426). The refactor preserves the
+  frozen baseline.
+- `[hardened]` Full `validate_hardened.py` ALL PASS (G1–G12);
+  `judge.sh` → JUDGE OK, 62 passed. Steps 0–4 execution-verified;
+  remaining P0 work is Steps 5–7 (freeze flow already on disk,
+  Demo 2 fire study, gates G13/G3b/G14/G15).

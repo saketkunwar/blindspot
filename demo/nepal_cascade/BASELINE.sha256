@@ -1,0 +1,12 @@
+# Baseline freeze — flood Study 1 (demo/nepal_cascade), Step 0 of docs/FLEX_NS_PLAN.md
+# Frozen 2026-10-28T11:51:00Z. Verify with: (cd demo/nepal_cascade && sha256sum -c BASELINE.sha256)
+d938e1850f563a02884e85d32dc03b25865955652e6cd1f54654aa140459dc84  rules.json
+00a12ecacf80948eb0d46b4dce1800bfc5e98f320694e2e3f245b0a483485deb  output/brief.json
+665f2b3535e39c8fa032a1a41afa88ecf6176fe35b184919f487275c8a3b4e56  output/prompt-665f2b3535e39c8f.txt
+7fd2046e952b0fa2440554e200ec186326fb56cafbfec74ee9df97b5c84a1eb5  output/prompt-7fd2046e952b0fa2.txt
+732235118baa11aaa380f1295122108ee6e4d499f711c7912352d81257840e59  output/setup-prompt-732235118baa11aa.txt
+d761621bff9af8406077abbe04d5e39ce06fe1f5f88bbf1336e6a481735ae239  output/setup-prompt-d761621bff9af840.txt
+eaf2d3dec99a5a871b39d1b353dc14d08d7cc0ede5f05096398faa4daeb75d8f  output/setup-prompt-eaf2d3dec99a5a87.txt
+dabe9e8afd5490e0fba38d23aac509e2c3c06695e39ac71603932816acb782b3  output/setup-report-a1528a49715eb3be.json
+58dd9bc35f224de8df96fdb8a3906e73d4061484c3a0c90355701c464c72e9ac  output/setup-report-ac2c76d1396e2b18.json
+b1c044ed8e4779f2cfc70030cf8971f2927d146f3a047ee2cbe5a85a546a5828  output/setup-report-b4da565cea37531b.json

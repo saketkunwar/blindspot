@@ -111,3 +111,8 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   Cluster threshold 34 likely anchored on the ledger's reported count
   (frozen-rule parameter leak into setup input, not GT leak).
 - Standing: LLM frames vocabulary, human sets conviction, kernel computes.
+
+## P0 verification fix (2026-10-28)
+- `demo/nepal_cascade/inputs/waterways.geojson` carries a provenance date in one `source` value (`Digital Globe,2015-05-03` on `way/343295489`). Curation copies waterways verbatim, so the Context Card inventory saw an ISO date.
+- `agents/context_card.py::build_card` treated any ISO date in the inventory as contamination and aborted (`SystemExit`), failing 3/3 card tests. Per `docs/FLEX_NS_PLAN.md` Step 3 the card must redact dates from prompt text, not crash on provenance metadata.
+- Fix: redact ISO substrings in value labels to `[date]` before building the card; fail-closed guard now checks the redacted card. `card_text` verified date-free by the durable tests.
