@@ -154,6 +154,20 @@ message the original payload-date incident deserved.
   dir itself contained the wrong files, all gates would still agree with
   each other. That final mile remains human judgment (and the manifest).
 
+## Phase 5 — Serving and UI
+
+Top finding: nothing fought back — the first full-stack phase with no
+incidents, which itself says something about the harness: by Phase 5 the
+gates and suite catch integration mistakes before they reach the report.
+
+- `[plain]` One self-caught sloppy assertion (a `startswith` prefix check
+  where an exact scenario match belonged) fixed before the first run.
+  Usefulness: low; pride, mostly.
+- `[hardened]` Full run G1–G11 ALL PASS, 37/37 green, numeric-aware G3 clean
+  over `api/` + `web/`, production `next build` compiling clean. The API's
+  honesty cases (400 on bad mode, 404 on absent evidence) are tested, not
+  just coded.
+
 ## Phase 4 — Meta stack
 
 Top finding: the gate's number rule initially criminalised entity ids —

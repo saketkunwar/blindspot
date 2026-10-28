@@ -446,8 +446,55 @@ number rule (documented).
 - The gate checks annotated ids and codes, not open-vocabulary name
   resolution ("the big bridge" is unverifiable by design).
 
-## Phase 5 — Serving and UI (upcoming)
+## Phase 5 — Serving and UI
 
-`api/server.py` (FastAPI, live/cached labels, `evidence.json`) and `web/`
-(Next.js + MapLibre three-pane console). Docs to add: endpoint table with
-example responses, console pane map, live-vs-cached semantics.
+Uncommitted pending review. `api/server.py` + `web/` console (T-5.1, T-5.2).
+The full build is now complete: five phases, G1–G11 ALL PASS, 37/37 durable
+tests green, production `next build` compiling clean.
+
+### T-5.1 API (`api/server.py`)
+
+FastAPI with four endpoints: `/health`, `/api/results/flood`,
+`/api/results/fire`, `/api/evidence`. Every response carries its mode label:
+`cached` serves `results/*.json` as produced, `live` re-runs the pipeline
+into a temp dir on the request (unknown mode → 400). Evidence is
+judge-produced, not built here: the endpoint serves it when present and
+returns an honest 404 otherwise — never invented. Root is `BLINDSPOT_ROOT`
+(default `.`), read per request so tests can point it anywhere.
+
+### T-5.2 Console (`web/`)
+
+Next.js 14 + MapLibre three-pane console: scenarios/bands/features/claims
+(left), map (centre, may_be/must_be overlays with runtime-fit bounds),
+snapshot/claim detail (right). All names, dates, and geometries render from
+API responses; the bundle contains no scenario literals (numeric-aware G3
+scans `web/`, clean). Styling follows the taste preflight: system font
+stack, flat panels, one restrained accent, no gradients or glow.
+
+### Verification evidence (observed)
+
+- `tests/properties/test_serving.py`: 4 passed — health/index, cached mode
+  labels and contract shapes, live flood recompute matching cached ids and
+  Act 3 status, bad-mode rejection, evidence 404 honesty.
+- `npm run build`: compiled successfully, static prerender 4/4 routes.
+- Hardened: full run G1–G11 ALL PASS; 37/37 durable tests green (~100 s).
+
+### Start commands (not currently running)
+
+```sh
+uvicorn api.server:app --port 8000     # API
+cd web && npm install && npm run dev   # console at http://localhost:3000
+```
+
+Set `NEXT_PUBLIC_API_URL` to point the console at a non-default API.
+Neither process is started by this build; both commands were exercised
+(API under TestClient incl. a live recompute, console via production
+build), but no server is left running.
+
+### Limitations
+
+- Live recompute costs a pipeline run per request (tens of seconds for
+  fire); there is no auth, rate limiting, or result cache beyond
+  `--fast-cache` semantics at the CLI layer.
+- Map tiles stream from the network at view time; offline viewing shows
+  panels and detail but no basemap.
