@@ -25,6 +25,13 @@ Make the study pipeline domain-generic so Demo 2 (fire) runs with zero
 
 Replace the demo shell around the proven core — do not stretch it.
 
+0. **Docs consolidation (first, half a day).** Index + merge + retire:
+   one entry point (`README` → `USAGE_DEMO.md` → study insights), merge
+   the sketch sections that [FLEX_NS_PLAN.md](./FLEX_NS_PLAN.md) already
+   reviewed into it, retire anything superseded with a one-line pointer
+   left behind. Nothing rewritten from scratch.
+   **Gate:** a new reader reaches replay instructions in two clicks from
+   the README; no two docs own the same section.
 1. **API shape:** versioned read API (`/v1/studies/{id}/brief`, `/geo`,
    `/gt`) over frozen study artifacts; live/cached mode labels preserved;
    OpenAPI schema checked into repo; contract tests pinned.
