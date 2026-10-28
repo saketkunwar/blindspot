@@ -52,3 +52,12 @@ Raw sources kept untouched under `data/nepflood_cascade/` and listed in the mani
 
 ## Spec-literal hygiene
 Builder code must never contain expected counts/distances/cell ids from any pitch text. Enforced by gate G-3 (see `docs/PLAN.md`, `scripts/validate_hardened.py`).
+
+## Phase 3 loader findings (T-3.1)
+- Layout A detection dates live in `payload.acq_date` (top level has only
+  `valid_time`). Any external harness that shifts dates must shift the
+  payload field; top-level date keys do not exist on these records.
+- Scenario-file selection is data-driven: timeline `site` string matched
+  against FIRMS `tag` (case-insensitive containment), fallback most
+  detections inside the timeline window, then most overall. No filename or
+  count is embedded in code.

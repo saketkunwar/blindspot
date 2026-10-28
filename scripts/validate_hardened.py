@@ -43,15 +43,54 @@ def g2():
         and 0 < cfg["fire"]["evasion_ha_per_cell"] and cfg["grid"]["cell_deg"] > 0
     gate("G2", ok, f"nulls={nulls}" if nulls else "all values decided, ranges sane")
 
+def _denylist():
+    """Literals that live in config/data and must never appear in builder code.
+
+    Derived from the live files, not written by hand: distinctive config
+    floats (integers and 0.5 are excluded -- unenforceable across languages
+    without false positives), long config strings, and every date/name/id in
+    the operator timeline. Integers like 150/48/50 are deliberately NOT
+    listed: they collide with ordinary arithmetic; the floats, dates, and
+    names are identifying and have no legitimate code use.
+    """
+    import yaml
+    lits = []
+    cfg = yaml.safe_load((ROOT / "config/preregistered.yaml").read_text())
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values(): walk(v)
+        elif isinstance(o, float) and not o.is_integer() and o != 0.5:
+            lits.append(repr(o))
+        elif isinstance(o, str) and len(o) > 20:
+            lits.append(o)
+    walk(cfg)
+    try:
+        tl = json.loads((ROOT / "data/synthetic/operator_timeline.json").read_text())
+        for iv in tl["phases"] + [tl["claim"]]:
+            lits += [iv["start"], iv["end"], iv["id"]]
+        lits.append(str(tl.get("site", "")))
+    except (OSError, KeyError):
+        pass
+    return sorted({s for s in lits if s})
+
+
 def g3():
     # No builder code may embed scenario answers: cell-id literals, claim dates as constants,
-    # or single-file selection by directory order. Config values belong in yaml, not code.
-    pat = re.compile(r'"\d{3}\.\d,-?\d\.\d"|\bcessation_claim\b.*2026-09|firms_kalimantan_c')
+    # single-file selection by directory order, or config/data literals. Config values belong in yaml, not code.
+    pats = [r'"\d{3}\.\d,-?\d\.\d"', r"firms_kalimantan_c"]
+    pats += [r"(?<![\w.])" + re.escape(s) + r"(?![\w.])" for s in _denylist()]
+    pat = re.compile("|".join(pats))
     hits = []
-    for base in ("engine", "pipelines", "agents", "api"):
-        for p in (ROOT/base).rglob("*.py"):
-            if pat.search(p.read_text(errors="ignore")): hits.append(str(p.relative_to(ROOT)))
-    gate("G3", not hits, f"hits={hits}" if hits else "no hardcoded scenario literals")
+    for base in ("engine", "pipelines", "agents", "api", "web"):
+        for p in (ROOT / base).rglob("*"):
+            if not p.is_file() or p.suffix not in (".py", ".ts", ".tsx", ".js", ".json", ".yaml", ".yml"):
+                continue
+            if "node_modules" in p.parts or ".next" in p.parts:
+                continue
+            text = p.read_text(errors="ignore")
+            found = pat.search(text)
+            if found: hits.append(f"{p.relative_to(ROOT)}: {found.group()[:40]}")
+    gate("G3", not hits, f"hits={hits}" if hits else f"no hardcoded literals ({len(_denylist())} derived)")
 
 def g8():
     ok, msgs = True, []
@@ -105,6 +144,51 @@ def g5g6(tmp):
     for c in outs["fire"]["cells"]:
         if set(c["counts"]) != set(outs["fire"]["dates"]): ok = False
     gate("G6", ok, "contract keys, inverse RCC-8, bands, cell/date coverage, missing_input honesty")
+    g11(outs)
+
+
+def g11(outs):
+    """Content sanity: results must be consistent with the inputs, not merely
+    well-shaped. Catches the structurally-valid-but-empty failure mode."""
+    import re as _re
+    bad = []
+    flood, fire = outs["flood"], outs["fire"]
+    # flood: non-empty act1, unique well-formed ids, assets partition act1
+    feats = flood["act1"]["features"]
+    if not feats:
+        bad.append("act1 empty")
+    ids = [f["id"] for f in feats]
+    if len(set(ids)) != len(ids):
+        bad.append("duplicate act1 ids")
+    for f in feats:
+        if not _re.fullmatch(r"(bridges|hydropowers|helipads):\d+", f["id"]):
+            bad.append(f"bad id {f['id']}")
+    in_ids = {a["id"] for a in flood["act2"]["assets_in_may_be"]}
+    out_ids = {a["id"] for a in flood["act2"]["assets_outside"]}
+    if in_ids | out_ids != set(ids) or in_ids & out_ids:
+        bad.append("act2 assets do not partition act1")
+    # fire: counts sum to the reported input detections, verdicts recomputed
+    scen = next((e for e in fire["inputs"] if e["file"].startswith("fire_kalimantan")), None)
+    if scen is None:
+        bad.append("no fire scenario input reported")
+    else:
+        sys.path.insert(0, str(ROOT / "pipelines"))
+        from loader import parse_firms_detections
+        dets = parse_firms_detections(json.loads((ROOT / "data" / scen["file"]).read_text()))
+        if sum(sum(c["counts"].values()) for c in fire["cells"]) != len(dets):
+            bad.append("cell counts do not sum to input detections")
+        if dets and not fire["cells"]:
+            bad.append("detections present but no cells")
+        if sorted({d for d, _, _ in dets}) != fire["dates"]:
+            bad.append("dates do not match input detection days")
+        tl = json.loads((ROOT / "data/synthetic/operator_timeline.json").read_text())
+        claim = tl["claim"]
+        overlap = any(claim["start"] <= d < claim["end"] for d, _, _ in dets)
+        want = "falsified" if overlap else "not_falsified"
+        got = next((c["verdict"] for c in fire["claims"] if c["id"] == claim["id"]), None)
+        if got != want:
+            bad.append(f"claim verdict {got} != recomputed {want}")
+    gate("G11", not bad, f"content-vs-input consistent" if not bad else "; ".join(bad))
 
 def g4(tmp):
     # null config must fail non-zero; corrupted manifest must fail non-zero
@@ -119,7 +203,7 @@ def g7(tmp):
     # Shift flood +1.0 lon: snapshots must be invariant. (Fire shift covered by durable pytest.)
     sys.path.insert(0, str(ROOT/"tests/properties"))
     base = tmp/"b.json"; run_pipe("pipelines.flood_secondary_dam", "data", base)
-    gate("G7", base.exists(), "baseline for invariance (full shift check in tests/properties/test_pipeline_contract.py)")
+    gate("G7", base.exists(), "baseline ok (joint shift invariance in tests/properties/test_shift_invariance.py)")
 
 def g10():
     files = list((ROOT/"tests/properties").glob("test_*.py"))

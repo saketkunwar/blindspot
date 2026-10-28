@@ -297,14 +297,84 @@ along as its own hypothesis.
 - `triggered` for Detector B means evasion found, not claim falsified; the
   pipeline surfaces both separately.
 
-## Phase 3 — Pipelines (upcoming)
+## Phase 3 — Pipelines
 
-`pipelines/` + T-3.1 loader (manifest/hash, all FIRMS layouts, tag/bbox
-selection — the first phase that unlocks full gates G4–G7); T-3.2 flood Acts
-1–3 incl. `missing_input` honesty; T-3.3 fire grid/footprints/continuity/
-timeline/claim/detector B. Docs to add: loader layout findings, Act 2 band
-construction, footprint rule application, CLI contract table, full-gate and
-perturbation evidence (this is where G7 gets its first real workout).
+Uncommitted pending review. `pipelines/loader.py` + two CLIs. This phase
+unlocked the full hardened run for the first time: G1–G10 ALL PASS, 25/25
+durable tests green, plus a rigid-shift probe mirroring the perturbation
+design (all pass, worst float deviation 8.9e-10 at a 1e-6 bar).
+
+### T-3.1 Loader (`pipelines/loader.py`)
+
+`load_manifest` + `verify_path` raise `ManifestError` on unlisted files, hash
+mismatches, or bad kinds; every file a pipeline reads contributes a
+`{file, sha256, kind}` inputs entry. GeoJSON features parse to Shapely with
+the ingest tolerance applied once at ingestion (no-op at D-1 = 0; defined as
+coordinate snapping when non-zero). FIRMS parsing handles all observed
+layouts: Layout A dicts (`{lat, lon, valid_time, payload:{acq_date}}` — note
+the date lives in `payload`, a layout detail any shift harness must respect,
+see Limitations), Layout B bare lists (`latitude/longitude/acq_date`), and
+empty lists. Records merge `properties` with `payload` fallbacks, and output
+is sorted for determinism under point reordering.
+
+Scenario selection is data-driven, never by filename: the timeline's `site`
+string is matched against FIRMS `tag`s (the scenario file carries the site
+name); fallback is most detections inside the timeline window, then most
+overall. Documented here so the rule can be audited.
+
+### T-3.2 Flood (`pipelines/flood_secondary_dam.py`)
+
+Act 1 snapshots every bridge/hydropower/helipad against the flood extent
+(`<layer>:<index>` ids), `split_alert` = exact-RCC-8 vs MBR separation
+disagreement (INV-SPLIT). Act 2 builds MUST_BE/MAY_BE along the waterway
+union for `blind_window_hours` and lists assets in/out of MAY_BE (195/195 in
+with the frozen 172.8 km radius — honest consequence of D-5, not tuning).
+Act 3: the optional `barrier_lake.geojson` / `sar_anomaly_union.geojson` are
+absent, so `status: missing_input` with both listed, null union snapshot, and
+an untriggered Detector A whose evidence still reports the computed
+per-reach destroyed areas (t0/t1, D-6 zones, m2) — reported, not invented.
+Exit 0 throughout; exit 1 on manifest/IO failure, 2 on incomplete config.
+`--fast-cache` reuses the output only when recorded input hashes match.
+
+### T-3.3 Fire (`pipelines/fire_peat_evasion.py`)
+
+Floor-binned 0.5-degree cells (`"<lon>,<lat>"` SW-corner ids), zero-filled
+counts for all five dates (09-16 to 09-20), 30 cells, 6142 detections total —
+the anchor cell reproduces the filed total and day counts from the data
+itself. Footprints: per cell per day, union-find clusters over a spatial
+hash (link < 2x buffer), qualifying clusters (at least `min_detections`)
+touching the cell form the footprint; RCC-8 vs the cell polygon, DC when
+none qualifies. Continuity per consecutive date pair; all six ordered
+timeline relations (m and o where the pitch wording disputes them — endpoints
+win); claim verdict by Allen overlap (falsified: 846 detections on 09-20);
+Detector B from the auditor. Shift-invariance holds by construction: rigid
+date/coordinate shifts move cells, dates, relations, verdicts, and trigger
+identically (probe evidence above); input point order cannot leak through
+(sorted parse, sorted outputs).
+
+### Verification evidence (observed)
+
+- Full `validate_hardened.py`: G1–G10 ALL PASS, including first-ever G3/G4/G5/G6.
+- `pytest tests/properties/`: 25 passed (setup 4, kernel 12, auditor 6,
+  pipeline contract 3 — flood inverse/missing-input, fire coverage,
+  fire-shift, point-order).
+- `/tmp/shift_probe2.py` (throwaway, not committed): flood ids/snapshots at
+  1e-6, flood act3, fire cells/dates/claims/timeline/detector_b — ALL PASS.
+- Incidents: payload-date parse miss (Layout A dates live in `payload`;
+  caught by zero-cell output, fixed with merge fallback); probe strictness
+  (exact float equality too tight for Haversine — matched to the 1e-6 bar).
+
+### Limitations
+
+- FIRMS dates live in `payload.acq_date`; any external shift harness must
+  shift that field (not just top-level date keys) for the timeline-shift leg
+  to stay consistent — stated here so it can be adapted, not silently
+  assumed.
+- Act 2 MAY_BE radius (172.8 km) puts every asset inside; narrowing it needs
+  a config change post-`prereg`, i.e. a new tag and full re-run.
+- Footprint RCC-8 series follow the T-3.3 rule mechanically; several cells
+  differ from the pitch's illustrative sequences — data plus frozen rule win
+  (those expectations are soft).
 
 ## Phase 4 — Meta stack (upcoming)
 

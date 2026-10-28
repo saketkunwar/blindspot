@@ -88,3 +88,52 @@ not a review catch.
   G3 scan clean. Detector thresholds all flow from the passed-in `cfg`, so
   the no-hardcoded-answers gate holds for the new module with nothing to
   waive.
+
+## Phase 3 — Pipelines
+
+Top finding: the anchor cell reproduces the filed total and day counts from
+the data itself (1215 total, 233 on the anchor day) — the binning is exactly
+right, and the pitch numbers confirm the data rather than the other way
+round. The pipeline disagrees with the pitch only where the pitch is
+illustrative (footprint RCC-8 series, which are soft by design).
+
+- `[plain]` Layout A detection dates live in `payload.acq_date`, not
+  top-level — the first fire run produced 0 cells because the parser looked
+  only at top level. Caught immediately by the empty output, fixed with a
+  properties-plus-payload merge fallback. Usefulness: high; a silent empty
+  result would have passed every structural check while saying nothing.
+- `[plain]` The throwaway shift probe initially failed on exact float
+  equality (Haversine differs in the last ulp under translation). Matched to
+  the 1e-6 bar both sides use — all pass, worst deviation 8.9e-10.
+  Usefulness: medium; it proved the tolerance is load-bearing, not cosmetic.
+- `[hardened]` First full gate run: G1–G10 ALL PASS, 25/25 durable tests
+  green. G4 (null config exits 2), G5 (both CLIs exit 0), G6 (contract +
+  inverses + missing-input honesty) all green on real data for the first
+  time. The pipeline-contract tests — fail-closed since setup — finally
+  execute instead of erroring, which is itself the milestone.
+- `[hardened]` Caveat with a paper trail: external shift harnesses keyed on
+  top-level date fields will not move Layout A detection dates; the field to
+  shift (`payload.acq_date`) is now documented in QUESTIONS.md and
+  `docs/PHASES.md` so the harness can be adapted rather than silently
+  disagreeing.
+
+## Hardening pass (G11, numeric G3, committed joint-shift)
+
+Top finding: the gates had a vacuous-truth hole — a structurally valid but
+content-empty result passed everything. It is now closed by construction.
+
+- `[hardened]` New G11 (content-vs-input): fire cell counts must sum to the
+  reported FIRMS detections, dates must match input days, the claim verdict
+  is recomputed independently, flood assets must partition act1. The old
+  empty-output failure mode now fails G11 loudly instead of passing G6
+  quietly. Verified green on real data.
+- `[hardened]` G3 now derives its denylist from live config/data (13
+  literals: distinctive floats, long config strings, timeline dates/names)
+  instead of three hand-written patterns. Integers and 0.5 are deliberately
+  excluded as unenforceable — documented in the gate. Green with no hits.
+- `[plain]` Committed `test_shift_invariance.py`: the joint firms+timeline
+  shift that previously lived only in a throwaway probe is now a durable
+  gate-enforced test (G7 points at it). Caught one fixture bug on the way in
+  (shifted dir built twice) — test bug, not product.
+- Cost of the hardening: full suite now 27 tests / ~70 s. Accepted; the
+  slow tests are the perturbation runs, and they are the point.
