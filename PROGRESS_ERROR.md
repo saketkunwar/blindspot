@@ -66,3 +66,25 @@ could poison propagation; fixed and verified.
   correctly red/blocked until pipelines exist — that blocking itself is the
   hardened behavior working (a plain test run would just show errors; the
   gate says the phase is not done).
+
+## Phase 2 — Gap auditor
+
+Top finding: the module's riskiest requirement (hypotheses built from t0
+before t1 is read) is enforced by the function signature, not by discipline —
+`predict_a_rivals` has no t1 parameter, so leaking the future is a TypeError,
+not a review catch.
+
+- `[plain]` `shapely.mapping` does not exist (`shapely.geometry.mapping`
+  does) — import failed at test collection, before any assertion ran. Fix:
+  one-line import correction. Usefulness: low but instant; collection errors
+  are the cheapest failures available.
+- `[plain]` Two test-data bugs, not auditor bugs: non-lon/lat cell ids
+  (`"a"`) crashed the tenth-degree parser, and `"10.5"` vs `"10.0"` cells are
+  five grid steps apart, not adjacent, so the evasion component never formed.
+  Fix: realistic one-decimal adjacent ids. Usefulness: medium — it confirmed
+  the parser is strict (good: Phase 3 cell ids are always lon/lat) and that
+  4-connectivity is genuinely distance-sensitive.
+- `[hardened]` Setup gates still ALL PASS (22/22 runnable durable tests),
+  G3 scan clean. Detector thresholds all flow from the passed-in `cfg`, so
+  the no-hardcoded-answers gate holds for the new module with nothing to
+  waive.
