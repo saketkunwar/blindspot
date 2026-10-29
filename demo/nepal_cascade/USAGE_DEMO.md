@@ -103,3 +103,42 @@ the committed cassette as the frozen artifact.
 | `mode=live` 502s | Prediction crash — read `stderr` tail in the response; inputs dir must be intact |
 | G12 FAIL "differs from frozen brief" | Brief was regenerated (e.g. after a live call) — either re-freeze deliberately or restore `output/brief.json` and re-run |
 | `manifest ok` fails with unlisted files | New files under `data/` need `python3 scripts/make_manifest.py` + source fill (see [insights_flood.md](./insights_flood.md) §3.8) |
+
+### 7. Operator runbook — keys, cassettes, status (P3)
+
+**Keys travel via environment only.** `BLINDSPOT_LIVE=1` plus
+`META_MODEL_API_KEY` (endpoint override: `META_MODEL_API_URL`); the
+operator token for live API mode is `BLINDSPOT_OPERATOR_TOKEN`. No key
+is ever written to a file, a cassette, or a log — there is a durable
+test pinning this (`test_auth.py`). Rotate by replacing the env value;
+recorded cassettes keep working (they are keyed by request hash, not by
+credential).
+
+**Record → replay → freeze.** A builder change alters the setup prompt,
+so the old cassette misses and the round needs one live call:
+
+```bash
+export BLINDSPOT_LIVE=1 META_MODEL_API_KEY='<key>'
+python3 -m agents.setup_study --inputs demo/nepal_cascade/inputs \
+  --domain demo/nepal_cascade/domain.json --out-dir /tmp/rec --no-card
+```
+
+Copy the resulting `setup-prompt-*.txt` + `setup-report-*.json` into
+`demo/nepal_cascade/output/` (fire study: `demo/fire_study/output/`),
+register any new cassette with the record workflow below, pin the new
+files in `BASELINE.sha256`, and re-run §6. Replay stays offline:
+unset `BLINDSPOT_LIVE` and re-run — the draft must match a committed
+one (G14 checks this in CI).
+
+**Manifest registration.** One new file: `python3
+scripts/check_manifest.py --data-dir data --record <path> --kind
+real|synthetic|perturbed --source-url <url> --license <licence>`.
+Bulk rebuild after a large ingest: `python3 scripts/make_manifest.py`,
+then fill every `FILL ME` before the gate runs. Never hand-edit
+`MANIFEST.json`.
+
+**One-command status.** `python3 scripts/status.py` prints studies,
+runs, model usage, and the setup gates; exit 1 means a seeded artifact
+fails its hash check. Nightly CI (`.github/workflows/nightly.yml`)
+runs the full gate + judge + web build and files an issue on failure —
+never auto-fixes.

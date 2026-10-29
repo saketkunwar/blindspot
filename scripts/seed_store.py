@@ -62,7 +62,7 @@ def seed(root: pathlib.Path, out: pathlib.Path) -> dict:
                 if full.is_file():
                     hashes[kind] = store.add_artifact(
                         con, study_id, kind, full.relative_to(root))
-            cassette = str((brief.get("model_round") or {}).get("request_hash", ""))
+            cassette = (brief.get("model_round") or {}).get("request_hash") or ""
             if cassette:
                 cassette_path = (root / "data" / "model_cassettes" / f"{cassette}.json")
                 if cassette_path.is_file():

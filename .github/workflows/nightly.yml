@@ -1,0 +1,46 @@
+# P3 scheduled verification: hardened gates + judge, nightly.
+# Failures file an issue (never auto-fix). Offline-capable: every live
+# round replays committed cassettes, so no secret is configured here.
+name: nightly-verify
+
+on:
+  schedule:
+    - cron: "23 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+      - name: Install web deps
+        run: npm ci --prefix web
+      - name: Hardened gates
+        run: python scripts/validate_hardened.py
+      - name: Judge
+        run: bash scripts/judge.sh
+      - name: Web build
+        run: npm run build --prefix web
+      - name: File issue on failure
+        if: failure()
+        run: |
+          gh issue create \
+            --title "Nightly verify failed on $(date -u +%F)" \
+            --body "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}. Triage before any fix; auto-fix is out of scope." \
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

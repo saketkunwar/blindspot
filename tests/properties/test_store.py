@@ -32,6 +32,8 @@ def test_seed_records_study_artifacts_run_and_audit(tmp_path):
     fkinds = {a["kind"] for a in db.artifacts_for(con, "kalimantan-fire")}
     assert {"brief", "rules", "inputs-audit", "card"} <= fkinds
     assert len(db.runs_for(con, "kalimantan-fire")) == 1
+    for run in db.runs_for(con, "nepal-cascade") + db.runs_for(con, "kalimantan-fire"):
+        assert "None" not in run["cassette_hashes"], "null request hash leaked as cassette"
     con.close()
 
 

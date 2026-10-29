@@ -14,14 +14,24 @@ contract and the schema sync.
 """
 from __future__ import annotations
 
+import datetime
 import hashlib
 import json
+import logging
 import os
 import pathlib
 import secrets
 import subprocess
 import sys
 import tempfile
+
+_log = logging.getLogger("blindspot.api")
+
+
+def _ops_log(action: str, **fields) -> None:
+    """One structured line per operated request (stdout, JSON)."""
+    _log.info(json.dumps({"ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                          "action": action, **fields}, sort_keys=True))
 
 from fastapi import FastAPI, HTTPException, Request
 
@@ -155,6 +165,7 @@ def study_brief(study_id: str, mode: str, request: Request) -> JSONResponse:
     _require_study(study_id, request)
     demo = _study_dir(study_id)
     if mode == "cached":
+        _ops_log("study.brief", study=study_id, mode=mode)
         return JSONResponse({"mode": "cached",
                              "data": _read_json(demo / "output" / "brief.json",
                                                 "no frozen study brief yet")})
@@ -173,9 +184,11 @@ def study_brief(study_id: str, mode: str, request: Request) -> JSONResponse:
             raise HTTPException(status_code=502,
                                 detail="live study run failed: " + r.stderr[-500:])
         try:
-            return JSONResponse({"mode": "live", "data": json.loads(out.read_text())})
+            data = json.loads(out.read_text())
         except (OSError, json.JSONDecodeError):
             raise HTTPException(status_code=502, detail="live study output unreadable")
+        _ops_log("study.brief", study=study_id, mode="live")
+        return JSONResponse({"mode": "live", "data": data})
 
 
 def _geo_parts(study_id: str) -> tuple:
@@ -224,6 +237,7 @@ def study_geo(study_id: str, request: Request) -> JSONResponse:
                [x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]}}
     layers = ([{**f, "properties": {"kind": "target reach"}} for f in target]
               + [box] + pts)
+    _ops_log("study.geo", study=study_id, layers=len(layers))
     return JSONResponse({"mode": "cached",
                          "data": {"layers": layers, "sample_cap": cap,
                                   "pre_cutoff_total": len(pre)}})
@@ -243,6 +257,7 @@ def study_gt(study_id: str, mode: str, request: Request) -> JSONResponse:
         if r.returncode != 0:
             raise HTTPException(status_code=502,
                                 detail="live gt check failed: " + r.stderr[-500:])
+    _ops_log("study.gt", study=study_id, mode=mode)
     return JSONResponse({"mode": mode,
                          "data": _read_json(demo / "output" / "gt_check.json",
                                             "no gt check yet (post-freeze artifact)")})
@@ -284,7 +299,34 @@ def _run_live(name: str) -> dict:
 
 @app.get("/health")
 def health() -> dict:
+    """Liveness only. Shape pinned by contract test; detail lives at
+    /health/detail so polling stays cheap."""
     return {"status": "ok"}
+
+
+@app.get("/health/detail")
+def health_detail() -> dict:
+    """Operator health: per-study brief verification + store presence.
+
+    Always 200; degradation is reported in the body (`status`), so polling
+    never mistakes an unreachable check for a healthy one. No recompute.
+    """
+    studies = {}
+    degraded = []
+    for study_id in sorted(STUDIES):
+        try:
+            brief = _verified_brief(study_id)
+            studies[study_id] = {"brief": "ok",
+                                 "top": brief["mechanisms"][0]["id"]}
+        except HTTPException as e:
+            studies[study_id] = {"brief": f"fail: {e.detail}"}
+            degraded.append(study_id)
+    sp = _store_path()
+    store = "seeded" if (sp is not None and sp.is_file()) else "unseeded"
+    if store != "seeded":
+        degraded.append("store")
+    return {"status": "degraded" if degraded else "ok",
+            "degraded": degraded, "store": store, "studies": studies}
 
 
 @app.get("/")

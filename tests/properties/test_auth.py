@@ -75,3 +75,40 @@ def test_operator_bypasses_study_token(tokened_store, operator):
     r = client.get(f"/v1/studies/{STUDY}/geo",
                    headers={"Authorization": f"Bearer {operator}"})
     assert r.status_code == 200
+
+
+def test_model_key_is_env_only_and_never_recorded(tmp_path, monkeypatch):
+    # P3 key management pin: without env, no transport (fail-closed);
+    # recorded cassettes carry no credential material.
+    sys.path.insert(0, str(ROOT))
+    from agents import model_call as _mc
+    monkeypatch.delenv("BLINDSPOT_LIVE", raising=False)
+    monkeypatch.delenv("META_MODEL_API_KEY", raising=False)
+    monkeypatch.delenv("META_MODEL_API_URL", raising=False)
+    try:
+        _mc.complete("probe", cassettes_dir=tmp_path / "cas",
+                      usage_path=tmp_path / "u.json")
+        raise AssertionError("transport without env")
+    except _mc.CassetteMiss:
+        pass
+    monkeypatch.setenv("META_MODEL_API_KEY", "test-only-key")
+    try:
+        _mc.complete("probe", cassettes_dir=tmp_path / "cas",
+                      usage_path=tmp_path / "u.json")
+        raise AssertionError("key alone must not trigger network")
+    except _mc.CassetteMiss:
+        pass
+    import json as _json
+
+    def _secrets(o):
+        if isinstance(o, dict):
+            return any(k.lower() in ("authorization", "api_key", "api-key") for k in o) or \
+                any(_secrets(v) for v in o.values())
+        if isinstance(o, list):
+            return any(_secrets(v) for v in o)
+        return False
+    checked = 0
+    for p in (ROOT / "data" / "model_cassettes").glob("*.json"):
+        assert not _secrets(_json.loads(p.read_text())), p.name
+        checked += 1
+    assert checked > 0, "no cassettes audited"

@@ -561,3 +561,17 @@ took the recommended path) prevented building against phantom inputs.
   build clean. `results/flood.json` staleness (missing FHZ key) was the
   drill's first honest FAIL; fixed by rebuilding from current code, not
   by touching the gate.
+
+## P3 operations (2026-10-29)
+- `[plain]` One command tells the operator everything:
+  `scripts/status.py` prints studies (hash-checked), runs, model usage,
+  and the setup gates. The store seed had a real bug — a null request
+  hash serialized as cassette `"None"` on the fire run — fixed and
+  pinned; the drill caught nothing here because timestamps already
+  excluded content comparison is the documented rule.
+- `[hardened]` Keys are env-only with a behavioral pin (scrubbed env =
+  no transport; cassettes audited credential-free). `/health` keeps its
+  exact shape (existing contract test refused the richer body — the
+  detail lives at `/health/detail` instead); v1 handlers emit one JSON
+  log line each. Nightly CI runs gates + judge + web build and files an
+  issue on failure, never auto-fixes.

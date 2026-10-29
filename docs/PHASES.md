@@ -586,3 +586,12 @@ in the store and served by the API, restore drill green (G17), ingest
 watch over raw data green (G18, 934 files / 12 datasets). Gate:
 G1–G18 ALL PASS, judge 102. Operator still owns confirming the registry
 licence readings (`QUESTIONS.md`).
+
+## P3 — Execution & operations (done 2026-10-29)
+
+`scripts/status.py` (studies/runs/usage/gates, exit 1 on hash failure),
+env-only keys with pins, `/health` + `/health/detail`, JSON request
+lines on v1 handlers, cassette-record runbook in the demo doc,
+`.github/workflows/nightly.yml` (gates + judge + web build, issue on
+failure). Gate: G1–G18 ALL PASS, judge green, runbook replayed by the
+operator (this session).

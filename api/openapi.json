@@ -249,6 +249,7 @@
   },
   "/health": {
    "get": {
+    "description": "Liveness only. Shape pinned by contract test; detail lives at\n/health/detail so polling stays cheap.",
     "operationId": "health_health_get",
     "responses": {
      "200": {
@@ -265,6 +266,27 @@
      }
     },
     "summary": "Health"
+   }
+  },
+  "/health/detail": {
+   "get": {
+    "description": "Operator health: per-study brief verification + store presence.\n\nAlways 200; degradation is reported in the body (`status`), so polling\nnever mistakes an unreachable check for a healthy one. No recompute.",
+    "operationId": "health_detail_health_detail_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Health Detail Health Detail Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Health Detail"
    }
   },
   "/v1/studies": {
