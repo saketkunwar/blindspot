@@ -320,7 +320,40 @@ def score_mechanisms(rules, ledger):
     return out
 
 
+def _name_field_words(payload) -> list[str]:
+    """Capitalizable words from name-like fields only (the leak boundary).
+
+    The card builder redacts exactly `*name*` fields and dates, and
+    low-cardinality labels (sources, pcodes, geometry words) are designed
+    to stay visible — so the audit forbids exactly names + dates, one
+    definition everywhere (Step 3, G13, card tests).
+    """
+    out: list[str] = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if "name" in str(k).lower() and isinstance(v, str):
+                    out.extend(_WORD_RE.findall(v))
+                else:
+                    walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+
+    walk(payload)
+    return out
+
+
 def _input_tokens(inputs_dir: pathlib.Path, rules: dict) -> set[str]:
+    """Broad tripwire for prompts that carry no input labels (ranking).
+
+    Any capitalized word from the inputs is forbidden — cheap and safe
+    exactly because ledger-only prompts should contain none of them.
+    Prompts that DO embed the card inventory (setup) use
+    :func:`_prompt_tokens` instead: same leak definition (names + dates),
+    without tripping on designed-visible labels.
+    """
     toks: set[str] = set()
     for p in sorted(inputs_dir.glob("*")):
         if not p.is_file():
@@ -339,6 +372,34 @@ def _input_tokens(inputs_dir: pathlib.Path, rules: dict) -> set[str]:
     for w in _WORD_RE.findall(str(target)):
         if w.lower() not in _ALLOW_WORDS:
             toks.add(w)
+    return toks
+
+
+def _prompt_tokens(inputs_dir: pathlib.Path) -> set[str]:
+    """Leak boundary for prompts embedding the card inventory (setup).
+
+    Forbids dates plus tokens from name-like fields — the same boundary
+    the card builder redacts to. Low-cardinality labels (sources, pcodes,
+    geometry words) are designed to stay visible and must not trip it.
+    """
+    toks: set[str] = set()
+    for p in sorted(inputs_dir.glob("*")):
+        if not p.is_file():
+            continue
+        try:
+            text = p.read_text()
+        except OSError:
+            continue
+        for m in _DATE_RE.findall(text):
+            toks.add(m)
+            toks.add(m[:10])
+        try:
+            words = _name_field_words(json.loads(text))
+        except ValueError:
+            words = _WORD_RE.findall(text)  # non-JSON: full scan, fail-closed
+        for w in words:
+            if w.lower() not in _ALLOW_WORDS and (w[0].isupper() or w.isupper()):
+                toks.add(w)
     return toks
 
 

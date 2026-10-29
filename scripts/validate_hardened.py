@@ -462,8 +462,7 @@ def g13():
             notes.append(f"{s}: inputs carry no name fields (nothing to leak)")
         prompts = sorted((demo / "output").glob("setup-prompt-*.txt"))
         if prompts:
-            rules = json.loads((demo / "rules.json").read_text())
-            forbidden = _ai._input_tokens(demo / "inputs", rules)
+            forbidden = _ai._prompt_tokens(demo / "inputs")
             for pf in prompts:
                 v = _ai.audit_prompt(pf.read_text(), forbidden)
                 if v:

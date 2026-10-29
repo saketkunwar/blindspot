@@ -35,6 +35,7 @@ from engine import fhz as _fhz
 from engine.ledger import (
     _close,
     _input_tokens,
+    _prompt_tokens,
     _refuse_raw,
     _resolve_geometry,
     audit_prompt,
@@ -51,6 +52,7 @@ from engine.ledger import (
 __all__ = [
     "_close",
     "_input_tokens",
+    "_prompt_tokens",
     "_refuse_raw",
     "audit_prompt",
     "build_prompt",

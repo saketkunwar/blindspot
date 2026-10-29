@@ -123,3 +123,21 @@ def test_ingest_watch_both_directions(tmp_path):
         '{"version": 1, "entries": {"new_export": {"source_url": "FILL", "license": "l"}}}')
     bad, _ = _vh._g18_check(raw)
     assert any("placeholder" in b for b in bad), bad
+
+def test_setup_with_card_clears_prompt_audit():
+    # P5 card-audit fix pin: prompts embedding the card inventory must
+    # pass the setup leak boundary (names + dates), offline, both studies.
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from agents import setup_study as _ss
+    from engine.ledger import audit_prompt
+    for demo in ("demo/nepal_cascade", "demo/fire_study"):
+        demo_p = ROOT / demo
+        domain = __import__("json").loads((demo_p / "domain.json").read_text())
+        fr = __import__("json").loads((demo_p / "rules.json").read_text())
+        ledger = _ss.build_ledger(domain, demo_p / "inputs", fr)
+        from agents import context_card as _cc
+        card = _cc.build_card(domain, demo_p / "inputs")
+        prompt, forbidden = _ss.build_prompt(domain, demo_p / "inputs", ledger, card)
+        assert "Study context (redacted inventory):" in prompt
+        assert audit_prompt(prompt, forbidden) == []

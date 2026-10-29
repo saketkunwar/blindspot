@@ -575,3 +575,25 @@ took the recommended path) prevented building against phantom inputs.
   detail lives at `/health/detail` instead); v1 handlers emit one JSON
   log line each. Nightly CI runs gates + judge + web build and files an
   issue on failure, never auto-fixes.
+
+## P5 discipline audit (2026-10-29)
+- `[plain]` Per-phase entries exist for P0–P3. Config still frozen
+  (G9 green against the `prereg` tag). GT discipline held: both briefs
+  were fixed before their ground truth opened, outcomes accepted as-is,
+  no re-tuning after either check.
+- `[hardened]` One recorded deviation: the fire `rules.json` was amended
+  after its first freeze (weight placement, FF4 rebind, prompt contract)
+  and both baselines grew additively (cards, setup rounds). Letter of
+  Step 5 says any later edit = new version directory; the call made was
+  that pre-compute learnings with locked weights and an accepted outcome
+  are amendments, not tuning — the brief bytes before and after are
+  identical except the intended additions, and QUESTIONS.md carries the
+  per-amendment rationale. Future studies: freeze the learnings pass
+  explicitly instead of re-freezing silently.
+- `[hardened]` Docs cap: one new `.md` this whole arc
+  (`demo/fire_study/USAGE_DEMO.md`), extending the per-demo convention
+  its sibling set, entry point unchanged. The card-audit fix splits the
+  leak check honestly: `_input_tokens` stays the broad tripwire for
+  ledger-only prompts (frozen counts untouched), `_prompt_tokens`
+  enforces the names+dates boundary where the card inventory is
+  designed to appear. Pinned by setup-invariants tests on both studies.

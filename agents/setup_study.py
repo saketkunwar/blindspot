@@ -26,7 +26,7 @@ sys.path.insert(0, str(ROOT))
 from agents import model_call as mc
 from agents.context_card import build_card, card_text
 from engine import facts as _facts
-from engine.ledger import (_input_tokens, _refuse_raw, audit_prompt,
+from engine.ledger import (_prompt_tokens, _refuse_raw, audit_prompt,
                            compute_ledger, load_domain_geometry,
                            score_mechanisms)
 
@@ -73,7 +73,7 @@ def build_prompt(domain: dict, inputs: pathlib.Path, ledger,
     for fid, f in ledger["facts"].items():
         lines.append(f"- {fid}: {f['text']}")
     prompt = "\n".join(l for l in lines if l) + "\n"
-    return prompt, _input_tokens(inputs, {"cluster_rule": {"target_value": ""}})
+    return prompt, _prompt_tokens(inputs)
 
 
 def validate_draft(text: str, ledger_ids: set[str],

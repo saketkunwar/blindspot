@@ -595,3 +595,12 @@ lines on v1 handlers, cassette-record runbook in the demo doc,
 `.github/workflows/nightly.yml` (gates + judge + web build, issue on
 failure). Gate: G1–G18 ALL PASS, judge green, runbook replayed by the
 operator (this session).
+
+## P4 — Scale & product-fit (PARKED, evidence memo 2026-10-29)
+
+Unfreeze requires: two studies operated in production, a named user
+group, and a problem statement from observed usage. Checked 2026-10-29:
+P3 complete (yes); studies run as local demos, not production (no);
+named user group (none); usage-tied problem statement (none). Verdict:
+PARKED — no dashboards, fleet work, PWA, tenancy, or hosting until the
+evidence exists.
