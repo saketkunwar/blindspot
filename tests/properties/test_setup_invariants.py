@@ -38,3 +38,24 @@ def test_flood_files_and_timeline():
     assert all(iv["start"] < iv["end"] for iv in t["phases"] + [t["claim"]])
     # endpoint rule fixture: mobilization ends where clearing starts -> MEETS, never BEFORE
     assert t["phases"][0]["end"] == t["phases"][1]["start"]
+
+def test_spec_ledger_branch_for_rules_driven_studies():
+    # Offline pin for the setup spec branch: frozen rules carrying
+    # ledger_spec build the ledger over domain-named roles (fire study),
+    # without touching the classic four-role flood path.
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from agents import setup_study as _ss
+    fire = ROOT / "demo/fire_study"
+    domain = json.loads((fire / "domain.json").read_text())
+    frozen = json.loads((fire / "rules.json").read_text())
+    assert "ledger_spec" in frozen
+    ledger = _ss.build_ledger(domain, fire / "inputs", frozen)
+    assert set(ledger["facts"]) == set(frozen["facts"])
+    assert ledger["facts"]["FF4_hotspot_clumping"]["active"] is True
+    flood = ROOT / "demo/nepal_cascade"
+    fdomain = json.loads((flood / "domain.json").read_text())
+    ffrozen = json.loads((flood / "rules.json").read_text())
+    assert "ledger_spec" not in ffrozen
+    fled = _ss.build_ledger(fdomain, flood / "inputs", ffrozen)
+    assert "F4_cluster_hit" in fled["facts"]

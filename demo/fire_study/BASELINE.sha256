@@ -11,3 +11,6 @@ b9a6bd55d10a0fcc67459a1b8964d0b37959b571913720249fdbd3ab71900bd5  demo/fire_stud
 844e32135c4f9fbd410663d92364e42b1a0db12e648b5f978d21289eb1408484  demo/fire_study/output/card.json
 c99f776e132ee6116ade6863a9d06f07db4cfa69724abbf49202f7687814f6f5  demo/fire_study/output/card.txt
 036e32bcff695656b1baa84ec60b10598e58ce2962bb32e390a2b38813a5d11a  demo/fire_study/output/brief.json
+# Live setup round (--no-card), null PASS, 2026-10-29.
+0797ad5fb50a4e7fe724e70955e556db90bae46f70f11d06ddb44e3ea5bb7bd4  demo/fire_study/output/setup-prompt-0797ad5fb50a4e7f.txt
+01efa4926a189100a6c51e2d5d61eb174a37db0f214a441ce1061956a951f001  demo/fire_study/output/setup-report-18f6aa3733245198.json

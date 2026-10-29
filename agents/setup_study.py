@@ -121,7 +121,17 @@ def null_test(draft: dict, quiet_keywords=None) -> tuple[bool, str]:
     return top in quiet_ids, top
 
 
-def build_ledger(domain: dict, inputs: pathlib.Path):
+def build_ledger(domain: dict, inputs: pathlib.Path, frozen: dict | None = None):
+    """Ledger for the setup round, from the study's own rules shape.
+
+    Rules-driven studies (frozen rules carry ``ledger_spec``) build the
+    ledger through the spec builder over domain-named roles; otherwise the
+    classic four-role path runs unchanged.
+    """
+    from engine.ledger import compute_ledger_from_spec
+    if frozen is not None and isinstance(frozen.get("ledger_spec"), dict):
+        roles = _facts.load_inputs_by_role(domain, inputs)
+        return compute_ledger_from_spec({"ledger_spec": frozen["ledger_spec"]}, roles)
     roles = _facts.load_inputs_by_role(domain, inputs)
     damage = _facts._features_of(roles.get("damage"))
     network = roles.get("network", {"features": []})
@@ -152,7 +162,7 @@ def main(argv=None) -> int:
     frozen = json.loads(pathlib.Path(a.frozen_rules).read_text())
     ledger_ids = set(frozen["facts"])
 
-    ledger = build_ledger(domain, inputs)
+    ledger = build_ledger(domain, inputs, frozen)
     card = None if a.no_card else build_card(domain, inputs)
     prompt, forbidden = build_prompt(domain, inputs, ledger, card)
     violations = audit_prompt(prompt, forbidden)

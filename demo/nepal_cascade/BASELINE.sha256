@@ -13,3 +13,6 @@ b1c044ed8e4779f2cfc70030cf8971f2927d146f3a047ee2cbe5a85a546a5828  output/setup-r
 # Step 7: study cards (G13). Added 2026-10-29.
 8a4e1b29afd4c4cf9a1ca9590fb9638e23f29f5a0353dff252caa2c0a29eb698  output/card.json
 26b77d9f30cd15d9669af84ea9d1737af7f85b66b834634efc030e9b05ed3bee  output/card.txt
+# Live setup re-record (current builder, --no-card), 2026-10-29.
+e2a3cc61454c51aca894da50e4f4941199ece4962eab1a735cec1989305d5c56  output/setup-prompt-e2a3cc61454c51ac.txt
+f4c0c6e5d1288d25b535fdcf7803dc396d13a7b688b2b35943abdb9264f7ed5b  output/setup-report-e0d4fe88c1e49eba.json

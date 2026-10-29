@@ -80,20 +80,27 @@ Expect the same ranking (`suppression_then_restart` top). Identical
 probabilities are correct: scoring depends only on which facts are
 active, and every gate still passes on half the map.
 
-## 7. Setup round (optional, needs a live key)
+## 7. Setup round (recorded 2026-10-29; replay offline)
+
+The setup round ran live once (`--no-card`; the card-embedding path
+fails its own prompt audit — known issue, see `PROGRESS_ERROR.md`).
+It drafted 6 mechanisms, passed the null test, and disagreed with the
+frozen rules on top (expected: LLM framing without conviction). Replay:
 
 ```bash
-export META_MODEL_API_KEY=... META_MODEL_API_URL=...
 python -m agents.setup_study --inputs demo/fire_study/inputs \
-  --domain demo/fire_study/domain.json --out-dir demo/fire_study/output
+  --domain demo/fire_study/domain.json --frozen-rules demo/fire_study/rules.json \
+  --brief demo/fire_study/output/brief.json --out-dir /tmp/fsetup --no-card
 ```
 
-Then re-run `python scripts/validate_hardened.py` — G14 goes green.
+Expect exit 0 from cassette and a draft matching
+`output/setup-report-18f6aa3733245198.json`. A fresh live round needs
+`BLINDSPOT_LIVE=1` plus `META_MODEL_API_KEY`.
 
 ## 8. Full verification
 
 ```bash
-python3 scripts/validate_hardened.py   # expect ALL PASS except G14-setup (key)
+python3 scripts/validate_hardened.py   # expect ALL PASS (G1-G16)
 python3 -m pytest tests/properties/ -q # expect green
 bash scripts/judge.sh                  # expect JUDGE OK
 ```

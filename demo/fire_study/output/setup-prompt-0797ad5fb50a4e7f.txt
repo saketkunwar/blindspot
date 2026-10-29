@@ -1,0 +1,10 @@
+Domain: peatland fire detections (this is a fire study, not flood, not earthquake — frame accordingly). Processes such surveys consider include: hotspots burning out under suppression; smoldering peat surviving rain and restarting days later; spread into new grid cells downwind; containment holding at surveyed lines; flare-ups on previously quiet cells; or full cessation with no restart. These are vocabulary, not answers: you may adopt, adapt, or reject any of them, but your set must stay open and include a cessation story with real weight. Ground every weight in the ledger below, not in the vocabulary above.
+Context: a peat-fire detection survey, five pre-cutoff days, anonymous grid cells. Below is the evidence ledger (pre-cutoff aggregates only).
+Propose an OPEN mechanism set that includes a nothing-happens story with real weight, per-fact weights, and a spatial cluster rule. Reply with JSON only: {"mechanisms": [{"id", "title", "supports": [fact ids], "opposes": [fact ids], "prior"}], "weights": {fact id: number}, "cluster_rule": {"max_distance_m": number, "min_features": number}}. Cite only ledger facts, using their FULL ids exactly as written in the ledger lines below; any abbreviated id invalidates the draft. Assert no outcome.
+Ledger facts:
+- FF1_total_detections: 6142 VIIRS detections predate the cutoff
+- FF2_burn_days: 5 distinct burn days in the window
+- FF3_cells_with_fire: fire present in 30 grid cells
+- FF4_hotspot_clumping: 6126 detections clumped near hot cells (>=3 detections)
+- FF5_unbroken_run: longest gap between burn days: {'n_total': 6142, 'n_dated': 6142, 'n_distinct': 5, 'span_s': 4.0, 'max_gap_s': 1.0} days
+- FF6_study_box: study box present as context (no time signal)

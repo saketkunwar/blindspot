@@ -564,12 +564,39 @@ def g14(tmp):
             new_prompts = {p.name for p in (tmp / "setup").glob("setup-prompt-*.txt")}
             if not new_prompts <= cprompts:
                 bad.append("flood setup replay prompt differs from committed prompts")
-    if not list((fire / "output").glob("setup-report-*.json")):
+    fcommitted = {}
+    for rp in sorted((fire / "output").glob("setup-report-*.json")):
+        try: d = json.loads(rp.read_text())
+        except Exception: continue
+        if isinstance(d.get("draft"), dict):
+            fcommitted[hashlib.sha256(_canon(d["draft"]).encode()).hexdigest()] = rp.name
+    fprompts = {p.name for p in (fire / "output").glob("setup-prompt-*.txt")}
+    if not fcommitted:
         bad.append("fire setup replay: NO ARTIFACT (setup round needs a live key; "
                    "set META_MODEL_API_KEY/BLINDSPOT_LIVE, run agents.setup_study on "
                    "demo/fire_study, then re-run this gate)")
+    else:
+        r = subprocess.run(
+            [sys.executable, "-m", "agents.setup_study", "--inputs", "demo/fire_study/inputs",
+             "--domain", "demo/fire_study/domain.json", "--frozen-rules",
+             "demo/fire_study/rules.json", "--brief", "demo/fire_study/output/brief.json",
+             "--out-dir", str(tmp / "fsetup"), "--no-card"],
+            cwd=ROOT, capture_output=True, text=True, timeout=900)
+        reps = sorted((tmp / "fsetup").glob("setup-report-*.json")) if (tmp / "fsetup").is_dir() else []
+        if r.returncode != 0 or not reps:
+            bad.append("fire setup replay failed offline (needs cassette or live key)")
+        else:
+            d = json.loads(reps[0].read_text())
+            h = hashlib.sha256(_canon(d.get("draft", {})).encode()).hexdigest()
+            if h not in fcommitted:
+                bad.append("fire setup replay draft matches no committed draft")
+            if d.get("source") != "cassette":
+                bad.append(f"fire setup replay not from cassette (source={d.get('source')})")
+            new_prompts = {p.name for p in (tmp / "fsetup").glob("setup-prompt-*.txt")}
+            if not new_prompts <= fprompts:
+                bad.append("fire setup replay prompt differs from committed prompts")
     gate("G14", not bad, "; ".join(bad) if bad else
-         "compute replay byte-identical (both studies); flood setup replay matches cassette drafts")
+         "compute + setup replay byte-identical (both studies, cassette drafts)")
 
 def g15():
     """Mutable null: zeroed facts -> quiet story top; full evidence -> top is not quiet."""

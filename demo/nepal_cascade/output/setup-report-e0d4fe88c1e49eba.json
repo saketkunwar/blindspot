@@ -1,0 +1,134 @@
+{
+ "card_used": false,
+ "draft": {
+  "cluster_rule": {
+   "max_distance_m": 150,
+   "min_features": 30
+  },
+  "mechanisms": [
+   {
+    "id": "M1",
+    "opposes": [
+     "F4_cluster_hit",
+     "F1_total_pre_cutoff_damage"
+    ],
+    "prior": 0.18,
+    "supports": [
+     "F3_channel_adjacent_share",
+     "F5_upstream_density_ratio",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "Permeable debris - water drains safely through debris without ponding"
+   },
+   {
+    "id": "M2",
+    "opposes": [
+     "F3_channel_adjacent_share",
+     "F5_upstream_density_ratio"
+    ],
+    "prior": 0.15,
+    "supports": [
+     "F4_cluster_hit",
+     "F1_total_pre_cutoff_damage",
+     "F6_extent_context"
+    ],
+    "title": "Stable debris dam holds - sustained ponding upstream of blockage"
+   },
+   {
+    "id": "M3",
+    "opposes": [
+     "F5_upstream_density_ratio",
+     "F2_upstream_share"
+    ],
+    "prior": 0.12,
+    "supports": [
+     "F4_cluster_hit",
+     "F1_total_pre_cutoff_damage",
+     "F7_target_reach_share"
+    ],
+    "title": "Transient ponding and sudden release - debris dam breach outburst flood"
+   },
+   {
+    "id": "M4",
+    "opposes": [
+     "F4_cluster_hit",
+     "F7_target_reach_share"
+    ],
+    "prior": 0.15,
+    "supports": [
+     "F1_total_pre_cutoff_damage",
+     "F2_upstream_share",
+     "F5_upstream_density_ratio"
+    ],
+    "title": "Distributed new slope failures on other reaches"
+   },
+   {
+    "id": "M5",
+    "opposes": [
+     "F4_cluster_hit",
+     "F7_target_reach_share"
+    ],
+    "prior": 0.18,
+    "supports": [
+     "F3_channel_adjacent_share",
+     "F1_total_pre_cutoff_damage",
+     "F2_upstream_share"
+    ],
+    "title": "Continued fluvial flooding downstream only - no debris dam involvement"
+   },
+   {
+    "id": "M6",
+    "opposes": [
+     "F4_cluster_hit",
+     "F1_total_pre_cutoff_damage"
+    ],
+    "prior": 0.22,
+    "supports": [
+     "F7_target_reach_share",
+     "F5_upstream_density_ratio",
+     "F6_extent_context",
+     "F8_inputs_audit_clean"
+    ],
+    "title": "Nothing further happens - no additional flood damage beyond pre-cutoff snapshot"
+   }
+  ],
+  "weights": {
+   "F1_total_pre_cutoff_damage": 0.15,
+   "F2_upstream_share": 0.1,
+   "F3_channel_adjacent_share": 0.2,
+   "F4_cluster_hit": 0.18,
+   "F5_upstream_density_ratio": 0.1,
+   "F6_extent_context": 0.05,
+   "F7_target_reach_share": 0.12,
+   "F8_inputs_audit_clean": 0.1
+  }
+ },
+ "draft_errors": [],
+ "draft_ranking_on_real_ledger": [
+  "M6",
+  "M5",
+  "M4",
+  "M1",
+  "M3",
+  "M2"
+ ],
+ "draft_top": "M6",
+ "frozen_mechanisms": [
+  "safe_drainage",
+  "dam_holds",
+  "impoundment_then_burst",
+  "upstream_slope_failure_elsewhere",
+  "downstream_only_flooding",
+  "no_further_event"
+ ],
+ "frozen_top": "impoundment_then_burst",
+ "model": "muse-spark-1.2-contributor",
+ "null_test_pass": true,
+ "null_test_top": "M6",
+ "overlap": [],
+ "prompt_audit_violations": [],
+ "prompt_sha256": "e2a3cc61454c51aca894da50e4f4941199ece4962eab1a735cec1989305d5c56",
+ "request_hash": "e0d4fe88c1e49ebaae5aa3745bac3ce954b7596a9e02932b62653ac838786b34",
+ "source": "live-recorded",
+ "top_agrees": false
+}

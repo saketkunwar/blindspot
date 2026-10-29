@@ -509,3 +509,23 @@ took the recommended path) prevented building against phantom inputs.
   drifted past its cassettes; fire: setup never ran) — FAIL half with the
   exact unblock command in the gate message. This is the single item
   keeping P0 formally open; everything else in G1–G16 passes.
+
+## P0 live-key follow-up — G14 green (2026-10-29)
+- `[plain]` With a live key, both setup rounds ran: fire proposed 6
+  mechanisms with a valid draft, null PASS, and the expected disagreement
+  (LLM top `smoldering_restart` vs frozen `suppression_then_restart`) —
+  notably it independently weighted FF5 (0.95) and FF4 (0.9) highest, the
+  same lead evidence as the human rules. Flood re-recorded on the current
+  builder (null PASS). Cassettes committed; G14 replays both studies
+  offline. Full gate: ALL PASS (G1–G16). Success criterion 4 now holds
+  for both domains.
+- `[hardened]` Fire setup forced one more spec-branch edit in
+  `agents/setup_study.py::build_ledger` (frozen rules with `ledger_spec`
+  build via the spec builder over domain-named roles; classic path
+  untouched) — counted inside the single catalog gap, pinned by a new
+  offline test in `test_setup_invariants.py`. Flood replay proves the
+  default path did not move.
+- `[hardened]` Still open (pre-existing, needs no key to track but a key
+  to re-record): setup WITH the card fails its own prompt audit on real
+  inputs — both committed rounds used `--no-card`. Fix card-embedding
+  audit alignment before any card-carrying setup round.

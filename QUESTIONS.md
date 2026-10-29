@@ -161,3 +161,12 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   divisor (seconds to days), and weights live inside facts entries so no
   parallel block can drift. Flood regression is byte-clean
   (top=impoundment_then_burst 0.9426, gate ALL PASS, judge 95 passed).
+
+## Demo 2 setup round result (2026-10-29, live key)
+- The model, shown only the pre-cutoff ledger, drafted six fire
+  mechanisms with real weights, passed the null test, and disagreed with
+  the human rules on top exactly the way the plan predicts for LLM
+  framing without conviction. It put the most weight on the unbroken run
+  (0.95) and hotspot clumping (0.9) — the same two facts the frozen brief
+  leans on. Criterion: setup drafts for both domains pass the null
+  red-team — now satisfied for fire as well as flood.

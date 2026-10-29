@@ -1,0 +1,127 @@
+{
+ "card_used": false,
+ "draft": {
+  "cluster_rule": {
+   "max_distance_m": 1000,
+   "min_features": 3
+  },
+  "mechanisms": [
+   {
+    "id": "burnout_suppression",
+    "opposes": [
+     "FF2_burn_days",
+     "FF5_unbroken_run"
+    ],
+    "prior": 0.17,
+    "supports": [
+     "FF1_total_detections",
+     "FF4_hotspot_clumping"
+    ],
+    "title": "Hotspots burning out under suppression"
+   },
+   {
+    "id": "smoldering_restart",
+    "opposes": [
+     "FF6_study_box"
+    ],
+    "prior": 0.18,
+    "supports": [
+     "FF1_total_detections",
+     "FF2_burn_days",
+     "FF5_unbroken_run",
+     "FF4_hotspot_clumping"
+    ],
+    "title": "Smoldering peat surviving rain and restarting days later"
+   },
+   {
+    "id": "spread_downwind",
+    "opposes": [
+     "FF6_study_box"
+    ],
+    "prior": 0.15,
+    "supports": [
+     "FF3_cells_with_fire",
+     "FF1_total_detections",
+     "FF4_hotspot_clumping"
+    ],
+    "title": "Spread into new grid cells downwind"
+   },
+   {
+    "id": "containment_hold",
+    "opposes": [
+     "FF1_total_detections",
+     "FF2_burn_days"
+    ],
+    "prior": 0.15,
+    "supports": [
+     "FF4_hotspot_clumping",
+     "FF3_cells_with_fire",
+     "FF6_study_box"
+    ],
+    "title": "Containment holding at surveyed lines"
+   },
+   {
+    "id": "flareup_quiet",
+    "opposes": [
+     "FF4_hotspot_clumping",
+     "FF5_unbroken_run"
+    ],
+    "prior": 0.15,
+    "supports": [
+     "FF3_cells_with_fire",
+     "FF1_total_detections"
+    ],
+    "title": "Flare-ups on previously quiet cells"
+   },
+   {
+    "id": "cessation",
+    "opposes": [
+     "FF1_total_detections",
+     "FF2_burn_days",
+     "FF3_cells_with_fire",
+     "FF4_hotspot_clumping",
+     "FF5_unbroken_run"
+    ],
+    "prior": 0.2,
+    "supports": [
+     "FF6_study_box"
+    ],
+    "title": "Full cessation with no restart"
+   }
+  ],
+  "weights": {
+   "FF1_total_detections": 0.85,
+   "FF2_burn_days": 0.8,
+   "FF3_cells_with_fire": 0.75,
+   "FF4_hotspot_clumping": 0.9,
+   "FF5_unbroken_run": 0.95,
+   "FF6_study_box": 0.1
+  }
+ },
+ "draft_errors": [],
+ "draft_ranking_on_real_ledger": [
+  "smoldering_restart",
+  "spread_downwind",
+  "containment_hold",
+  "burnout_suppression",
+  "flareup_quiet",
+  "cessation"
+ ],
+ "draft_top": "smoldering_restart",
+ "frozen_mechanisms": [
+  "suppression_then_restart",
+  "sustained_suppression",
+  "continued_spread",
+  "fuel_burnout"
+ ],
+ "frozen_top": "suppression_then_restart",
+ "model": "muse-spark-1.2-contributor",
+ "null_test_pass": true,
+ "null_test_top": "cessation",
+ "overlap": [],
+ "prompt_audit_violations": [],
+ "prompt_sha256": "0797ad5fb50a4e7fe724e70955e556db90bae46f70f11d06ddb44e3ea5bb7bd4",
+ "request_hash": "18f6aa37332451985f787462a5b8b143a06c41bfe72e00675bf87693a3399991",
+ "source": "live-recorded",
+ "top_agrees": false
+}
