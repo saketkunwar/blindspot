@@ -536,3 +536,44 @@ G12 (cutoff-invariance: data/raw hidden ⇒ byte-identical output) +
 quarantine (no timestamps/stages in curated inputs; prompt re-audit clean);
 6 durable tests in `tests/properties/test_demo_nepal.py`; 43/43 suite green,
 `judge.sh` OK, `next build` clean.
+
+## Demo 2 — Kalimantan fire study (flexible-pipeline proof)
+
+Same pipeline shape as Demo 1, second domain: 6,142 FIRMS detections over
+5 days in 30 grid cells, curated by `demo/fire_study/curate.py` into
+detections/cells/timeline/extent roles. The study runs entirely through
+the rules-driven builder (`compute_ledger_from_spec`) — no flood code
+path executes. Human-authored `rules.json` (no live key at build time);
+weights locked before compute; outcome accepted as-is afterward.
+
+### Why this shape
+
+Demo 1 proved hindsight-freedom; Demo 2 proves domain-freedom. Two
+independent holdouts carry the claim: the temporal check locks away every
+detection after 2026-09-20 and the brief must still rank the restart
+story first (it does, 0.84 vs 0.11); the spatial check masks the eastern
+half of the map and the ranking must not move (it does not — scoring
+depends only on which facts are active, and every gate still passes on
+half the map, which is itself the finding: the fire signal is pervasive).
+Building it exposed three engine limitations, fixed in the closed op set
+and pinned by durable tests — flood stayed byte-identical throughout,
+which is the evidence the fixes were generic, not fire-specific.
+
+### Results (frozen brief, spec path)
+
+Pre-cutoff evidence most supports suppression-then-restart (support
+0.84), then continued spread (0.11); sustained suppression (the quiet
+story, 0.002) wins the zeroed-facts null. Lead evidence is hotspot
+clumping: 6,126 of 6,142 detections within hotspot distance of a hot
+cell. Frozen at `demo/fire_study/BASELINE.sha256` with replay
+instructions in `demo/fire_study/USAGE_DEMO.md`.
+
+### Verification
+
+G13 (schema-valid domains, prompt-clean cards, clean setup prompts where
+present), G3b (no study-distinctive vocabulary in the builder — see the
+P0 closeout entry in `PROGRESS_ERROR.md` for the E1–E4 exclusions),
+G14 compute half (replay byte-identical, both studies; setup half needs
+a live key), G15 (zeroed facts rank quiet first on both studies).
+`tests/properties/test_fact_generics.py` (3) +
+`tests/properties/test_study_gates.py` (4) green.

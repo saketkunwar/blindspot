@@ -14,7 +14,7 @@ support-strength probabilities (softmax over documented scores; explicitly
 NOT calibrated frequencies).
 
 The model prompt carries no place names, no calendar dates, and no outcome
-assertions: anonymous reaches, relative snapshot labels, mechanisms listed
+assertions: anonymous areas, relative snapshot labels, mechanisms listed
 only as candidate hypotheses. The exact prompt is saved verbatim and scanned
 against tokens drawn from the inputs themselves (any name or date the inputs
 contain is forbidden in the prompt), so anonymization is checked, not
@@ -40,6 +40,8 @@ from engine.ledger import (
     audit_prompt,
     build_prompt,
     compute_ledger,
+    compute_ledger_from_spec,
+    build_prompt_from_spec,
     load_domain_geometry,
     network_reach_report,
     score_mechanisms,
@@ -76,24 +78,36 @@ def run(inputs_dir, rules_path, out_path, prompt_log_dir,
         domain_path = ROOT / "demo" / "nepal_cascade" / "domain.json"
     domain = json.loads(pathlib.Path(domain_path).read_text())
 
-    feats = json.loads((inputs_dir / "pre_t1_features.geojson").read_text())["features"]
-    waterways = json.loads((inputs_dir / "waterways.geojson").read_text())
-    target = json.loads((inputs_dir / "target_reach.geojson").read_text())["features"]
-    extent = json.loads((inputs_dir / "extent.json").read_text())
     audit = json.loads((inputs_dir / "input_audit.json").read_text())
-    extent_geom = {"type": "Polygon", "coordinates": [[
-        [extent["bbox"][0], extent["bbox"][1]], [extent["bbox"][2], extent["bbox"][1]],
-        [extent["bbox"][2], extent["bbox"][3]], [extent["bbox"][0], extent["bbox"][3]],
-        [extent["bbox"][0], extent["bbox"][1]]]]}
+    if "ledger_spec" in rules:
+        from engine import facts as _facts
 
-    ledger = compute_ledger(feats, waterways, target, extent_geom, rules,
-                            domain=domain)
-    story_problems = _fhz.validate_stories(rules, set(ledger["facts"]))
-    if story_problems:
-        raise SystemExit("story polarity failed: " + "; ".join(story_problems))
-    ranking = score_mechanisms(rules, ledger)
+        roles = _facts.load_inputs_by_role(domain, inputs_dir)
+        ledger = compute_ledger_from_spec(rules, roles)
+        story_problems = _fhz.validate_stories(rules, set(ledger["facts"]))
+        if story_problems:
+            raise SystemExit("story polarity failed: " + "; ".join(story_problems))
+        ranking = score_mechanisms(rules, ledger)
+        prompt, _ = build_prompt_from_spec(rules, ledger, domain)
+        spec_mode = True
+    else:
+        feats = json.loads((inputs_dir / "pre_t1_features.geojson").read_text())["features"]
+        waterways = json.loads((inputs_dir / "waterways.geojson").read_text())
+        target = json.loads((inputs_dir / "target_reach.geojson").read_text())["features"]
+        extent = json.loads((inputs_dir / "extent.json").read_text())
+        extent_geom = {"type": "Polygon", "coordinates": [[
+            [extent["bbox"][0], extent["bbox"][1]], [extent["bbox"][2], extent["bbox"][1]],
+            [extent["bbox"][2], extent["bbox"][3]], [extent["bbox"][0], extent["bbox"][3]],
+            [extent["bbox"][0], extent["bbox"][1]]]]}
 
-    prompt, _ = build_prompt(rules, ledger)
+        ledger = compute_ledger(feats, waterways, target, extent_geom, rules,
+                                domain=domain)
+        story_problems = _fhz.validate_stories(rules, set(ledger["facts"]))
+        if story_problems:
+            raise SystemExit("story polarity failed: " + "; ".join(story_problems))
+        ranking = score_mechanisms(rules, ledger)
+        prompt, _ = build_prompt(rules, ledger)
+        spec_mode = False
     forbidden = _input_tokens(inputs_dir, rules)
     violations = audit_prompt(prompt, forbidden)
     prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()
@@ -132,7 +146,8 @@ def run(inputs_dir, rules_path, out_path, prompt_log_dir,
         "inputs_audit": audit,
         "ledger": ledger,
         "mechanisms": ranking,
-        "cluster_finding": ledger["facts"]["F4_cluster_hit"]["text"],
+        "cluster_finding": ledger["facts"][rules.get("prompt_contract", {}).get(
+            "cluster_fact", "F4_cluster_hit")]["text"],
         "model_round": model_info,
         "prompt_audit": {"prompt_sha256": prompt_hash, "violations": [],
                          "forbidden_tokens_checked": len(forbidden)},
@@ -146,14 +161,17 @@ def run(inputs_dir, rules_path, out_path, prompt_log_dir,
     print(f"wrote {out_path}: top={top['id']} p={top['probability']}")
     from shapely.geometry import shape as _shape
     from engine import facts as _facts
-    adj_m, _, _ = _resolve_geometry(rules, domain)
-    split_lat = _facts._project(_shape(extent_geom)).centroid.y
-    reach = network_reach_report(feats, waterways, target, extent_geom,
-                                 split_lat, adj_m)
-    reach_path = (pathlib.Path(reach_audit_path) if reach_audit_path
-                  else out_path.parent / "reach_audit.json")
-    reach_path.write_text(json.dumps(reach, indent=1, sort_keys=True) + "\n")
-    print(f"wrote {reach_path}: scopes={reach['scopes']}")
+    reach = None
+    if not spec_mode and domain.get("reach_audit"):
+        adj_m, _, _ = _resolve_geometry(rules, domain)
+        split_lat = _facts._project(_shape(extent_geom)).centroid.y
+        reach = network_reach_report(feats, waterways, target, extent_geom,
+                                     split_lat, adj_m)
+    if reach is not None:
+        reach_path = (pathlib.Path(reach_audit_path) if reach_audit_path
+                      else out_path.parent / "reach_audit.json")
+        reach_path.write_text(json.dumps(reach, indent=1, sort_keys=True) + "\n")
+        print(f"wrote {reach_path}: scopes={reach['scopes']}")
     return brief
 
 

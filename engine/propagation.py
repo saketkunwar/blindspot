@@ -81,7 +81,7 @@ def path_consistency(nodes: list, constraints: dict) -> tuple[dict, bool]:
     """Refine an RCC-8 constraint network; returns (refined, contradictory).
 
     ``constraints`` maps frozenset({i, j}) to allowed base relations.
-    Refined maps ordered (i, j) tuples to surviving relations; reverse pairs
+    Refined maps ordered (i, j) tuples to remaining relations; reverse pairs
     always hold the exact converse set.
     """
     return path_consistency_with(nodes, constraints, compose_rcc8, RCC8_INVERSE, set(RCC8_RELATIONS))

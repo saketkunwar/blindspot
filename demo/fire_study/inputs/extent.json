@@ -1,0 +1,13 @@
+{
+ "centroid": [
+  113.43282594594594,
+  -2.400483044610876
+ ],
+ "bbox": [
+  112.00347,
+  -2.99993,
+  114.99982,
+  -0.01536
+ ],
+ "note": "study box from pre-cutoff detections; carries no time signal"
+}

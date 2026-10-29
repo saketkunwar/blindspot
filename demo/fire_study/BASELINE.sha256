@@ -1,0 +1,13 @@
+# Frozen 2026-10-29T11:43:13Z. Verify with: sha256sum -c demo/fire_study/BASELINE.sha256
+# Fire study Step 7: cards rebuilt (no build timestamp, neutral wording); brief unchanged.
+8b5666a7f9553295348fd0c3557da413c41371668e542e7db3b11733b92fd5c5  demo/fire_study/curate.py
+a581ec4239ae0a9f830644bf63b2b079fe0ac7b01c3adb81411c0a86615eb434  demo/fire_study/domain.json
+8a80319ed53e299a04b0bd4d82115a2c27933d82c15e122885427f815c1ba641  demo/fire_study/rules.json
+2f9dc731467186c8881ffb720475cd2ef5584f8b92c9abfba2c2ce164556c57b  demo/fire_study/inputs/detections.geojson
+b9a6bd55d10a0fcc67459a1b8964d0b37959b571913720249fdbd3ab71900bd5  demo/fire_study/inputs/cells.geojson
+5314ddc97ddd532d25eeb98e6c7cbec7cb19b907d0c6b16c05d35c0947ea2da3  demo/fire_study/inputs/timeline.json
+2c0e09e4e0b1e07d6baae2dcd0e22c982d8ab0751f2325fc710742c91828b6af  demo/fire_study/inputs/extent.json
+9a68695d596c1e305413e78a3efa92dd9e0afe10d042b94db8359894dc73df51  demo/fire_study/inputs/input_audit.json
+844e32135c4f9fbd410663d92364e42b1a0db12e648b5f978d21289eb1408484  demo/fire_study/output/card.json
+c99f776e132ee6116ade6863a9d06f07db4cfa69724abbf49202f7687814f6f5  demo/fire_study/output/card.txt
+036e32bcff695656b1baa84ec60b10598e58ce2962bb32e390a2b38813a5d11a  demo/fire_study/output/brief.json

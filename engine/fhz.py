@@ -6,8 +6,8 @@ A MUST_BE zone is a piece of the last-known-wet geometry (gap-auditor
 - E (extent-topological): RCC-8 of the zone against the known outline.
 - R (reach-directional): 9-tiles of the zone MBR against the flood MBR
   plus the compass bearing of the zone centroid from the flood centroid.
-- G (group-containment): RCC-8 of the zone against the evidence union
-  (assets for pipelines, damage for studies).
+- G (group-inclusion): RCC-8 of the zone against the evidence union
+  (assets for pipelines, study roles for studies).
 
 The gate is structural, deliberately: every family set must be non-empty
 (relations computable, counterparts present). It does NOT require

@@ -1,0 +1,121 @@
+{
+ "as_of_label": "pre-Sep-20",
+ "cluster_finding": "6126 detections clumped near hot cells (>=3 detections)",
+ "inputs_audit": {
+  "as_of_label": "pre-2026-09-20",
+  "counts": {
+   "cells": 30,
+   "days": 5,
+   "detections": 6142
+  },
+  "cutoff_derivation": "max evidence date in the FIRMS file",
+  "cutoff_value": "2026-09-20T23:59:59Z",
+  "filter": "kept detections on or before cutoff; day labels retained because multi-day spread is the phenomenon (unlike the single-snapshot flood); card redacts dates from prompts",
+  "sources": {
+   "data/fire_kalimantan/firms_kalimantan_c.json": "62880f99f2425c18b311b4c7ab402b72b730bafd6bc31ab8083a5f0e57616364"
+  }
+ },
+ "ledger": {
+  "diagnostics": {
+   "spec_facts": [
+    "FF1_total_detections",
+    "FF2_burn_days",
+    "FF3_cells_with_fire",
+    "FF4_hotspot_clumping",
+    "FF5_unbroken_run",
+    "FF6_study_box"
+   ]
+  },
+  "facts": {
+   "FF1_total_detections": {
+    "active": true,
+    "text": "6142 VIIRS detections predate the cutoff",
+    "value": 6142
+   },
+   "FF2_burn_days": {
+    "active": true,
+    "text": "5 distinct burn days in the window",
+    "value": {
+     "max_gap_s": 86400.0,
+     "n_dated": 6142,
+     "n_distinct": 5,
+     "n_total": 6142,
+     "span_s": 345600.0
+    }
+   },
+   "FF3_cells_with_fire": {
+    "active": true,
+    "text": "fire present in 30 grid cells",
+    "value": 30
+   },
+   "FF4_hotspot_clumping": {
+    "active": true,
+    "text": "6126 detections clumped near hot cells (>=3 detections)",
+    "value": 6126
+   },
+   "FF5_unbroken_run": {
+    "active": true,
+    "text": "longest gap between burn days: {'n_total': 6142, 'n_dated': 6142, 'n_distinct': 5, 'span_s': 4.0, 'max_gap_s': 1.0} days",
+    "value": {
+     "max_gap_s": 1.0,
+     "n_dated": 6142,
+     "n_distinct": 5,
+     "n_total": 6142,
+     "span_s": 4.0
+    }
+   },
+   "FF6_study_box": {
+    "active": true,
+    "text": "study box present as context (no time signal)",
+    "value": 110006057400.3
+   }
+  },
+  "numbers": [
+   6142.0,
+   30.0,
+   6126.0,
+   110006057400.3
+  ]
+ },
+ "mechanisms": [
+  {
+   "id": "suppression_then_restart",
+   "probability": 0.8425,
+   "score": 5.0,
+   "title": "Suppression wins in late September, then peat restarts"
+  },
+  {
+   "id": "continued_spread",
+   "probability": 0.114,
+   "score": 3.0,
+   "title": "Fire keeps spreading into new cells"
+  },
+  {
+   "id": "fuel_burnout",
+   "probability": 0.0419,
+   "score": 2.0,
+   "title": "Concentrated burn consumes its fuel and dies out"
+  },
+  {
+   "id": "sustained_suppression",
+   "probability": 0.0016,
+   "score": -1.25,
+   "title": "Fires go out and stay out"
+  }
+ ],
+ "model_round": {
+  "agreement": null,
+  "model": "muse-spark-1.2-contributor",
+  "reason": "--model-round off",
+  "request_hash": null,
+  "status": "skipped"
+ },
+ "prediction": "nepal_cascade_demo",
+ "probability_semantics": "support strength from pre-cutoff evidence only; NOT calibrated frequency",
+ "prompt_audit": {
+  "forbidden_tokens_checked": 20,
+  "prompt_sha256": "4f6f8b183d1d343c1c544a0deb9a6185a8de32d996cd24830881e160b5016d4d",
+  "violations": []
+ },
+ "verdict": "Pre-cutoff evidence most supports 'Suppression wins in late September, then peat restarts' (support 84%). Probabilities are support strengths, not forecasts."
+}

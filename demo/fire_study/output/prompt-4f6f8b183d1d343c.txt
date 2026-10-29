@@ -1,0 +1,14 @@
+Context: a peat-fire detection survey, five pre-cutoff days, anonymous grid cells. Below is the evidence ledger (pre-cutoff aggregates only).
+Candidate mechanisms (hypotheses to score, not facts):
+- suppression_then_restart: Suppression wins in late September, then peat restarts
+- sustained_suppression: Fires go out and stay out
+- continued_spread: Fire keeps spreading into new cells
+- fuel_burnout: Concentrated burn consumes its fuel and dies out
+Ledger facts:
+- FF1_total_detections: 6142 VIIRS detections predate the cutoff
+- FF2_burn_days: 5 distinct burn days in the window
+- FF3_cells_with_fire: fire present in 30 grid cells
+- FF4_hotspot_clumping: 6126 detections clumped near hot cells (>=3 detections)
+- FF5_unbroken_run: longest gap between burn days: {'n_total': 6142, 'n_dated': 6142, 'n_distinct': 5, 'span_s': 4.0, 'max_gap_s': 1.0} days
+- FF6_study_box: study box present as context (no time signal)
+Task: rank every candidate mechanism by how strongly this evidence alone supports it, from strongest to weakest. Reply with JSON only: {"ranking": [{"mechanism": id, "cites": [fact ids]}]}. Cite only the ledger facts above. Assert no outcome as fact.

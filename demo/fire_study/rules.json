@@ -1,0 +1,169 @@
+{
+ "activation": {
+  "FF1_total_detections": "count > 0",
+  "FF2_burn_days": "distinct days >= 5",
+  "FF3_cells_with_fire": "count > 0",
+  "FF4_hotspot_clumping": "clumped >= 3",
+  "FF5_unbroken_run": "distinct days >= 1 (informative value: longest gap, days)",
+  "FF6_study_box": "area_m2 > 0 (context only, always active)"
+ },
+ "caution_prior": {
+  "mechanism": "sustained_suppression",
+  "rationale": "Absence of post-cutoff evidence favors restraint: with only a five-day pre-cutoff window, the study must earn an alarming ranking from positive evidence, not from the absence of contradiction.",
+  "weight": 0.5
+ },
+ "cutoff": {
+  "description": "Prediction world ends 2026-09-20 (max evidence date in the FIRMS file, derived from the data at curation time, never typed into prediction code). Everything after that date is ground truth and is unreadable from the prediction path.",
+  "label": "pre-Sep-20"
+ },
+ "facts": {
+  "FF1_total_detections": {
+   "description": "Count of VIIRS detections on or before the cutoff.",
+   "weight": 1.0
+  },
+  "FF2_burn_days": {
+   "description": "Distinct burn days in the window (persistence signal).",
+   "weight": 1.0
+  },
+  "FF3_cells_with_fire": {
+   "description": "Grid cells holding at least one detection (footprint count).",
+   "weight": 1.0
+  },
+  "FF4_hotspot_clumping": {
+   "description": "Detections within hotspot distance of a hot cell (concentration signal; the lead evidence, as F4 was for flood).",
+   "weight": 2.0
+  },
+  "FF5_unbroken_run": {
+   "description": "Longest gap between burn days, in days (continuity signal).",
+   "weight": 1.0
+  },
+  "FF6_study_box": {
+   "description": "Study-box area (context only: the box is drawn from pre-cutoff detections and carries no time signal).",
+   "weight": 0.25
+  }
+ },
+ "ledger_spec": {
+  "facts": {
+   "FF1_total_detections": {
+    "format": ".0f",
+    "op": "count",
+    "params": {
+     "min_count": 1,
+     "role": "detections"
+    },
+    "text": "{value} VIIRS detections predate the cutoff"
+   },
+   "FF2_burn_days": {
+    "op": "time_stats",
+    "params": {
+     "min_distinct": 5,
+     "role": "detections",
+     "time_field": "day"
+    },
+    "text": "{value[n_distinct]} distinct burn days in the window"
+   },
+   "FF3_cells_with_fire": {
+    "format": ".0f",
+    "op": "count",
+    "params": {
+     "min_count": 1,
+     "role": "cells"
+    },
+    "text": "fire present in {value} grid cells"
+   },
+   "FF4_hotspot_clumping": {
+    "format": ".0f",
+    "op": "cluster",
+    "params": {
+     "distance_m": 187.5,
+     "min_features": 3,
+     "ref_filter": {
+      "property": "hot",
+      "value": true
+     },
+     "ref_role": "cells",
+     "source_role": "detections"
+    },
+    "text": "{value} detections clumped near hot cells (>=3 detections)"
+   },
+   "FF5_unbroken_run": {
+    "format": ".1f",
+    "op": "time_stats",
+    "params": {
+     "min_distinct": 1,
+     "role": "detections",
+     "scale": 86400.0,
+     "time_field": "day"
+    },
+    "text": "longest gap between burn days: {value} days"
+   },
+   "FF6_study_box": {
+    "format": ".0f",
+    "op": "area_sum",
+    "params": {
+     "role": "boundary"
+    },
+    "text": "study box present as context (no time signal)"
+   }
+  }
+ },
+ "mechanisms": [
+  {
+   "id": "suppression_then_restart",
+   "opposes": [],
+   "prior": 1.0,
+   "supports": [
+    "FF2_burn_days",
+    "FF4_hotspot_clumping",
+    "FF5_unbroken_run"
+   ],
+   "title": "Suppression wins in late September, then peat restarts"
+  },
+  {
+   "id": "sustained_suppression",
+   "opposes": [
+    "FF2_burn_days",
+    "FF4_hotspot_clumping"
+   ],
+   "prior": 1.0,
+   "supports": [
+    "FF6_study_box"
+   ],
+   "title": "Fires go out and stay out"
+  },
+  {
+   "id": "continued_spread",
+   "opposes": [],
+   "prior": 1.0,
+   "supports": [
+    "FF1_total_detections",
+    "FF3_cells_with_fire"
+   ],
+   "title": "Fire keeps spreading into new cells"
+  },
+  {
+   "id": "fuel_burnout",
+   "opposes": [
+    "FF2_burn_days"
+   ],
+   "prior": 1.0,
+   "supports": [
+    "FF4_hotspot_clumping"
+   ],
+   "title": "Concentrated burn consumes its fuel and dies out"
+  }
+ ],
+ "meta": {
+  "frozen": "2026-10-29, human-authored (no live key for a setup round; a live setup rerun will confirm or revise as v2). After that moment, changing any value requires a new tag and a full re-run.",
+  "note": "HUMAN-PROPOSED BEFORE THE COMPUTE RUN. Weights mirror the flood scheme (priors 1.0, lead concentration fact 2.0, context 0.25, caution 0.5 on the null). The ranking that comes out is accepted as-is against ground truth; tuning weights to move it is forbidden."
+ },
+ "prompt_contract": {
+  "cluster_fact": "FF4_hotspot_clumping",
+  "fallback_mode": "support-words",
+  "headline": "Kalimantan fire study, FIRMS detections to {cutoff}, masked later days held out"
+ },
+ "scoring": {
+  "method": "score(m) = prior(m) + caution_prior(m) + sum(weight(f) for f in supports(m) if active(f)) - sum(weight(f) for f in opposes(m) if active(f)); probabilities = softmax(scores), reported as support strength, not calibrated frequency",
+  "softmax": true
+ }
+}

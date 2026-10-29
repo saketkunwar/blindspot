@@ -11,8 +11,8 @@ Redaction is structural, not promised:
   in ``card.json`` under ``redaction_map``, which never enters a prompt.
 - ISO date substrings in value labels (e.g. provenance tags such as
   a `source` field) are redacted to `[date]` before the card is built;
-  a date surviving redaction is a fail-closed error.
-- Pre-cutoff time range is reported only when the damage role still
+  a date escaping redaction is a fail-closed error.
+- Pre-cutoff time range is reported only when the primary role still
   carries the domain's time field; stripped inputs report ``null``
   (honest absence, not zero).
 
@@ -23,7 +23,6 @@ so the card is checked by the same gate as everything else.
 from __future__ import annotations
 
 import argparse
-import datetime as _dt
 import hashlib
 import json
 import pathlib
@@ -110,7 +109,6 @@ def build_card(domain: dict, inputs_dir: pathlib.Path) -> dict:
     redacted = {role: redact_role(ri) for role, ri in inv.items()}
     time_field = (domain.get("cutoff") or {}).get("time_field")
     return {"domain": domain.get("domain_id"),
-            "generated_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
             "roles": redacted,
             "time_field": time_field,
             "time_range": None,
@@ -121,7 +119,7 @@ def build_card(domain: dict, inputs_dir: pathlib.Path) -> dict:
 
 def card_text(card: dict) -> str:
     lines = [f"Study context for domain {card['domain']!r}: one pre-cutoff snapshot.",
-             "Anonymous reaches only; tributary names withheld as tokens.",
+             "Anonymous areas only; place names withheld as tokens.",
              "Role inventory:"]
     for role, ri in card["roles"].items():
         lines.append(

@@ -1,0 +1,14 @@
+{
+ "as_of_label": "pre-2026-09-20",
+ "cutoff_derivation": "max evidence date in the FIRMS file",
+ "cutoff_value": "2026-09-20T23:59:59Z",
+ "sources": {
+  "data/fire_kalimantan/firms_kalimantan_c.json": "62880f99f2425c18b311b4c7ab402b72b730bafd6bc31ab8083a5f0e57616364"
+ },
+ "filter": "kept detections on or before cutoff; day labels retained because multi-day spread is the phenomenon (unlike the single-snapshot flood); card redacts dates from prompts",
+ "counts": {
+  "detections": 6142,
+  "days": 5,
+  "cells": 30
+ }
+}

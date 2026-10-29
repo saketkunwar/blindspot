@@ -1,0 +1,60 @@
+Study context for domain 'river_valley_flood': one pre-cutoff snapshot.
+Anonymous reaches only; tributary names withheld as tokens.
+Role inventory:
+- damage: 2092 features; geometries {"LineString": 1975, "Point": 73, "Polygon": 44}; properties {"feature_type": "str", "src_id": "str"}
+  - feature_type: aeroway, amenity, barrier, bridge, building, building part, land use, leisure, man made, natural, other, power ...
+- network: 400 features; geometries {"LineString": 301, "Point": 4, "Polygon": 95}; properties {"adm0_name": "str", "adm0_pcode": "str", "adm1_name": "str", "adm1_pcode": "str", "adm2_name": "str", "adm2_pcode": "str", "adm3_name": "str", "adm3_pcode": "str", "adm4_name": "NoneType", "adm4_pcode": "NoneType", "blockage": "NoneType", "covered": "NoneType", "depth": "NoneType", "id": "str", "layer": "NoneType+str", "name": "NoneType+str", "name_en": "NoneType+str", "name_latin": "NoneType+str", "name_ne": "NoneType+str", "natural_class": "NoneType+str", "source": "NoneType+str", "status": "str", "tunnel": "NoneType+str", "water": "NoneType+str", "waterway": "NoneType+str", "width": "NoneType"}
+  - name: T-1, T-10, T-11, T-12, T-13, T-14, T-15, T-16, T-17, T-18, T-19, T-2 ...
+  - name_en: T-13, T-22, T-25, T-26, T-40, T-41, T-42, T-43, T-44
+  - name_ne: T-13, T-34, T-35, T-36, T-37, T-45, T-46, T-47, T-48, T-49
+  - status: Destroyed, Standing
+  - waterway: None, canal, check_dam, construction, dam, ditch, river, stream, tidal_channel, tunnel, waterfall, weir
+  - covered: None
+  - width: None
+  - depth: None
+  - layer: -1, 1, None
+  - blockage: None
+  - tunnel: None, culvert, flooded, yes
+  - natural_class: None, water
+  - water: None, basin, canal, pond, reservoir, river
+  - source: Bing, Bing 2014, Digital Globe,[date], Mapbox satellite B&W images, Nepa Maps, None, bing, estimated;landsat;survey, extrapolation, Bing Sat, landsat
+  - adm0_pcode: NPL
+  - adm0_name: T-50
+  - adm1_pcode: NP03, NP04
+  - adm1_name: T-51, T-52
+  - adm2_pcode: NP0328, NP0329, NP0330, NP0335, NP0436, NP0440
+  - adm2_name: T-53, T-54, T-55, T-56, T-57, T-58
+  - adm3_pcode: NP0328301, NP0328302, NP0328402, NP0328403, NP0329401, NP0329402, NP0329403, NP0329404, NP0330406, NP0330407, NP0330408, NP0330409 ...
+  - adm3_name: T-52, T-59, T-60, T-61, T-62, T-63, T-64, T-65, T-66, T-67, T-68, T-69 ...
+  - adm4_pcode: None
+  - adm4_name: T-13
+  - name_latin: T-1, T-10, T-11, T-12, T-13, T-14, T-15, T-16, T-17, T-18, T-19, T-2 ...
+- boundary: 1 features; geometries {"Polygon": 1}; properties {}
+- target: 2 features; geometries {"LineString": 2}; properties {"adm0_name": "str", "adm0_pcode": "str", "adm1_name": "str", "adm1_pcode": "str", "adm2_name": "str", "adm2_pcode": "str", "adm3_name": "str", "adm3_pcode": "str", "adm4_name": "NoneType", "adm4_pcode": "NoneType", "blockage": "NoneType", "covered": "NoneType", "depth": "NoneType", "id": "str", "layer": "NoneType", "name": "str", "name_en": "NoneType", "name_latin": "str", "name_ne": "NoneType", "natural_class": "NoneType", "source": "str", "status": "str", "tunnel": "NoneType", "water": "NoneType", "waterway": "str", "width": "NoneType"}
+  - id: way/329416172, way/809865765
+  - name: T-5
+  - name_en: T-13
+  - name_ne: T-13
+  - status: Standing
+  - waterway: river
+  - covered: None
+  - width: None
+  - depth: None
+  - layer: None
+  - blockage: None
+  - tunnel: None
+  - natural_class: None
+  - water: None
+  - source: Nepa Maps
+  - adm0_pcode: NPL
+  - adm0_name: T-50
+  - adm1_pcode: NP03
+  - adm1_name: T-51
+  - adm2_pcode: NP0329
+  - adm2_name: T-57
+  - adm3_pcode: NP0329401
+  - adm3_name: T-59
+  - adm4_pcode: None
+  - adm4_name: T-13
+  - name_latin: T-5
+Time: timestamps stripped at curation; no time signal in curated inputs

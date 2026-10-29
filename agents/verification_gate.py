@@ -3,7 +3,7 @@
 Every relation code, number, and entity name in a brief is checked against
 the ledger. Strip mode removes offending statements (recording why); block
 mode rejects the whole brief on the first unverified item. An empty ledger
-verifies nothing, so every annotated statement is stripped and the brief
+establishes no claim, so every annotated statement is stripped and the brief
 comes back number-free.
 """
 from __future__ import annotations

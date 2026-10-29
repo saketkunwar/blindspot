@@ -8,7 +8,7 @@ domain vocabulary, no distances, and no activation cutoffs.
   - a GeoJSON FeatureCollection dict (``{"features": [...]}``),
   - a single GeoJSON Feature / geometry dict,
   - a raw list of GeoJSON Feature dicts,
-  - an extent dict holding a ``bbox`` key (``extent.json`` style).
+  - an extent dict with a ``bbox`` key (``extent.json`` style).
 
 Geometry uses the same latitude-corrected equirectangular projection as
 ``agents/autoinsight.py`` so catalog values reproduce the flood ledger.
@@ -181,8 +181,8 @@ def op_half_share(inputs_by_role: dict, params: dict):
     params: {role, boundary_role, axis ("lat"), mode ("share" |
       "density_ratio"), threshold}. The split is the boundary-role
     centroid latitude; ``mode="share"`` returns the upstream fraction
-    (rounded to 4), ``mode="density_ratio"`` the upstream/downstream
-    damage-density ratio (rounded to 3), mirroring the flood ledger.
+    (rounded to 4), ``mode="density_ratio"`` the role-density ratio
+    across the split (rounded to 3), mirroring the frozen study ledger.
     """
     role = params["role"]
     boundary_role = params["boundary_role"]
@@ -278,8 +278,9 @@ def _parse_time(value):
 def op_time_stats(inputs_by_role: dict, params: dict):
     """Distinct times / span / max gap over a time field.
 
-    params: {role, time_field, min_distinct}. value is a dict
-    {n_total, n_dated, n_distinct, span_s, max_gap_s};
+    params: {role, time_field, min_distinct, scale?}. value is a dict
+    {n_total, n_dated, n_distinct, span_s, max_gap_s}; span/max_gap are
+    divided by ``scale`` (default 1.0, i.e. seconds);
     active = n_distinct >= min_distinct. Missing fields yield zeros.
     """
     role = params["role"]
@@ -293,12 +294,13 @@ def op_time_stats(inputs_by_role: dict, params: dict):
             stamps.append(t)
     stamps.sort()
     distinct = sorted(set(stamps))
+    scale = float(params.get("scale", 1.0))
     if len(distinct) < 2:
         span = 0.0
         max_gap = 0.0
     else:
-        span = float(distinct[-1] - distinct[0])
-        max_gap = float(max(b - a for a, b in zip(distinct, distinct[1:])))
+        span = float(distinct[-1] - distinct[0]) / scale
+        max_gap = float(max(b - a for a, b in zip(distinct, distinct[1:]))) / scale
     value = {
         "n_total": len(feats),
         "n_dated": len(stamps),

@@ -1,0 +1,533 @@
+{
+ "domain": "river_valley_flood",
+ "note": "timestamps stripped at curation; no time signal in curated inputs",
+ "redaction_map": {
+  "Aamachhodingmo": "T-59",
+  "Aanbu Khaireni": "T-60",
+  "Aqueduct (2 Barrel) crossing over Trishuli": "T-1",
+  "Bagmati": "T-51",
+  "Balancing Resurvoir": "T-2",
+  "Belkotgadhi": "T-61",
+  "Benighat Rorang": "T-62",
+  "Bharatpur": "T-63",
+  "Bhote Koshi": "T-40",
+  "Bidur": "T-64",
+  "Briddhim Khola": "T-3",
+  "Budhi Gandaki": "T-4",
+  "Chilime Khola": "T-5",
+  "Chitawan": "T-53",
+  "Dhading": "T-54",
+  "Falaakhu River": "T-6",
+  "Gajuri": "T-65",
+  "Galchhi": "T-66",
+  "Gandaki": "T-52",
+  "Ghatte Khola": "T-41",
+  "Gorkha": "T-55",
+  "Gosaikunda": "T-67",
+  "Gyirong Zangbo": "T-42",
+  "Ichchha Kamana": "T-68",
+  "Jwalamukhi": "T-69",
+  "Kalika": "T-70",
+  "Kalphu River": "T-7",
+  "Kispang": "T-71",
+  "Koshi Khola": "T-8",
+  "Langtang Khola": "T-43",
+  "Lende Khola": "T-44",
+  "Mahesh-Khola": "T-9",
+  "Mailung Khola": "T-10",
+  "Marsyangdi": "T-11",
+  "Mowa Khola": "T-12",
+  "Nepal": "T-50",
+  "None": "T-13",
+  "Nuwakot": "T-56",
+  "Palpuchhe Khola": "T-14",
+  "Pasang Murrfu canal": "T-15",
+  "Phenlun Khola": "T-16",
+  "Rasuwa": "T-57",
+  "Salankhu Khola": "T-17",
+  "Samari Khola": "T-18",
+  "Shahid Lakhan": "T-72",
+  "Siddhalek": "T-73",
+  "Simlun Khola": "T-19",
+  "Tadi Khola": "T-20",
+  "Tanahu": "T-58",
+  "Tarakeshwor": "T-74",
+  "Thakre": "T-75",
+  "Thopal Khola": "T-21",
+  "Trishuli Ganga River": "T-22",
+  "Trishuli Hydro Power Canal": "T-23",
+  "Trishuli Hydro Power Dam": "T-24",
+  "Trishuli River": "T-25",
+  "Trisuli": "T-26",
+  "Trisuli Khola": "T-27",
+  "Upper Trishuli 3 Hydropower Project": "T-28",
+  "Upper Trishuli 3 Hydropower Station": "T-29",
+  "Upper Trishuli Hydropower Project": "T-30",
+  "Upper Trishuli-3 Hydropower Project": "T-31",
+  "Upper Trishuli-3 Surge Tank": "T-32",
+  "Upper Trishuli-3B Hydropower Project": "T-33",
+  "Uttargaya": "T-76",
+  "trishulii ndii": "T-77",
+  "\u0918\u091f\u094d\u091f\u0947 \u0916\u094b\u0932\u093e": "T-34",
+  "\u0924\u094d\u0930\u093f\u0936\u0941\u0932\u0940 \u0928\u0926\u0940": "T-35",
+  "\u0924\u094d\u0930\u093f\u0936\u0942\u0932\u0940 \u0917\u0902\u0917\u093e \u0928\u0926\u0940": "T-45",
+  "\u092b\u0932\u093e\u0916\u0941 \u0916\u094b\u0932\u093e": "T-46",
+  "\u092d\u094b\u091f\u0947 \u0915\u094b\u0936\u0940": "T-36",
+  "\u092e\u094b\u0935\u093e \u0916\u094b\u0932\u093e": "T-47",
+  "\u0932\u093e\u0919\u091f\u093e\u0919 \u0916\u094b\u0932\u093e": "T-37",
+  "\u0932\u0947\u0928\u094d\u0921\u0947 \u0916\u094b\u0932\u093e": "T-48",
+  "\u0938\u0932\u093e\u0928\u094d\u0916\u0941 \u0916\u094b\u0932\u093e": "T-49",
+  "\u4e1c\u6797\u85cf\u5e03": "T-38",
+  "\u5409\u9686\u85cf\u5e03": "T-39"
+ },
+ "roles": {
+  "boundary": {
+   "count": 1,
+   "geometry_types": {
+    "Polygon": 1
+   },
+   "property_keys": {},
+   "role": "boundary",
+   "value_labels": {}
+  },
+  "damage": {
+   "count": 2092,
+   "geometry_types": {
+    "LineString": 1975,
+    "Point": 73,
+    "Polygon": 44
+   },
+   "property_keys": {
+    "feature_type": "str",
+    "src_id": "str"
+   },
+   "role": "damage",
+   "value_labels": {
+    "feature_type": [
+     "aeroway",
+     "amenity",
+     "barrier",
+     "bridge",
+     "building",
+     "building part",
+     "land use",
+     "leisure",
+     "man made",
+     "natural",
+     "other",
+     "power",
+     "road",
+     "shop",
+     "tourism",
+     "tunnel",
+     "waterway"
+    ]
+   }
+  },
+  "network": {
+   "count": 400,
+   "geometry_types": {
+    "LineString": 301,
+    "Point": 4,
+    "Polygon": 95
+   },
+   "property_keys": {
+    "adm0_name": "str",
+    "adm0_pcode": "str",
+    "adm1_name": "str",
+    "adm1_pcode": "str",
+    "adm2_name": "str",
+    "adm2_pcode": "str",
+    "adm3_name": "str",
+    "adm3_pcode": "str",
+    "adm4_name": "NoneType",
+    "adm4_pcode": "NoneType",
+    "blockage": "NoneType",
+    "covered": "NoneType",
+    "depth": "NoneType",
+    "id": "str",
+    "layer": "NoneType+str",
+    "name": "NoneType+str",
+    "name_en": "NoneType+str",
+    "name_latin": "NoneType+str",
+    "name_ne": "NoneType+str",
+    "natural_class": "NoneType+str",
+    "source": "NoneType+str",
+    "status": "str",
+    "tunnel": "NoneType+str",
+    "water": "NoneType+str",
+    "waterway": "NoneType+str",
+    "width": "NoneType"
+   },
+   "role": "network",
+   "value_labels": {
+    "adm0_name": [
+     "T-50"
+    ],
+    "adm0_pcode": [
+     "NPL"
+    ],
+    "adm1_name": [
+     "T-51",
+     "T-52"
+    ],
+    "adm1_pcode": [
+     "NP03",
+     "NP04"
+    ],
+    "adm2_name": [
+     "T-53",
+     "T-54",
+     "T-55",
+     "T-56",
+     "T-57",
+     "T-58"
+    ],
+    "adm2_pcode": [
+     "NP0328",
+     "NP0329",
+     "NP0330",
+     "NP0335",
+     "NP0436",
+     "NP0440"
+    ],
+    "adm3_name": [
+     "T-52",
+     "T-59",
+     "T-60",
+     "T-61",
+     "T-62",
+     "T-63",
+     "T-64",
+     "T-65",
+     "T-66",
+     "T-67",
+     "T-68",
+     "T-69",
+     "T-70",
+     "T-71",
+     "T-72",
+     "T-73",
+     "T-74",
+     "T-75",
+     "T-76"
+    ],
+    "adm3_pcode": [
+     "NP0328301",
+     "NP0328302",
+     "NP0328402",
+     "NP0328403",
+     "NP0329401",
+     "NP0329402",
+     "NP0329403",
+     "NP0329404",
+     "NP0330406",
+     "NP0330407",
+     "NP0330408",
+     "NP0330409",
+     "NP0330410",
+     "NP0330411",
+     "NP0335101",
+     "NP0335401",
+     "NP0436408",
+     "NP0436409",
+     "NP0440405"
+    ],
+    "adm4_name": [
+     "T-13"
+    ],
+    "adm4_pcode": [
+     "None"
+    ],
+    "blockage": [
+     "None"
+    ],
+    "covered": [
+     "None"
+    ],
+    "depth": [
+     "None"
+    ],
+    "layer": [
+     "-1",
+     "1",
+     "None"
+    ],
+    "name": [
+     "T-1",
+     "T-10",
+     "T-11",
+     "T-12",
+     "T-13",
+     "T-14",
+     "T-15",
+     "T-16",
+     "T-17",
+     "T-18",
+     "T-19",
+     "T-2",
+     "T-20",
+     "T-21",
+     "T-22",
+     "T-23",
+     "T-24",
+     "T-25",
+     "T-26",
+     "T-27",
+     "T-28",
+     "T-29",
+     "T-3",
+     "T-30",
+     "T-31",
+     "T-32",
+     "T-33",
+     "T-34",
+     "T-35",
+     "T-36",
+     "T-37",
+     "T-38",
+     "T-39",
+     "T-4",
+     "T-5",
+     "T-6",
+     "T-7",
+     "T-8",
+     "T-9"
+    ],
+    "name_en": [
+     "T-13",
+     "T-22",
+     "T-25",
+     "T-26",
+     "T-40",
+     "T-41",
+     "T-42",
+     "T-43",
+     "T-44"
+    ],
+    "name_latin": [
+     "T-1",
+     "T-10",
+     "T-11",
+     "T-12",
+     "T-13",
+     "T-14",
+     "T-15",
+     "T-16",
+     "T-17",
+     "T-18",
+     "T-19",
+     "T-2",
+     "T-20",
+     "T-21",
+     "T-22",
+     "T-23",
+     "T-24",
+     "T-25",
+     "T-26",
+     "T-27",
+     "T-28",
+     "T-29",
+     "T-3",
+     "T-30",
+     "T-31",
+     "T-32",
+     "T-33",
+     "T-4",
+     "T-40",
+     "T-41",
+     "T-42",
+     "T-43",
+     "T-44",
+     "T-5",
+     "T-6",
+     "T-7",
+     "T-77",
+     "T-8",
+     "T-9"
+    ],
+    "name_ne": [
+     "T-13",
+     "T-34",
+     "T-35",
+     "T-36",
+     "T-37",
+     "T-45",
+     "T-46",
+     "T-47",
+     "T-48",
+     "T-49"
+    ],
+    "natural_class": [
+     "None",
+     "water"
+    ],
+    "source": [
+     "Bing",
+     "Bing 2014",
+     "Digital Globe,[date]",
+     "Mapbox satellite B&W images",
+     "Nepa Maps",
+     "None",
+     "bing",
+     "estimated;landsat;survey",
+     "extrapolation, Bing Sat",
+     "landsat"
+    ],
+    "status": [
+     "Destroyed",
+     "Standing"
+    ],
+    "tunnel": [
+     "None",
+     "culvert",
+     "flooded",
+     "yes"
+    ],
+    "water": [
+     "None",
+     "basin",
+     "canal",
+     "pond",
+     "reservoir",
+     "river"
+    ],
+    "waterway": [
+     "None",
+     "canal",
+     "check_dam",
+     "construction",
+     "dam",
+     "ditch",
+     "river",
+     "stream",
+     "tidal_channel",
+     "tunnel",
+     "waterfall",
+     "weir"
+    ],
+    "width": [
+     "None"
+    ]
+   }
+  },
+  "target": {
+   "count": 2,
+   "geometry_types": {
+    "LineString": 2
+   },
+   "property_keys": {
+    "adm0_name": "str",
+    "adm0_pcode": "str",
+    "adm1_name": "str",
+    "adm1_pcode": "str",
+    "adm2_name": "str",
+    "adm2_pcode": "str",
+    "adm3_name": "str",
+    "adm3_pcode": "str",
+    "adm4_name": "NoneType",
+    "adm4_pcode": "NoneType",
+    "blockage": "NoneType",
+    "covered": "NoneType",
+    "depth": "NoneType",
+    "id": "str",
+    "layer": "NoneType",
+    "name": "str",
+    "name_en": "NoneType",
+    "name_latin": "str",
+    "name_ne": "NoneType",
+    "natural_class": "NoneType",
+    "source": "str",
+    "status": "str",
+    "tunnel": "NoneType",
+    "water": "NoneType",
+    "waterway": "str",
+    "width": "NoneType"
+   },
+   "role": "target",
+   "value_labels": {
+    "adm0_name": [
+     "T-50"
+    ],
+    "adm0_pcode": [
+     "NPL"
+    ],
+    "adm1_name": [
+     "T-51"
+    ],
+    "adm1_pcode": [
+     "NP03"
+    ],
+    "adm2_name": [
+     "T-57"
+    ],
+    "adm2_pcode": [
+     "NP0329"
+    ],
+    "adm3_name": [
+     "T-59"
+    ],
+    "adm3_pcode": [
+     "NP0329401"
+    ],
+    "adm4_name": [
+     "T-13"
+    ],
+    "adm4_pcode": [
+     "None"
+    ],
+    "blockage": [
+     "None"
+    ],
+    "covered": [
+     "None"
+    ],
+    "depth": [
+     "None"
+    ],
+    "id": [
+     "way/329416172",
+     "way/809865765"
+    ],
+    "layer": [
+     "None"
+    ],
+    "name": [
+     "T-5"
+    ],
+    "name_en": [
+     "T-13"
+    ],
+    "name_latin": [
+     "T-5"
+    ],
+    "name_ne": [
+     "T-13"
+    ],
+    "natural_class": [
+     "None"
+    ],
+    "source": [
+     "Nepa Maps"
+    ],
+    "status": [
+     "Standing"
+    ],
+    "tunnel": [
+     "None"
+    ],
+    "water": [
+     "None"
+    ],
+    "waterway": [
+     "river"
+    ],
+    "width": [
+     "None"
+    ]
+   }
+  }
+ },
+ "time_field": "destruction_interval_end",
+ "time_range": null
+}

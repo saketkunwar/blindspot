@@ -1,0 +1,14 @@
+Study context for domain 'peat_fire_kalimantan': one pre-cutoff snapshot.
+Anonymous reaches only; tributary names withheld as tokens.
+Role inventory:
+- detections: 6142 features; geometries {"Point": 6142}; properties {"day": "str", "src_id": "str"}
+  - day: [date], [date], [date], [date], [date]
+- cells: 30 features; geometries {"Polygon": 30}; properties {"cell_id": "str", "counts": "dict", "days": "list", "hot": "bool", "total": "int"}
+  - cell_id: 112.0,-0.5, 112.0,-1.0, 112.0,-1.5, 112.0,-2.0, 112.0,-2.5, 112.0,-3.0, 112.5,-0.5, 112.5,-1.0, 112.5,-1.5, 112.5,-2.0, 112.5,-2.5, 112.5,-3.0 ...
+  - days: ['[date]', '[date]', '[date]', '[date]', '[date]'], ['[date]', '[date]', '[date]', '[date]'], ['[date]', '[date]', '[date]', '[date]'], ['[date]', '[date]', '[date]'], ['[date]', '[date]', '[date]', '[date]'], ['[date]', '[date]', '[date]'], ['[date]', '[date]', '[date]'], ['[date]', '[date]'], ['[date]', '[date]'], ['[date]'], ['[date]']
+  - counts: {'[date]': 1, '[date]': 84, '[date]': 105}, {'[date]': 13, '[date]': 46, '[date]': 102, '[date]': 201, '[date]': 171}, {'[date]': 2, '[date]': 34, '[date]': 96, '[date]': 519}, {'[date]': 5, '[date]': 2, '[date]': 23, '[date]': 47, '[date]': 33}, {'[date]': 7, '[date]': 18, '[date]': 95, '[date]': 2}, {'[date]': 1, '[date]': 46, '[date]': 131}, {'[date]': 10, '[date]': 6, '[date]': 86, '[date]': 54}, {'[date]': 101, '[date]': 68, '[date]': 243, '[date]': 70}, {'[date]': 186, '[date]': 248, '[date]': 548, '[date]': 233}, {'[date]': 2, '[date]': 2, '[date]': 190, '[date]': 6}, {'[date]': 28, '[date]': 44, '[date]': 366, '[date]': 78}, {'[date]': 3, '[date]': 64, '[date]': 169, '[date]': 50} ...
+  - total: 1, 110, 113, 1215, 122, 156, 178, 190, 2, 200, 286, 3 ...
+  - hot: False, True
+- timeline: 0 features; geometries {}; properties {}
+- boundary: 1 features; geometries {"Polygon": 1}; properties {}
+Time: timestamps stripped at curation; no time signal in curated inputs

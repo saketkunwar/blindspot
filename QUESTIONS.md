@@ -133,3 +133,31 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
 - `demo/nepal_cascade/inputs/waterways.geojson` carries a provenance date in one `source` value (`Digital Globe,2015-05-03` on `way/343295489`). Curation copies waterways verbatim, so the Context Card inventory saw an ISO date.
 - `agents/context_card.py::build_card` treated any ISO date in the inventory as contamination and aborted (`SystemExit`), failing 3/3 card tests. Per `docs/FLEX_NS_PLAN.md` Step 3 the card must redact dates from prompt text, not crash on provenance metadata.
 - Fix: redact ISO substrings in value labels to `[date]` before building the card; fail-closed guard now checks the redacted card. `card_text` verified date-free by the durable tests.
+
+## Demo 2 validation checks (2026-10-29, human framing)
+- The worry was fair: a system that grades its own homework is not
+  validation. So the Kalimantan fire study holds out real ground truth in
+  two independent ways, and the brief must still point at the right
+  outcome without ever seeing the held-out part.
+- Temporal check: the ledger only sees FIRMS detections up to 2026-09-20.
+  Everything after that date (the late-September restart) is locked away.
+  Computed top mechanism is suppression_then_restart at 0.84 support
+  (second: continued_spread at 0.11). The pre-cutoff pattern — a clean
+  multi-day gap followed by an unbroken run — already favours
+  "suppression wins, then peat restarts", which is exactly what the
+  held-out days confirm. Pass.
+- Spatial check: same frozen rules, but the eastern half of the map is
+  masked out (3,071 of 6,142 detections kept, west of median longitude).
+  Ranking is unchanged: suppression_then_restart still top at 0.84. The
+  probabilities are identical to four decimals because scoring depends
+  only on which facts are active, not their magnitudes — every gate still
+  passes on half the map, which is itself the finding: the fire signal is
+  spatially pervasive, not driven by one hotspot. Pass.
+- Engine honesty note: building the fire study exposed three gaps that
+  turned out to be engine limitations, not fire-specific needs, so they
+  were fixed in the closed op set and pinned by durable tests
+  (tests/properties/test_fact_generics.py): cluster can count against a
+  scoped cell list (ref_role/ref_filter), time_stats accepts a scale
+  divisor (seconds to days), and weights live inside facts entries so no
+  parallel block can drift. Flood regression is byte-clean
+  (top=impoundment_then_burst 0.9426, gate ALL PASS, judge 95 passed).

@@ -132,7 +132,7 @@ def network_reach_report(feats: list, network_fc: dict, target_geoms: list,
                          extent_geom: dict, split_lat: float,
                          near_m: float) -> dict:
     """Per-reach diagnostics: network size plus channel-adjacent share and
-    count of damage scoped to each reach. Additive: the frozen ledger path
+    count of role features scoped to each reach code. Additive: the frozen ledger path
     is untouched, so frozen briefs are byte-identical.
     """
     codes = tag_network_reaches(network_fc, target_geoms, split_lat, near_m)
@@ -156,6 +156,44 @@ def network_reach_report(feats: list, network_fc: dict, target_geoms: list,
             "n_network": sum(1 for c in codes if c == code),
             "near_share": share, "near_count": count}
     return report
+
+
+def _format_value(value, spec: str | None):
+    if spec is None or not isinstance(value, (int, float)):
+        return value
+    try:
+        return format(value, spec)
+    except (ValueError, TypeError):
+        return value
+
+
+def compute_ledger_from_spec(rules: dict, roles: dict) -> dict:
+    """Rules-driven ledger (P0 Step 6 catalog gap: exactly one new builder).
+
+    ``rules["ledger_spec"]["facts"]`` maps fact id -> {"op", "params",
+    "text", "format"?}: the op runs through the closed :mod:`engine.facts`
+    set, ``active`` comes from the op, and ``text`` is a template with
+    ``{value}`` (pre-formatted when ``format`` is given and the value is
+    numeric; dict values support ``{value[key]}``) plus static
+    ``params["text_args"]``. Roles are named by the study domain, so no
+    flood shape is assumed. The frozen ``compute_ledger`` path is
+    untouched.
+    """
+    spec = (rules.get("ledger_spec") or {}).get("facts", {})
+    if not spec:
+        raise ValueError("rules carry no ledger_spec.facts")
+    facts = {}
+    numbers = []
+    for fid, decl in spec.items():
+        value, active = _facts.evaluate(decl["op"], roles, decl.get("params", {}))
+        text_args = dict((decl.get("params") or {}).get("text_args", {}))
+        text = decl.get("text", "{value}").format(
+            value=_format_value(value, decl.get("format")), **text_args)
+        facts[fid] = {"value": value, "active": bool(active), "text": text}
+        if isinstance(value, (int, float)):
+            numbers.append(float(value))
+    diagnostics = {"spec_facts": sorted(facts)}
+    return {"facts": facts, "numbers": numbers, "diagnostics": diagnostics}
 
 
 def _resolve_geometry(rules: dict, domain=None) -> tuple[float, float, int]:
@@ -297,7 +335,7 @@ def _input_tokens(inputs_dir: pathlib.Path, rules: dict) -> set[str]:
         for w in _WORD_RE.findall(text):
             if w.lower() not in _ALLOW_WORDS and (w[0].isupper() or w.isupper()):
                 toks.add(w)
-    target = rules["cluster_rule"].get("target_value", "")
+    target = (rules.get("cluster_rule") or {}).get("target_value", "")
     for w in _WORD_RE.findall(str(target)):
         if w.lower() not in _ALLOW_WORDS:
             toks.add(w)
@@ -311,6 +349,28 @@ def build_prompt(rules, ledger) -> tuple[str, set[str]]:
         "Reaches are anonymous: Reach Alpha is upstream of the surveyed flood "
         "centroid, Reach Beta is downstream. Tributary T-1 is one named "
         "tributary reach whose name is withheld.",
+        "Candidate mechanisms (hypotheses to score, not facts):",
+    ]
+    for mech in rules["mechanisms"]:
+        lines.append(f"- {mech['id']}: {mech['title']}")
+    lines.append("Ledger facts:")
+    for fid, f in ledger["facts"].items():
+        lines.append(f"- {fid}: {f['text']}")
+    lines.append(
+        "Task: rank every candidate mechanism by how strongly this evidence "
+        "alone supports it, from strongest to weakest. Reply with JSON only: "
+        '{"ranking": [{"mechanism": id, "cites": [fact ids]}]}. '
+        "Cite only the ledger facts above. Assert no outcome as fact.")
+    return "\n".join(lines) + "\n", set()
+
+
+def build_prompt_from_spec(rules: dict, ledger: dict, domain: dict) -> tuple[str, set[str]]:
+    """Prediction prompt for rules-driven studies: domain framing plus the
+    ledger facts, same task contract as the frozen builder. No place names
+    or dates may enter through framing (audited like any other prompt).
+    """
+    lines = [
+        str(domain.get("prompt_framing", "")),
         "Candidate mechanisms (hypotheses to score, not facts):",
     ]
     for mech in rules["mechanisms"]:

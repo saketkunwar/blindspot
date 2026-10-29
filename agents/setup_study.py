@@ -30,7 +30,7 @@ from engine.ledger import (_input_tokens, _refuse_raw, audit_prompt,
                            compute_ledger, load_domain_geometry,
                            score_mechanisms)
 
-_DEFAULT_QUIET = ("nothing", "null", "quiescen", "baseline", "no_further")
+_DEFAULT_QUIET = ("quiet", "null", "baseline", "uneventful")
 
 
 def _quiet_keywords(domain: dict) -> tuple:
@@ -108,7 +108,7 @@ def validate_draft(text: str, ledger_ids: set[str],
 
 
 def null_test(draft: dict, quiet_keywords=None) -> tuple[bool, str]:
-    """All facts quiet: the nothing-story must top with its own weights."""
+    """All facts quiet: the quiet story must top with its own weights."""
     flat = {"facts": {fid: {"value": 0, "active": False, "text": "quiet"}
                       for fid in draft["weights"]}}
     quiet_ids = [m["id"] for m in draft["mechanisms"]

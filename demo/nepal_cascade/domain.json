@@ -35,6 +35,9 @@
       "min_features": 8
     }
   },
+  "reach_audit": {
+    "network_role": "network"
+  },
   "quiet_keywords": [
     "nothing",
     "quiescen",

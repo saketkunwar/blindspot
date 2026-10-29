@@ -1,0 +1,43 @@
+{
+  "domain_id": "peat_fire_kalimantan",
+  "ontology": "Domain: peatland fire detections (this is a fire study, not flood, not earthquake — frame accordingly). Processes such surveys consider include: hotspots burning out under suppression; smoldering peat surviving rain and restarting days later; spread into new grid cells downwind; containment holding at surveyed lines; flare-ups on previously quiet cells; or full cessation with no restart. These are vocabulary, not answers: you may adopt, adapt, or reject any of them, but your set must stay open and include a cessation story with real weight. Ground every weight in the ledger below, not in the vocabulary above.",
+  "prompt_framing": "Context: a peat-fire detection survey, five pre-cutoff days, anonymous grid cells. Below is the evidence ledger (pre-cutoff aggregates only).",
+  "cutoff": {
+    "rule": "max_date",
+    "time_field": "day"
+  },
+  "inputs": [
+    {
+      "role": "detections",
+      "path": "inputs/detections.geojson",
+      "kind": "featurecollection"
+    },
+    {
+      "role": "cells",
+      "path": "inputs/cells.geojson",
+      "kind": "featurecollection"
+    },
+    {
+      "role": "timeline",
+      "path": "inputs/timeline.json",
+      "kind": "timeline"
+    },
+    {
+      "role": "boundary",
+      "path": "inputs/extent.json",
+      "kind": "extent"
+    }
+  ],
+  "geometry": {
+    "hotspot_cluster_m": 187.5,
+    "min_detections": 3
+  },
+  "quiet_keywords": [
+    "cessation",
+    "extinguish",
+    "null",
+    "baseline",
+    "no_restart",
+    "stays_out"
+  ]
+}
