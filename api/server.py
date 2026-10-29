@@ -317,6 +317,12 @@ def flood_assets() -> JSONResponse:
             if not isinstance(f.get("geometry"), dict):
                 continue
             out.append({"id": f"{layer}:{i}", "geometry": f["geometry"]})
+    try:
+        ext = json.loads((root / "data" / "flood_nepal" / "flood_extent.geojson").read_text())["features"]
+        if ext and isinstance(ext[0].get("geometry"), dict):
+            out.append({"id": "flood-extent", "geometry": ext[0]["geometry"]})
+    except (OSError, json.JSONDecodeError, KeyError, IndexError) as e:
+        raise HTTPException(status_code=502, detail=f"flood extent unreadable: {e}")
     return JSONResponse({"assets": out})
 
 

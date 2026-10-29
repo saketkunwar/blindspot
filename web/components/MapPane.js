@@ -17,6 +17,7 @@ const KIND_COLORS = {
   must_be: "#5c5c5c",
   "fire cell": "#c2410c",
   selected: "#a33327",
+  "flood-extent": "#444444",
 };
 const FALLBACK_COLOR = "#666666";
 
@@ -103,6 +104,7 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
             "observed flood outline", KIND_COLORS["observed flood outline"],
             "may_be", KIND_COLORS.may_be, "must_be", KIND_COLORS.must_be,
             "fire cell", KIND_COLORS["fire cell"],
+            "flood-extent", KIND_COLORS["flood-extent"],
             FALLBACK_COLOR],
           "fill-opacity": 0.25,
         },

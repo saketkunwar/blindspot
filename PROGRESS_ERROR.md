@@ -415,6 +415,11 @@ so no gate could see it — the browser was the only oracle.
   the focused feature/cell with zoom capped, band stays as background.
   Lesson: plot bbox numbers of served geometries, not just their
   styling — no gate checked data extent.
+- `[plain]` Default band view still framed the whole circle. The assets
+  endpoint now also serves the observed flood outline as `flood-extent`
+  (geometry only); band views draw band + outline and fit the outline,
+  so load lands on Langtang valley with the band as background.
+  Feature clicks unchanged (fit the asset).
 - `[plain]` Console map and map-legibility round (reference:
   nepflood.vercel.app structure, our numbers only): base style now
   falls back (Carto → demotiles → visible message) with tile-error

@@ -53,11 +53,16 @@ export default function Console() {
       .map((geometry, i) => ({ type: "Feature",
         properties: { name: key, part: i }, geometry }));
   };
+  const extentFeat = useMemo(() => (assets["flood-extent"]
+    ? [{ type: "Feature", properties: { name: "flood-extent" }, geometry: assets["flood-extent"] }]
+    : []), [assets]);
   const layers = useMemo(() => {
     if (!flood || !sel) return [];
-    // Features resolve to their exact source geometry (`layer:index` id);
-    // the band stays as context. Claims show the fire grid (cell boxes).
-    if (sel.kind === "band") return bandOf(sel.id === "may_be" ? "may_be" : "must_be");
+    // Features resolve to their exact source geometry (`layer:index` id).
+    // Bands draw as context while the observed flood outline (Langtang)
+    // sets the viewport, so Uttarakhand never enters the frame.
+    // Claims show the fire grid (cell boxes).
+    if (sel.kind === "band") return [...bandOf(sel.id === "may_be" ? "may_be" : "must_be"), ...extentFeat];
     if (sel.kind === "feature") {
       const g = assets[sel.id];
       const hit = g ? [{ type: "Feature", properties: { name: "selected" }, geometry: g }] : [];
@@ -65,7 +70,7 @@ export default function Console() {
     }
     if (sel.kind === "claim") return fireCells;
     return [];
-  }, [flood, sel, fireCells, assets]);
+  }, [flood, sel, fireCells, assets, extentFeat]);
 
   const detail = useMemo(() => {
     if (!flood || !sel) return null;
@@ -142,7 +147,8 @@ export default function Console() {
         </div>
         <div className="mapwrap">
           <MapPane layers={layers} onStatus={setMapStatus}
-            focusId={sel?.kind === "feature" || sel?.kind === "claim" ? sel.id : undefined} />
+            focusId={sel?.kind === "band" ? "flood-extent"
+              : sel?.kind === "feature" ? sel.id : undefined} />
         </div>
       </div>
       <div className="pane pane-right">

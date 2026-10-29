@@ -67,3 +67,4 @@ def test_flood_assets_cover_act1_ids():
     ids = [f["id"] for f in cached["act1"]["features"]]
     assert len(ids) == 195 and set(ids) <= set(by_id)
     assert all(isinstance(g, dict) and g.get("type") for g in by_id.values())
+    assert by_id["flood-extent"]["type"] == "Polygon"
