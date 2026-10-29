@@ -427,6 +427,12 @@ so no gate could see it — the browser was the only oracle.
   verified headless here — shell, data flow, legend, and status are
   pixel-confirmed; paint needs the real browser that already paints
   the demo.
+- `[plain]` Root cause of dead bridge clicks (user-diagnosed: points
+  sometimes showed, lines never did): the highlight feature carried
+  no `properties.id`, so focus matching missed and the viewport fell
+  back to the whole band, where a 100 m bridge line is sub-pixel.
+  Points only "sometimes" showed because screen-space dots survive a
+  wrong zoom. Fix: the feature id rides along on the highlight.
 - `[plain]` Console map and map-legibility round (reference:
   nepflood.vercel.app structure, our numbers only): base style now
   falls back (Carto → demotiles → visible message) with tile-error

@@ -65,7 +65,11 @@ export default function Console() {
     if (sel.kind === "band") return [...bandOf(sel.id === "may_be" ? "may_be" : "must_be"), ...extentFeat];
     if (sel.kind === "feature") {
       const g = assets[sel.id];
-      const hit = g ? [{ type: "Feature", properties: { name: "selected" }, geometry: g }] : [];
+      // The id must ride along: MapPane focuses the feature whose
+      // properties.id matches, otherwise the viewport falls back to the
+      // whole band and a 100 m bridge line goes sub-pixel.
+      const hit = g ? [{ type: "Feature",
+        properties: { name: "selected", id: sel.id }, geometry: g }] : [];
       return [...bandOf("may_be"), ...hit];
     }
     if (sel.kind === "claim") return fireCells;
