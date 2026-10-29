@@ -135,6 +135,7 @@ export default function Console() {
           </button>
         ))}
         </>)}
+        <p className="meta">assets {Object.keys(assets).length} geometries · api {flood?.mode ?? "…"}</p>
       </div>
       <div className="pane-map">
         <div className="legend">
