@@ -388,6 +388,19 @@ so no gate could see it — the browser was the only oracle.
   the operator token). Pinned by a preflight + header test in
   `test_pages.py`. Lesson: serving tests need at least one Origin-header
   assertion per surface, or "served" only means "served to Python".
+- `[plain]` Headless pass (chromium, software WebGL): console shell
+  verified in pixels — 195 features listed from the live API, legend
+  chip, status line, zoom controls, attribution all render; layout
+  correct. Blank canvas under `--disable-gpu` was a harness artifact
+  (no GL context), not the app. Map paint itself needs a real browser;
+  tile host reachable (200). Lesson: screenshot harnesses must enable
+  software GL or every canvas reads as a false failure.
+- `[plain]` Genuine find from the same pass: `must_be` is a
+  GeometryCollection (~418 members) — layer filters never matched it,
+  so must_be clicks drew nothing. Console now flattens collection
+  members to plain features; point members take band colors (circle
+  paint matched by name). Verified by algorithm mirror on real
+  `results/flood.json` + green build.
 - `[plain]` Console map and map-legibility round (reference:
   nepflood.vercel.app structure, our numbers only): base style now
   falls back (Carto → demotiles → visible message) with tile-error

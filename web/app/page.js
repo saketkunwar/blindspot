@@ -9,6 +9,9 @@ export default function Console() {
   const [fire, setFire] = useState(null);
   const [sel, setSel] = useState({ kind: "band", id: "may_be" }); // {kind, id}
   const [error, setError] = useState("");
+  const [show, setShow] = useState("flood"); // scenario filter: flood | fire
+  const [layer, setLayer] = useState("all"); // feature layer filter
+  const [limit, setLimit] = useState(50);
 
   useEffect(() => {
     Promise.all([getFlood(), getFire()])
@@ -17,6 +20,8 @@ export default function Console() {
   }, []);
 
   const floodFeats = flood?.data.act1.features ?? [];
+  const layersPresent = [...new Set(floodFeats.map((f) => f.layer))];
+  const visibleFeats = floodFeats.filter((f) => layer === "all" || f.layer === layer);
   const inMayBe = useMemo(() => new Set(
     (flood?.data.act2.assets_in_may_be ?? []).map((a) => a.id)), [flood]);
   const fireCells = useMemo(() => {
@@ -31,8 +36,16 @@ export default function Console() {
       };
     });
   }, [fire]);
-  const bandOf = (key) => [{ type: "Feature", properties: { name: key },
-    geometry: flood.data.act2[key] }];
+  const bandOf = (key) => {
+    // must_be is a GeometryCollection: flatten members so every layer
+    // filter and fitBounds sees plain geometries.
+    const flat = (geom) => geom?.type === "GeometryCollection"
+      ? (geom.geometries ?? []).flatMap(flat) : [geom];
+    return flat(flood.data.act2[key])
+      .filter((g) => g && g.type)
+      .map((geometry, i) => ({ type: "Feature",
+        properties: { name: key, part: i }, geometry }));
+  };
   const layers = useMemo(() => {
     if (!flood || !sel) return [];
     // Act-1 features carry no geometry; show the blind-spot band they are
@@ -56,20 +69,48 @@ export default function Console() {
         <h2>Scenarios</h2>
         {error && <p className="meta">{error}</p>}
         {!flood && !error && <p className="meta">Loading scenarios…</p>}
-        {flood && <p>{flood.data.scenario} <span className="mode">{flood.mode}</span></p>}
-        {fire && <p>{fire.data.scenario} <span className="mode">{fire.mode}</span></p>}
+        {flood && (
+          <button className={show === "flood" ? "item active" : "item"}
+            onClick={() => setShow("flood")}>
+            {flood.data.scenario} <span className="mode">{flood.mode}</span>
+          </button>
+        )}
+        {fire && (
+          <button className={show === "fire" ? "item active" : "item"}
+            onClick={() => setShow("fire")}>
+            {fire.data.scenario} <span className="mode">{fire.mode}</span>
+          </button>
+        )}
+        {show === "flood" && (<>
         <h2>Bands</h2>
         {["may_be", "must_be"].map((b) => (
           <button key={b} className={sel?.id === b ? "item active" : "item"}
             onClick={() => setSel({ kind: "band", id: b })}>{b}</button>
         ))}
-        <h2>Features ({floodFeats.length})</h2>
-        {floodFeats.slice(0, 200).map((f) => (
+        <h2>Features ({visibleFeats.length} of {floodFeats.length})</h2>
+        <p className="meta">
+          {["all", ...layersPresent].map((l, i) => (
+            <span key={l}>
+              {i > 0 && " · "}
+              <button className="linklike" onClick={() => { setLayer(l); setLimit(50); }}>
+                {layer === l ? <strong>{l}</strong> : l}
+              </button>
+            </span>
+          ))}
+        </p>
+        {visibleFeats.slice(0, limit).map((f) => (
           <button key={f.id} className={sel?.id === f.id ? "item active" : "item"}
             onClick={() => setSel({ kind: "feature", id: f.id })}>
             {f.id} <span className="meta">{f.fwd.rcc8.relation} · {f.fwd.band}</span>
           </button>
         ))}
+        {visibleFeats.length > limit && (
+          <button className="item" onClick={() => setLimit((n) => n + 50)}>
+            Show more ({visibleFeats.length - limit} remaining)
+          </button>
+        )}
+        </>)}
+        {show === "fire" && (<>
         <h2>Claims</h2>
         {(fire?.data.claims ?? []).map((c) => (
           <button key={c.id} className={sel?.id === c.id ? "item active" : "item"}
@@ -77,6 +118,7 @@ export default function Console() {
             {c.id} <span className="meta">{c.verdict}</span>
           </button>
         ))}
+        </>)}
       </div>
       <div className="pane-map">
         <div className="map-legend">

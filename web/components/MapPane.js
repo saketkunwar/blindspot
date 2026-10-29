@@ -52,6 +52,7 @@ export default function MapPane({ layers }) {
   const [failed, setFailed] = useState(false);
   const [ctxLost, setCtxLost] = useState(false);
   const [epoch, setEpoch] = useState(0); // bump to remount the map (retry)
+  const [status, setStatus] = useState("starting");
 
   useEffect(() => {
     setCtxLost(false);
@@ -79,6 +80,7 @@ export default function MapPane({ layers }) {
 
     const draw = () => {
       const feats = layersRef.current;
+      try {
       ["bs-fill", "bs-line", "bs-point"].forEach((id) => {
         if (map.getLayer(id)) map.removeLayer(id);
       });
@@ -116,25 +118,36 @@ export default function MapPane({ layers }) {
         id: "bs-point", type: "circle", source: "bs",
         filter: ["in", ["geometry-type"], ["literal", ["Point", "MultiPoint"]]],
         paint: {
-          "circle-color": KIND_COLORS["pre-cutoff damage"],
+          "circle-color": ["match", ["coalesce", ["get", "kind"], ["get", "name"], ["literal", "?"]],
+            "must_be", KIND_COLORS.must_be, "may_be", KIND_COLORS.may_be,
+            KIND_COLORS["pre-cutoff damage"]],
           "circle-radius": 3,
           "circle-opacity": 0.8,
         },
       });
       const b = boundsOf(feats);
-      if (b) { try { map.fitBounds(b, { padding: 40 }); } catch { /* keep view */ } }
+        if (b) { try { map.fitBounds(b, { padding: 40 }); } catch { /* keep view */ } }
+        setStatus(feats.length + " drawn");
+      } catch (err) {
+        setStatus("draw failed: " + String((err && err.message) || err));
+      }
     };
 
     let styleLoaded = false;
-    map.on("load", () => { styleLoaded = true; draw(); });
+    map.on("load", () => { styleLoaded = true; setStatus("style loaded"); draw(); });
     drawRef.current = draw;
     let fallback = 0;
     map.on("error", (e) => {
       // Style-load failure only: tile errors (e.tile) must not switch styles.
       if (e?.tile || styleLoaded) return;
       fallback += 1;
-      if (fallback < STYLES.length) map.setStyle(STYLES[fallback]);
-      else setFailed(true);
+      if (fallback < STYLES.length) {
+        setStatus("style failed, trying fallback");
+        map.setStyle(STYLES[fallback]);
+      } else {
+        setFailed(true);
+        setStatus("all base styles failed");
+      }
     });
     return () => {
       canvas.removeEventListener("webglcontextlost", onLost, false);
@@ -148,11 +161,15 @@ export default function MapPane({ layers }) {
     const map = mapRef.current;
     if (!map) return;
     try { map.resize(); } catch { /* not ready */ }
-    try { if (map.isStyleLoaded()) drawRef.current(); } catch { /* load handler draws */ }
+    try {
+      if (map.isStyleLoaded()) drawRef.current();
+      else map.once("load", () => drawRef.current());
+    } catch { /* load handler draws */ }
   }, [layers]);
 
   return (
     <div ref={ref} className="mapbox">
+      <p className="meta map-status">{status}</p>
       {failed && <p className="meta map-error">Base map unreachable — check network. Data layers listed below.</p>}
       {ctxLost && (
         <div className="meta map-error">
