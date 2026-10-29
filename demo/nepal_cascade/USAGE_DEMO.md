@@ -76,7 +76,7 @@ Expected: byte-identical brief (cassette replay, fully offline).
 
 ```bash
 python3 scripts/validate_hardened.py   # expect G1–G12 ALL PASS
-python3 -m pytest tests/properties/ -q # expect 43 passed
+python3 -m pytest tests/properties/ -q # expect 62 passed
 bash scripts/judge.sh                  # expect JUDGE OK
 python3 demo/nepal_cascade/gt_check.py # expect MATCH, true outcome rank 1
 ```

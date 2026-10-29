@@ -323,3 +323,20 @@ of redacting it. One small fix, then every pending check went green.
   `judge.sh` → JUDGE OK, 62 passed. Steps 0–4 execution-verified;
   remaining P0 work is Steps 5–7 (freeze flow already on disk,
   Demo 2 fire study, gates G13/G3b/G14/G15).
+
+## P1 API shape — versioned study reads (this run)
+
+Top finding: the legacy demo routes already computed the right bytes, so
+the v1 shape is a registry plus delegates — no recomputation paths were
+duplicated, and alias parity is asserted byte-for-byte in-test.
+
+- `[plain]` Bracket-counting by eye failed twice on the shared geo `box`
+  dict (read tool renders one fewer `]` than the file holds); `grep` +
+  `ast.parse` was the ground truth that settled it. Usefulness: medium;
+  lesson is to verify generated-looking literals with a parser, not eyes.
+- `[hardened]` New `tests/properties/test_api_v1.py` (7 tests): study
+  list, brief shape + bad-mode 400, live ranking parity, legacy-alias
+  byte parity (brief + geo), geo layers/cap, gt cached + live
+  determinism (rerun rewrites identical bytes, committed file hash
+  unchanged), unknown-id 404, `openapi.json` sync. Full gate ALL PASS
+  (G3 clean with the study registry); `judge.sh` → JUDGE OK, 69 passed.

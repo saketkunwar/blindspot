@@ -55,11 +55,7 @@ strongest possible hindsight-freedom. Anonymized prompts are used regardless.
 
 ## Presentation
 
-```
-uvicorn api.server:app --port 8000        # GET /api/demo/nepal-cascade
-cd web && npm run dev                      # /demo/nepal-cascade
-```
-
+Run instructions live in [USAGE_DEMO.md](USAGE_DEMO.md) (API + web replay).
 The page renders only pipeline outputs: hero verdict, evidence cards,
 how-it-works, mechanism ranking, findings, legend map. Reference layout was
 a guide; no reference figures are copied.

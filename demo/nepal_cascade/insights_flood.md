@@ -256,3 +256,11 @@ human-sets-conviction, kernel-computes. The setup round is a permanent
 rival generator — a valid alternative study that disagrees — which is
 exactly what the method wants. Automation of conviction (weight-setting
 from evidence) is open future work and must pass the same null red-team.
+
+## 8. Sources (moved from the retired demo plan; all inspected this run)
+
+- [telegraph.com/nepal-tibet-glacier-flood-new-lake-dam-bhote-koshi](https://telegraph.com/nepal-tibet-glacier-flood-new-lake-dam-bhote-koshi/) — first dam broke, second dam built, ~2M m³ lake, explicit uncertainty about catastrophic burst (non-empty).
+- [lirneasia.net/2026/10/nepals-bhotekoshi-disaster-every-link-existed-nothing-joined-them](https://lirneasia.net/2026/10/nepals-bhotekoshi-disaster-every-link-existed-nothing-joined-them/) — 26 Aug collapse timeline, 27 Aug barrier-lake warning, 28 Aug overflow and rescue pause, Chilime Khola as damage site (non-empty).
+- [orcarouter.ai/blog/muse-api](https://www.orcarouter.ai/blog/muse-api) — Contributor model IDs, tier pricing/training trade, no-`max`-on-Contributor.
+- [llm-stats.com/models/compare/muse-spark-1.2-vs-muse-spark-1.3](https://llm-stats.com/models/compare/muse-spark-1.2-vs-muse-spark-1.3) — no published knowledge cutoff for 1.2 or 1.3; [github.com/apoorvumang/knowledge-cutoff](https://github.com/apoorvumang/knowledge-cutoff) — measured effective knowledge late 2025 / Jan 2026 (discovery sources; verified empirically in Step 0).
+- [nepflood.vercel.app](https://nepflood.vercel.app/) — presentation layout reference only (hero, sensor cards, how-it-works, findings counters, legend map); no facts or figures taken from it (non-empty).
