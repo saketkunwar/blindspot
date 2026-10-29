@@ -129,6 +129,11 @@ def main(argv=None) -> int:
     assets = [(f["id"], f["layer"], layer_geoms[f["layer"]][int(f["id"].split(":")[1])])
               for f in features]
     in_may, out_may = ga.classify_assets(may_be, assets)
+    from engine import fhz as _fhz
+    zones = _fhz.split_zones(bands["must_be"])
+    asset_union = unary_union([a for _, _, a in assets])
+    fhz_report = _fhz.validate_zones(
+        zones, extent, asset_union, (extent.centroid.x, extent.centroid.y))
 
     # ---- Act 3
     missing = [n for n in OPTIONAL if not (flood_dir / n).exists()]
@@ -183,6 +188,8 @@ def main(argv=None) -> int:
             "must_be": bands["must_be"],
             "may_be": bands["may_be"],
             "assets_in_may_be": sorted(in_may, key=lambda x: x["id"]),
+            "fhz_zones": {"n_zones": fhz_report["n_zones"],
+                          "informative_total": fhz_report["informative_total"]},
             "assets_outside": sorted(out_may, key=lambda x: x["id"]),
         },
         "act3": {

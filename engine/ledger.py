@@ -81,6 +81,83 @@ def load_domain_geometry(domain=None) -> dict:
     }
 
 
+REACH_CODES = ("target", "upstream", "downstream")
+
+
+def tag_network_reaches(network_fc: dict, target_geoms: list,
+                         split_lat: float, near_m: float) -> list[str]:
+    """Reach code per network feature, from geometry only (P2 replaces the
+    static-network assumption; no watershed ids exist in the data, so scopes
+    derive spatially): ``target`` = within ``near_m`` of the target-reach
+    union, else ``upstream``/``downstream`` of the split latitude. Codes
+    align with the input feature order.
+    """
+    from shapely.geometry import shape as _shape
+
+    tgt = [_facts._project(_shape(g)) for g in target_geoms]
+    union = None
+    if tgt:
+        from shapely.ops import unary_union
+        union = unary_union(tgt)
+    codes = []
+    for f in _facts._features_of(network_fc):
+        g = _facts._geom_of_feature(f)
+        if g is None:
+            codes.append("downstream")
+            continue
+        p = _facts._project(g)
+        if union is not None and p.distance(union) <= near_m:
+            codes.append("target")
+        elif p.centroid.y > split_lat:
+            codes.append("upstream")
+        else:
+            codes.append("downstream")
+    return codes
+
+
+def with_reach_tags(network_fc: dict, codes: list[str]) -> dict:
+    """Copy of the network collection with a ``_reach`` property per
+    feature, so the closed ``ref_filter`` op machinery scopes by reach."""
+    feats = _facts._features_of(network_fc)
+    tagged = []
+    for f, code in zip(feats, codes):
+        props = dict(f.get("properties") or {})
+        props["_reach"] = code
+        tagged.append({"type": "Feature", "properties": props,
+                       "geometry": f.get("geometry")})
+    return {"type": "FeatureCollection", "features": tagged}
+
+
+def network_reach_report(feats: list, network_fc: dict, target_geoms: list,
+                         extent_geom: dict, split_lat: float,
+                         near_m: float) -> dict:
+    """Per-reach diagnostics: network size plus channel-adjacent share and
+    count of damage scoped to each reach. Additive: the frozen ledger path
+    is untouched, so frozen briefs are byte-identical.
+    """
+    codes = tag_network_reaches(network_fc, target_geoms, split_lat, near_m)
+    tagged = with_reach_tags(network_fc, codes)
+    roles = {
+        "damage": {"type": "FeatureCollection", "features": list(feats)},
+        "network": tagged,
+    }
+    report = {"scopes": sorted(set(codes)), "split_lat": split_lat,
+              "near_m": near_m, "by_reach": {}}
+    for code in sorted(set(codes)):
+        share, _ = _facts.evaluate("near_share", roles, {
+            "source_role": "damage", "ref_role": "network",
+            "distance_m": near_m, "threshold": 1.0,
+            "ref_filter": {"property": "_reach", "value": code}})
+        count, _ = _facts.evaluate("cluster", roles, {
+            "source_role": "damage", "ref_role": "network",
+            "distance_m": near_m, "min_features": 1,
+            "ref_filter": {"property": "_reach", "value": code}})
+        report["by_reach"][code] = {
+            "n_network": sum(1 for c in codes if c == code),
+            "near_share": share, "near_count": count}
+    return report
+
+
 def _resolve_geometry(rules: dict, domain=None) -> tuple[float, float, int]:
     """(channel_adjacent_m, cluster_distance_m, cluster_min_features).
 

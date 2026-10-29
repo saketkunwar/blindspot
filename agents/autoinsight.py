@@ -31,14 +31,17 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from engine import fhz as _fhz
 from engine.ledger import (
     _close,
     _input_tokens,
     _refuse_raw,
+    _resolve_geometry,
     audit_prompt,
     build_prompt,
     compute_ledger,
     load_domain_geometry,
+    network_reach_report,
     score_mechanisms,
     validate_model_text,
 )
@@ -60,7 +63,7 @@ __all__ = [
 
 def run(inputs_dir, rules_path, out_path, prompt_log_dir,
         model_round="off", model=None, cassettes_dir=None, usage_path=None,
-        domain_path=None):
+        domain_path=None, reach_audit_path=None):
     from agents import model_call as _mc
 
     inputs_dir = pathlib.Path(inputs_dir)
@@ -85,6 +88,9 @@ def run(inputs_dir, rules_path, out_path, prompt_log_dir,
 
     ledger = compute_ledger(feats, waterways, target, extent_geom, rules,
                             domain=domain)
+    story_problems = _fhz.validate_stories(rules, set(ledger["facts"]))
+    if story_problems:
+        raise SystemExit("story polarity failed: " + "; ".join(story_problems))
     ranking = score_mechanisms(rules, ledger)
 
     prompt, _ = build_prompt(rules, ledger)
@@ -138,6 +144,16 @@ def run(inputs_dir, rules_path, out_path, prompt_log_dir,
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(brief, indent=1, sort_keys=True) + "\n")
     print(f"wrote {out_path}: top={top['id']} p={top['probability']}")
+    from shapely.geometry import shape as _shape
+    from engine import facts as _facts
+    adj_m, _, _ = _resolve_geometry(rules, domain)
+    split_lat = _facts._project(_shape(extent_geom)).centroid.y
+    reach = network_reach_report(feats, waterways, target, extent_geom,
+                                 split_lat, adj_m)
+    reach_path = (pathlib.Path(reach_audit_path) if reach_audit_path
+                  else out_path.parent / "reach_audit.json")
+    reach_path.write_text(json.dumps(reach, indent=1, sort_keys=True) + "\n")
+    print(f"wrote {reach_path}: scopes={reach['scopes']}")
     return brief
 
 
@@ -152,9 +168,10 @@ def main(argv=None) -> int:
     ap.add_argument("--model", default=None)
     ap.add_argument("--cassettes", default="data/model_cassettes")
     ap.add_argument("--usage", default="meta_usage.json")
+    ap.add_argument("--reach-audit-out", default=None)
     a = ap.parse_args(argv)
     run(a.inputs, a.rules, a.out, a.prompt_log, a.model_round,
-        a.model, a.cassettes, a.usage, a.domain)
+        a.model, a.cassettes, a.usage, a.domain, a.reach_audit_out)
     return 0
 
 

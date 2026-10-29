@@ -444,3 +444,23 @@ so no gate could see it — the browser was the only oracle.
   blank pane. Stale `.next` (predating the user's `npm install`)
   500'd production serving — `rm -rf web/.next` + clean rebuild fixed
   it; dev serving had masked the rot. 20/20 serving tests green.
+
+## P2 generalize-the-filling (2026-10-29, readings user-approved pre-build)
+
+Top finding: the plan's headline identifiers don't exist — no
+WATERSHED.permanent_id / reach_code keys in any data file, no E/R/G or
+FHZ checks anywhere, no test gaps. Asking first (two questions, both
+took the recommended path) prevented building against phantom inputs.
+
+- `[plain]` Reach scoping is spatial-from-geometry (target/upstream/
+  downstream), reusing the domain's channel-adjacent distance — zero
+  new constants. Additive only: brief identical to frozen except
+  model_round, so the frozen prediction never moved (G12 green).
+- `[plain]` Bracket nests in hand-written GeoJSON literals broke two
+  test files the same way; replaced with a `_bbox_poly` helper.
+  Lesson: never hand-nest coordinate literals — build them.
+- `[hardened]` New `engine/fhz.py` (E/R/G sets, story polarity) wired
+  fail-closed: flood pipeline raises on structural zone breach, study
+  CLI exits on story breach. Real data: 418 zones, informative 518.
+  `test_fhz.py` (4) + `test_reach_scope.py` (3) green. Full gate ALL
+  PASS; judge 92. Notebook walkthrough + recorded demo stay P5-bound.

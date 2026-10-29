@@ -112,6 +112,23 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   (frozen-rule parameter leak into setup input, not GT leak).
 - Standing: LLM frames vocabulary, human sets conviction, kernel computes.
 
+## P2 readings (2026-10-29, user-approved before build)
+- No WATERSHED.permanent_id / reach_code keys exist in any data file
+  (OSM tags only), so "replace the static network" is implemented as
+  spatial reach codes from geometry only: target (near target reach),
+  else upstream/downstream of the flood-centroid latitude. Distances
+  reuse the domain's channel-adjacent value; no new constants.
+- FHZ gate is structural, deliberately: families present/computable
+  per zone (fail-closed only on missing counterparts). No
+  non-disjointness gate — 113 of 418 real zones are disjoint from both
+  outline and assets (remote wet network); failing them would mistake
+  geography for broken plumbing. Informativeness is diagnostics.
+- E/R/G = extent-topological (RCC-8 vs outline), reach-directional
+  (tiles + bearing vs flood centroid), group-containment (RCC-8 vs
+  evidence union). Meta-vocabulary = ledger fact ids + mechanism ids
+  (the citable set). Stories: supports/opposes over real ids,
+  non-empty supports, weighted null story.
+
 ## P0 verification fix (2026-10-28)
 - `demo/nepal_cascade/inputs/waterways.geojson` carries a provenance date in one `source` value (`Digital Globe,2015-05-03` on `way/343295489`). Curation copies waterways verbatim, so the Context Card inventory saw an ISO date.
 - `agents/context_card.py::build_card` treated any ISO date in the inventory as contamination and aborted (`SystemExit`), failing 3/3 card tests. Per `docs/FLEX_NS_PLAN.md` Step 3 the card must redact dates from prompt text, not crash on provenance metadata.

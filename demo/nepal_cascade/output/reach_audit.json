@@ -1,0 +1,26 @@
+{
+ "by_reach": {
+  "downstream": {
+   "n_network": 263,
+   "near_count": 925,
+   "near_share": 0.4422
+  },
+  "target": {
+   "n_network": 3,
+   "near_count": 32,
+   "near_share": 0.0153
+  },
+  "upstream": {
+   "n_network": 134,
+   "near_count": 569,
+   "near_share": 0.272
+  }
+ },
+ "near_m": 250.0,
+ "scopes": [
+  "downstream",
+  "target",
+  "upstream"
+ ],
+ "split_lat": 3099312.1742299995
+}
