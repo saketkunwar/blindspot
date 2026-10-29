@@ -142,8 +142,13 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
         : feats.filter((f) => f?.properties?.id === fid);
       const b = boundsOf(focus.length ? focus : feats);
       if (b) {
-        try { map.fitBounds(b, { padding: 40, maxZoom: maxZoom ?? 10 }); }
-        catch { /* keep view */ }
+        try {
+          map.fitBounds(b, { padding: 40, maxZoom: maxZoom ?? 10 });
+          const c = map.getCenter();
+          setStatus(feats.length + " drawn · z" + map.getZoom().toFixed(1)
+            + " (" + c.lng.toFixed(2) + "," + c.lat.toFixed(2) + ")");
+          return;
+        } catch { /* keep view */ }
       }
         setStatus(feats.length + " drawn");
       } catch (err) {

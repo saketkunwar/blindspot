@@ -420,6 +420,13 @@ so no gate could see it — the browser was the only oracle.
   (geometry only); band views draw band + outline and fit the outline,
   so load lands on Langtang valley with the band as background.
   Feature clicks unchanged (fit the asset).
+- `[plain]` Viewport now self-reports: status line shows `N drawn ·
+  z<zoom> (<lon>,<lat>)` after fitting, so the frame is checkable
+  without reading tiles. Headless limit found: this sandbox proxy
+  blocks the browser's style/API fetches, so map paint cannot be
+  verified headless here — shell, data flow, legend, and status are
+  pixel-confirmed; paint needs the real browser that already paints
+  the demo.
 - `[plain]` Console map and map-legibility round (reference:
   nepflood.vercel.app structure, our numbers only): base style now
   falls back (Carto → demotiles → visible message) with tile-error
