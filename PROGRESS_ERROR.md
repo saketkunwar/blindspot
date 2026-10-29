@@ -407,6 +407,14 @@ so no gate could see it — the browser was the only oracle.
   `/api/results/flood/assets` serves id-keyed geometries (no
   properties, nothing leaks); console highlights the selected asset
   in red against the band. Pinned: all 195 act-1 ids resolve.
+- `[plain]` Viewport bug, caught by the user's eye: every click fitted
+  the whole 172.8km may_be band (bbox 82.67–87.19°E), so the map
+  showed half the Himalaya including Uttarakhand labels. The band is
+  where the frozen rule puts it (centroid 84.74, 28.31, Nepal) — the
+  defect was fitting the context instead of the subject. Map now fits
+  the focused feature/cell with zoom capped, band stays as background.
+  Lesson: plot bbox numbers of served geometries, not just their
+  styling — no gate checked data extent.
 - `[plain]` Console map and map-legibility round (reference:
   nepflood.vercel.app structure, our numbers only): base style now
   falls back (Carto → demotiles → visible message) with tile-error

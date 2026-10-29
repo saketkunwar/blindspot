@@ -141,7 +141,8 @@ export default function Console() {
           <span className="meta legend-note">map: {mapStatus}</span>
         </div>
         <div className="mapwrap">
-          <MapPane layers={layers} onStatus={setMapStatus} />
+          <MapPane layers={layers} onStatus={setMapStatus}
+            focusId={sel?.kind === "feature" || sel?.kind === "claim" ? sel.id : undefined} />
         </div>
       </div>
       <div className="pane pane-right">

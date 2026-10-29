@@ -44,12 +44,14 @@ export function legendOf(layers) {
   return [...seen.entries()];
 }
 
-export default function MapPane({ layers, onStatus }) {
+export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
   const ref = useRef(null);
   const mapRef = useRef(null);
   const drawRef = useRef(() => {});
   const layersRef = useRef(layers);
   layersRef.current = layers;
+  const focusRef = useRef(focusId);
+  focusRef.current = focusId;
   const [failed, setFailed] = useState(false);
   const [ctxLost, setCtxLost] = useState(false);
   const [epoch, setEpoch] = useState(0); // bump to remount the map (retry)
@@ -131,8 +133,16 @@ export default function MapPane({ layers, onStatus }) {
           "circle-opacity": 0.8,
         },
       });
-      const b = boundsOf(feats);
-        if (b) { try { map.fitBounds(b, { padding: 40 }); } catch { /* keep view */ } }
+      // Fit the focused feature (e.g. the selected asset); the rest
+      // stays as context. Without a focus, fit everything.
+      const fid = focusRef.current;
+      const focus = fid == null ? feats
+        : feats.filter((f) => f?.properties?.id === fid);
+      const b = boundsOf(focus.length ? focus : feats);
+      if (b) {
+        try { map.fitBounds(b, { padding: 40, maxZoom: maxZoom ?? 10 }); }
+        catch { /* keep view */ }
+      }
         setStatus(feats.length + " drawn");
       } catch (err) {
         setStatus("draw failed: " + String((err && err.message) || err));
