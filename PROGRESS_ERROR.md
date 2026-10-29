@@ -340,3 +340,62 @@ duplicated, and alias parity is asserted byte-for-byte in-test.
   determinism (rerun rewrites identical bytes, committed file hash
   unchanged), unknown-id 404, `openapi.json` sync. Full gate ALL PASS
   (G3 clean with the study registry); `judge.sh` → JUDGE OK, 69 passed.
+
+## P1 finish — store, auth, pages, rebuild (this run)
+
+Top finding: the store caught nothing because the inputs are clean — its
+value is structural (hash-pinned provenance for the next study), while
+auth and the page each had one real defect class the tests now pin
+(unauthed live recompute; truncated template from unbracketed string
+continuation).
+
+- `[plain]` `store/db.py` shipped with a `)`/`]` typo; the seed probe
+  failed loudly on first run. Fix: one character. The page template
+  silently truncated at 934 bytes (implicit string continuation does
+  not span bare newlines — parenthesized the return). Both found by
+  executing, never by reading. Usefulness: high for the
+  execute-don't-eyeball rule.
+- `[hardened]` Store: `store/schema.sql` + `store/db.py` (INSERT/SELECT
+  only — no update/delete path exists), `scripts/seed_store.py`
+  rebuilds `results/store.sqlite3` from frozen files (brief, gt, rules,
+  inputs-audit, live cassette), `test_store.py` 6 green (deterministic
+  re-seed, tamper fails, audit order).
+- `[hardened]` Auth: operator token gates all live recompute (only when
+  configured; unset = documented dev-open so replay stays keyless),
+  per-study read tokens hashed in the store with operator bypass,
+  `test_auth.py` 5 green.
+- `[hardened]` Pages: `/v1/studies/{id}/page` renders hero, evidence,
+  how-it-works, ranking, findings, GT, and a data-scaled SVG schematic
+  from frozen bytes only (stdlib, print CSS), brief hash-checked
+  against the store when seeded; `test_pages.py` 3 green.
+- `[hardened]` Rebuild: `Makefile` (`install manifest gates seed api
+  web judge rebuild`) + G16 (chain defined, seed deterministic,
+  openapi in sync). Full gate ALL PASS; `judge.sh` → JUDGE OK,
+  83 passed. Caveat: the `web` leg needs Node, which this environment
+  lacks — `make rebuild`'s web step is unproven here; everything else
+  ran. `results/*.sqlite3` git-ignored alongside `results/*.json`
+  (derived state, same precedent).
+
+## Web leg — CORS caught by a human (manual verification)
+
+Top finding: every automated gate was green while the console showed
+"API unreachable" in a real browser. `TestClient` does not enforce CORS,
+so no gate could see it — the browser was the only oracle.
+
+- `[plain]` Root cause: the FastAPI app had no CORS middleware, so
+  `localhost:3000` fetching `localhost:8000` was blocked. Fix: allow
+  cross-origin GET/OPTIONS (read-only API; live recompute stays behind
+  the operator token). Pinned by a preflight + header test in
+  `test_pages.py`. Lesson: serving tests need at least one Origin-header
+  assertion per surface, or "served" only means "served to Python".
+- `[plain]` Console map and map-legibility round (reference:
+  nepflood.vercel.app structure, our numbers only): base style now
+  falls back (Carto → demotiles → visible message) with tile-error
+  filtering so missing tiles can't trigger style switches; layers
+  styled by kind with legend chips; console pre-selects may_be and
+  every click updates the map (bands → polygon, features → assessed
+  band + membership row, claims → fire-cell boxes from origin +
+  grid_deg); WebGL context loss shows a retry overlay instead of a
+  blank pane. Stale `.next` (predating the user's `npm install`)
+  500'd production serving — `rm -rf web/.next` + clean rebuild fixed
+  it; dev serving had masked the rot. 20/20 serving tests green.

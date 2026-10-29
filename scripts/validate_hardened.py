@@ -10,6 +10,7 @@ Gates:
   G3 no hardcoded answers    G8 data-layout conformance (FIRMS + flood + timeline)
   G4 fail-closed exits       G9 repo hygiene (prereg tag, frozen config, dirs)
   G5 pipeline CLI contract   G10 durable tests present
+  G16 rebuild fabric (Makefile chain, deterministic seed, openapi sync)
 """
 import argparse, hashlib, json, pathlib, re, subprocess, sys, tempfile
 
@@ -297,13 +298,48 @@ def g12(tmp):
     gate("G12", not bad, "cutoff-invariant, quarantined, prompt re-audit clean"
          if not bad else "; ".join(bad))
 
+def g16(tmp):
+    """Rebuild fabric (P1 gate): Makefile chains install->manifest->gates->
+    seed->api->web->judge; seeding is deterministic; the checked-in OpenAPI
+    schema matches the routes. (The `web` and `judge` legs run under
+    `make rebuild` in a full environment with Node; here we prove the
+    chain definition plus every offline leg.)"""
+    import re as _re
+    mk = ROOT / "Makefile"
+    if not mk.is_file():
+        gate("G16", False, "no Makefile"); return
+    targets = set(_re.findall(r"^([\w][\w-]*):", mk.read_text(), _re.M))
+    want = {"install", "manifest", "gates", "seed", "api", "web", "judge", "rebuild"}
+    if not want <= targets:
+        gate("G16", False, f"Makefile missing targets: {sorted(want - targets)}"); return
+    sys.path.insert(0, str(ROOT))
+    from scripts import seed_store
+    from store import db as _db
+    first = seed_store.seed(ROOT, tmp / "g16a.sqlite3")
+    second = seed_store.seed(ROOT, tmp / "g16b.sqlite3")
+    if first["artifacts"] != second["artifacts"]:
+        gate("G16", False, "seed is not deterministic"); return
+    con = _db.connect(tmp / "g16a.sqlite3")
+    try:
+        bad = [a["kind"] for a in _db.artifacts_for(con, "nepal-cascade")
+               if not _db.verify_artifact(ROOT, a)[0]]
+    finally:
+        con.close()
+    if bad:
+        gate("G16", False, f"seeded artifacts fail hash check: {bad}"); return
+    r = subprocess.run([sys.executable, "-m", "api.export_openapi", "--check"],
+                       cwd=ROOT, capture_output=True, text=True, timeout=120)
+    if r.returncode != 0:
+        gate("G16", False, "api/openapi.json out of sync"); return
+    gate("G16", True, "Makefile chain defined; seed deterministic; openapi in sync")
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--setup-only", action="store_true"); a = ap.parse_args()
     g1(); g2(); g8(); g9(a.setup_only); g10()
     if not a.setup_only:
         g3()
         with tempfile.TemporaryDirectory() as td:
-            tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp); g12(tmp)
+            tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp); g12(tmp); g16(tmp)
     print("HARDENED:", "FAIL " + ",".join(FAIL) if FAIL else "ALL PASS")
     sys.exit(1 if FAIL else 0)
 

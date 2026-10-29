@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import MapPane from "../components/MapPane";
+import MapPane, { legendOf } from "../components/MapPane";
 import { getFire, getFlood } from "../lib/api";
 
 export default function Console() {
   const [flood, setFlood] = useState(null);
   const [fire, setFire] = useState(null);
-  const [sel, setSel] = useState(null); // {kind, id}
+  const [sel, setSel] = useState({ kind: "band", id: "may_be" }); // {kind, id}
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -17,14 +17,31 @@ export default function Console() {
   }, []);
 
   const floodFeats = flood?.data.act1.features ?? [];
+  const inMayBe = useMemo(() => new Set(
+    (flood?.data.act2.assets_in_may_be ?? []).map((a) => a.id)), [flood]);
+  const fireCells = useMemo(() => {
+    if (!fire) return [];
+    const g = fire.data.grid_deg;
+    return (fire.data.cells ?? []).map((c) => {
+      const [lon, lat] = c.origin;
+      return {
+        type: "Feature", properties: { kind: "fire cell", id: c.id },
+        geometry: { type: "Polygon", coordinates: [[
+          [lon, lat], [lon + g, lat], [lon + g, lat + g], [lon, lat + g], [lon, lat]]] },
+      };
+    });
+  }, [fire]);
+  const bandOf = (key) => [{ type: "Feature", properties: { name: key },
+    geometry: flood.data.act2[key] }];
   const layers = useMemo(() => {
     if (!flood || !sel) return [];
-    if (sel.kind === "band") {
-      const key = sel.id === "may_be" ? "may_be" : "must_be";
-      return [{ type: "Feature", properties: { name: key }, geometry: flood.data.act2[key] }];
-    }
+    // Act-1 features carry no geometry; show the blind-spot band they are
+    // assessed against. Claims show the fire grid (cell boxes from origin).
+    if (sel.kind === "band") return bandOf(sel.id === "may_be" ? "may_be" : "must_be");
+    if (sel.kind === "feature") return bandOf("may_be");
+    if (sel.kind === "claim") return fireCells;
     return [];
-  }, [flood, sel]);
+  }, [flood, sel, fireCells]);
 
   const detail = useMemo(() => {
     if (!flood || !sel) return null;
@@ -38,6 +55,7 @@ export default function Console() {
       <div className="pane pane-left">
         <h2>Scenarios</h2>
         {error && <p className="meta">{error}</p>}
+        {!flood && !error && <p className="meta">Loading scenarios…</p>}
         {flood && <p>{flood.data.scenario} <span className="mode">{flood.mode}</span></p>}
         {fire && <p>{fire.data.scenario} <span className="mode">{fire.mode}</span></p>}
         <h2>Bands</h2>
@@ -60,7 +78,16 @@ export default function Console() {
           </button>
         ))}
       </div>
-      <div className="pane-map"><MapPane layers={layers} /></div>
+      <div className="pane-map">
+        <div className="map-legend">
+          {legendOf(layers).map(([kind, color]) => (
+            <span className="legend-chip" key={kind}>
+              <span className="swatch" style={{ background: color }} />{kind}
+            </span>
+          ))}
+        </div>
+        <MapPane layers={layers} />
+      </div>
       <div className="pane pane-right">
         <h2>Detail</h2>
         {!detail && <p className="meta">Select a feature, band, or claim.</p>}
@@ -72,12 +99,16 @@ export default function Console() {
             <tr><td>gap / centroid</td><td>{detail.fwd.edge_gap_m.toFixed(1)} m / {detail.fwd.centroid_dist_km.toFixed(2)} km</td></tr>
             <tr><td>band</td><td>{detail.fwd.band}</td></tr>
             <tr><td>split alert</td><td>{String(detail.split_alert)}</td></tr>
+            <tr><td>may_be</td><td>{inMayBe.has(detail.id) ? "inside" : "outside"}</td></tr>
           </tbody></table>
         )}
         {detail?.verdict && (
           <table className="kv"><tbody>
             <tr><td>verdict</td><td>{detail.verdict}</td></tr>
             <tr><td>interval</td><td>{detail.start} to {detail.end}</td></tr>
+            {(detail.evidence ?? []).map((e, i) => (
+              <tr key={i}><td>evidence {i + 1}</td><td>{(e.overlap_days ?? []).join(", ") || "—"}</td></tr>
+            ))}
           </tbody></table>
         )}
       </div>

@@ -400,6 +400,45 @@
     },
     "summary": "V1 Study Gt"
    }
+  },
+  "/v1/studies/{study_id}/page": {
+   "get": {
+    "operationId": "v1_study_page_v1_studies__study_id__page_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "study_id",
+      "required": true,
+      "schema": {
+       "title": "Study Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "text/html": {
+        "schema": {
+         "type": "string"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "V1 Study Page"
+   }
   }
  }
 }

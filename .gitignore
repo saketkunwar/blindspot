@@ -3,6 +3,7 @@ __pycache__/
 .next/
 node_modules/
 results/*.json
+results/*.sqlite3
 !results/.gitkeep
 meta_usage.json
 
