@@ -10,3 +10,4 @@ export const getFlood = (mode = "cached") => get(`/api/results/flood?mode=${mode
 export const getFire = (mode = "cached") => get(`/api/results/fire?mode=${mode}`);
 export const getDemoNepal = (mode = "cached") => get(`/api/demo/nepal-cascade?mode=${mode}`);
 export const getDemoNepalGeo = () => get(`/api/demo/nepal-cascade/geo`);
+export const getFloodAssets = () => get(`/api/results/flood/assets`);

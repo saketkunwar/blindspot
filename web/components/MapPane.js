@@ -16,6 +16,7 @@ const KIND_COLORS = {
   may_be: "#0b5cad",
   must_be: "#5c5c5c",
   "fire cell": "#c2410c",
+  selected: "#a33327",
 };
 const FALLBACK_COLOR = "#666666";
 
@@ -43,7 +44,7 @@ export function legendOf(layers) {
   return [...seen.entries()];
 }
 
-export default function MapPane({ layers }) {
+export default function MapPane({ layers, onStatus }) {
   const ref = useRef(null);
   const mapRef = useRef(null);
   const drawRef = useRef(() => {});
@@ -53,6 +54,7 @@ export default function MapPane({ layers }) {
   const [ctxLost, setCtxLost] = useState(false);
   const [epoch, setEpoch] = useState(0); // bump to remount the map (retry)
   const [status, setStatus] = useState("starting");
+  useEffect(() => { if (onStatus) onStatus(status); }, [status, onStatus]);
 
   useEffect(() => {
     setCtxLost(false);
@@ -110,8 +112,10 @@ export default function MapPane({ layers }) {
           "line-color": ["match", ["coalesce", ["get", "kind"], ["get", "name"], ["literal", "?"]],
             "target reach", KIND_COLORS["target reach"],
             "observed flood outline", KIND_COLORS["observed flood outline"],
+            "selected", KIND_COLORS.selected,
             FALLBACK_COLOR],
-          "line-width": 2,
+          "line-width": ["match", ["coalesce", ["get", "kind"], ["get", "name"], ["literal", "?"]],
+            "selected", 4, 2],
         },
       });
       map.addLayer({
@@ -120,8 +124,10 @@ export default function MapPane({ layers }) {
         paint: {
           "circle-color": ["match", ["coalesce", ["get", "kind"], ["get", "name"], ["literal", "?"]],
             "must_be", KIND_COLORS.must_be, "may_be", KIND_COLORS.may_be,
+            "selected", KIND_COLORS.selected,
             KIND_COLORS["pre-cutoff damage"]],
-          "circle-radius": 3,
+          "circle-radius": ["match", ["coalesce", ["get", "kind"], ["get", "name"], ["literal", "?"]],
+            "selected", 6, 3],
           "circle-opacity": 0.8,
         },
       });

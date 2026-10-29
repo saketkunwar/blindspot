@@ -57,3 +57,13 @@ def test_bad_mode_rejected_and_evidence_honest():
         assert r.status_code == 404
     else:
         assert r.json()["mode"] == "cached"
+
+
+def test_flood_assets_cover_act1_ids():
+    r = client.get("/api/results/flood/assets")
+    assert r.status_code == 200
+    by_id = {a["id"]: a["geometry"] for a in r.json()["assets"]}
+    cached = client.get("/api/results/flood").json()["data"]
+    ids = [f["id"] for f in cached["act1"]["features"]]
+    assert len(ids) == 195 and set(ids) <= set(by_id)
+    assert all(isinstance(g, dict) and g.get("type") for g in by_id.values())

@@ -401,6 +401,12 @@ so no gate could see it — the browser was the only oracle.
   members to plain features; point members take band colors (circle
   paint matched by name). Verified by algorithm mirror on real
   `results/flood.json` + green build.
+- `[plain]` Feature clicks showed only the generic band because act-1
+  carries no geometry — but ids are `layer:index` into the source
+  layers (171/14/10 = 195, exact). New read-only
+  `/api/results/flood/assets` serves id-keyed geometries (no
+  properties, nothing leaks); console highlights the selected asset
+  in red against the band. Pinned: all 195 act-1 ids resolve.
 - `[plain]` Console map and map-legibility round (reference:
   nepflood.vercel.app structure, our numbers only): base style now
   falls back (Carto → demotiles → visible message) with tile-error

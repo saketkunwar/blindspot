@@ -230,6 +230,23 @@
     "summary": "Flood Results"
    }
   },
+  "/api/results/flood/assets": {
+   "get": {
+    "description": "Source asset geometries keyed by act-1 feature id (`layer:index`).\nGeometry only \u2014 no properties, so no names or timestamps leak. Lets the\nconsole highlight the exact selected asset against the band context.",
+    "operationId": "flood_assets_api_results_flood_assets_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Flood Assets"
+   }
+  },
   "/health": {
    "get": {
     "operationId": "health_health_get",

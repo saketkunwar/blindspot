@@ -300,6 +300,26 @@ def flood_results(request: Request, mode: str = "cached") -> JSONResponse:
     return _results("flood", mode, request)
 
 
+@app.get("/api/results/flood/assets")
+def flood_assets() -> JSONResponse:
+    """Source asset geometries keyed by act-1 feature id (`layer:index`).
+    Geometry only — no properties, so no names or timestamps leak. Lets the
+    console highlight the exact selected asset against the band context."""
+    from pipelines.flood_secondary_dam import LAYER_FILES
+    root = _root()
+    out = []
+    for layer, fname in LAYER_FILES:
+        try:
+            feats = json.loads((root / "data" / "flood_nepal" / fname).read_text())["features"]
+        except (OSError, json.JSONDecodeError, KeyError) as e:
+            raise HTTPException(status_code=502, detail=f"asset layer {fname} unreadable: {e}")
+        for i, f in enumerate(feats):
+            if not isinstance(f.get("geometry"), dict):
+                continue
+            out.append({"id": f"{layer}:{i}", "geometry": f["geometry"]})
+    return JSONResponse({"assets": out})
+
+
 @app.get("/api/results/fire")
 def fire_results(request: Request, mode: str = "cached") -> JSONResponse:
     return _results("fire", mode, request)

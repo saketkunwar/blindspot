@@ -2,20 +2,27 @@
 
 import { useEffect, useMemo, useState } from "react";
 import MapPane, { legendOf } from "../components/MapPane";
-import { getFire, getFlood } from "../lib/api";
+import { getFire, getFlood, getFloodAssets } from "../lib/api";
 
 export default function Console() {
   const [flood, setFlood] = useState(null);
   const [fire, setFire] = useState(null);
+  const [assets, setAssets] = useState({});
   const [sel, setSel] = useState({ kind: "band", id: "may_be" }); // {kind, id}
   const [error, setError] = useState("");
   const [show, setShow] = useState("flood"); // scenario filter: flood | fire
   const [layer, setLayer] = useState("all"); // feature layer filter
   const [limit, setLimit] = useState(50);
+  const [mapStatus, setMapStatus] = useState("starting");
 
   useEffect(() => {
-    Promise.all([getFlood(), getFire()])
-      .then(([fl, fi]) => { setFlood(fl); setFire(fi); })
+    Promise.all([getFlood(), getFire(), getFloodAssets()])
+      .then(([fl, fi, as]) => {
+        setFlood(fl); setFire(fi);
+        const byId = {};
+        (as.assets ?? []).forEach((a) => { byId[a.id] = a.geometry; });
+        setAssets(byId);
+      })
       .catch((e) => setError(`API unreachable: ${e.message}`));
   }, []);
 
@@ -48,13 +55,17 @@ export default function Console() {
   };
   const layers = useMemo(() => {
     if (!flood || !sel) return [];
-    // Act-1 features carry no geometry; show the blind-spot band they are
-    // assessed against. Claims show the fire grid (cell boxes from origin).
+    // Features resolve to their exact source geometry (`layer:index` id);
+    // the band stays as context. Claims show the fire grid (cell boxes).
     if (sel.kind === "band") return bandOf(sel.id === "may_be" ? "may_be" : "must_be");
-    if (sel.kind === "feature") return bandOf("may_be");
+    if (sel.kind === "feature") {
+      const g = assets[sel.id];
+      const hit = g ? [{ type: "Feature", properties: { name: "selected" }, geometry: g }] : [];
+      return [...bandOf("may_be"), ...hit];
+    }
     if (sel.kind === "claim") return fireCells;
     return [];
-  }, [flood, sel, fireCells]);
+  }, [flood, sel, fireCells, assets]);
 
   const detail = useMemo(() => {
     if (!flood || !sel) return null;
@@ -121,14 +132,17 @@ export default function Console() {
         </>)}
       </div>
       <div className="pane-map">
-        <div className="map-legend">
+        <div className="legend">
           {legendOf(layers).map(([kind, color]) => (
             <span className="legend-chip" key={kind}>
               <span className="swatch" style={{ background: color }} />{kind}
             </span>
           ))}
+          <span className="meta legend-note">map: {mapStatus}</span>
         </div>
-        <MapPane layers={layers} />
+        <div className="mapwrap">
+          <MapPane layers={layers} onStatus={setMapStatus} />
+        </div>
       </div>
       <div className="pane pane-right">
         <h2>Detail</h2>
