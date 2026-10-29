@@ -17,6 +17,9 @@ gates:
 seed:
 	python scripts/seed_store.py
 
+drill:
+	python scripts/restore_drill.py
+
 api:
 	python -m api.export_openapi --check
 

@@ -21,61 +21,70 @@ sys.path.insert(0, str(ROOT))
 
 from store import db as store  # noqa: E402
 
-STUDY_ID = "nepal-cascade"
-DEMO = pathlib.Path("demo") / "nepal_cascade"
+STUDIES = (
+    # (store id, demo dir, representative inputs file for the run record)
+    ("nepal-cascade", pathlib.Path("demo") / "nepal_cascade", "pre_t1_features.geojson"),
+    ("kalimantan-fire", pathlib.Path("demo") / "fire_study", "detections.geojson"),
+)
 
 
-def _frozen_at(root: pathlib.Path) -> str:
-    line = next((ln for ln in (root / DEMO / "BASELINE.sha256").read_text()
+def _frozen_at(demo: pathlib.Path) -> str:
+    line = next((ln for ln in (demo / "BASELINE.sha256").read_text()
                  .splitlines() if ln.startswith("# Frozen ")), "")
     m = re.match(r"# Frozen (\d{4}-\d{2}-\d{2}T[\d:.+-]+Z?)", line)
     if not m:
-        raise SystemExit("BASELINE.sha256 carries no Frozen timestamp")
+        raise SystemExit(f"{demo}/BASELINE.sha256 carries no Frozen timestamp")
     return m.group(1)
 
 
 def seed(root: pathlib.Path, out: pathlib.Path) -> dict:
-    demo = root / DEMO
-    brief = json.loads((demo / "output" / "brief.json").read_text())
-    domain = json.loads((demo / "domain.json").read_text())
     if out.exists():
         out.unlink()
     out.parent.mkdir(parents=True, exist_ok=True)
     con = store.connect(out)
+    studies = {}
     try:
-        meta = {"as_of_label": brief.get("as_of_label"),
-                "baseline": store.sha256_file(demo / "BASELINE.sha256")}
-        store.add_study(con, STUDY_ID, domain.get("domain_id", ""),
-                        _frozen_at(root), meta)
-        hashes = {}
-        Kinds = [("brief", demo / "output" / "brief.json"),
-                 ("gt", demo / "output" / "gt_check.json"),
-                 ("rules", demo / "rules.json"),
-                 ("inputs-audit", demo / "inputs" / "input_audit.json"),
-                 ("card", demo / "output" / "card.json")]
-        for kind, full in Kinds:
-            if full.is_file():
-                rel = full.relative_to(root)
-                hashes[kind] = store.add_artifact(con, STUDY_ID, kind, rel)
-        cassette = str((brief.get("model_round") or {}).get("request_hash", ""))
-        if cassette:
-            cassette_path = (root / "data" / "model_cassettes" / f"{cassette}.json")
-            if cassette_path.is_file():
-                hashes["cassette"] = store.add_artifact(
-                    con, STUDY_ID, "cassette", cassette_path.relative_to(root))
-        rules_hash = store.sha256_file(demo / "rules.json")
-        inputs_hash = store.sha256_file(demo / "inputs" / "pre_t1_features.geojson")
-        model_id = str((brief.get("model_round") or {}).get("model", ""))
-        brief_hash = store.sha256_file(demo / "output" / "brief.json")
-        run_id = store.add_run(con, STUDY_ID, inputs_hash, rules_hash, model_id,
-                               [cassette] if cassette else [], brief_hash,
-                               operator=os.environ.get("USER", "seed"))
-        store.audit(con, "seed", "seed-study",
-                    {"study": STUDY_ID, "run": run_id, "artifacts": sorted(hashes)})
+        for study_id, rel, inputs_file in STUDIES:
+            demo = root / rel
+            brief = json.loads((demo / "output" / "brief.json").read_text())
+            domain = json.loads((demo / "domain.json").read_text())
+            meta = {"as_of_label": brief.get("as_of_label"),
+                    "baseline": store.sha256_file(demo / "BASELINE.sha256")}
+            store.add_study(con, study_id, domain.get("domain_id", ""),
+                            _frozen_at(demo), meta)
+            hashes = {}
+            Kinds = [("brief", demo / "output" / "brief.json"),
+                     ("gt", demo / "output" / "gt_check.json"),
+                     ("rules", demo / "rules.json"),
+                     ("inputs-audit", demo / "inputs" / "input_audit.json"),
+                     ("card", demo / "output" / "card.json")]
+            for kind, full in Kinds:
+                if full.is_file():
+                    hashes[kind] = store.add_artifact(
+                        con, study_id, kind, full.relative_to(root))
+            cassette = str((brief.get("model_round") or {}).get("request_hash", ""))
+            if cassette:
+                cassette_path = (root / "data" / "model_cassettes" / f"{cassette}.json")
+                if cassette_path.is_file():
+                    hashes["cassette"] = store.add_artifact(
+                        con, study_id, "cassette", cassette_path.relative_to(root))
+            rules_hash = store.sha256_file(demo / "rules.json")
+            inputs_hash = store.sha256_file(demo / "inputs" / inputs_file)
+            model_id = str((brief.get("model_round") or {}).get("model", ""))
+            brief_hash = store.sha256_file(demo / "output" / "brief.json")
+            run_id = store.add_run(con, study_id, inputs_hash, rules_hash, model_id,
+                                   [cassette] if cassette else [], brief_hash,
+                                   operator=os.environ.get("USER", "seed"))
+            store.audit(con, "seed", "seed-study",
+                        {"study": study_id, "run": run_id,
+                         "artifacts": sorted(hashes)})
+            studies[study_id] = {"run": run_id, "artifacts": hashes}
         con.commit()
     finally:
         con.close()
-    return {"study": STUDY_ID, "run": run_id, "artifacts": hashes, "db": str(out)}
+    return {"studies": studies,
+            "artifacts": {sid: s["artifacts"] for sid, s in studies.items()},
+            "db": str(out)}
 
 
 def main(argv=None) -> int:

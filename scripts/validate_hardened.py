@@ -12,6 +12,8 @@ Gates:
   G5 pipeline CLI contract   G10 durable tests present
   G13 domain generic          G14 study reproducibility (replay byte-identical)
   G3b no domain vocabulary    G15 mutable null (zeroed facts -> quiet top)
+  G17 restore drill (wipe results/, rebuild identical)
+  G18 ingest watch (data/raw/ covered by sourced registry)
   G16 rebuild fabric (Makefile chain, deterministic seed, openapi sync)
 """
 import argparse, hashlib, json, pathlib, re, subprocess, sys, tempfile
@@ -25,10 +27,44 @@ def load_config():
     import yaml
     return yaml.safe_load((ROOT/"config/preregistered.yaml").read_text())
 
+def _baseline_ok(path: pathlib.Path) -> list:
+    """Verify one BASELINE.sha256 (P2: study-manifest discipline).
+
+    Lines are `<sha>  <relpath>`; comments start with `#`. Flood lines
+    resolve from the demo dir, fire lines from the repo root — resolved
+    by trying the root first, then the demo dir, so neither layout is
+    hardcoded.
+    """
+    bad = []
+    for raw in path.read_text().splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        want, _, rel = line.partition("  ")
+        want = want.strip()
+        cand = ROOT / rel.strip()
+        if not cand.is_file():
+            cand = path.parent / rel.strip()
+        if not cand.is_file():
+            bad.append(f"{path.name}: missing {rel.strip()}"); continue
+        if hashlib.sha256(cand.read_bytes()).hexdigest() != want:
+            bad.append(f"{path.name}: hash changed {rel.strip()}")
+    return bad
+
 def g1():
     r = subprocess.run([sys.executable, "scripts/check_manifest.py", "--data-dir", "data"],
                        cwd=ROOT, capture_output=True, text=True)
-    gate("G1", r.returncode == 0, r.stdout.strip() or r.stderr.strip()[:200])
+    bad = []
+    if r.returncode != 0:
+        bad.append(r.stdout.strip() or r.stderr.strip()[:200])
+    for s in STUDIES:
+        base = ROOT / s / "BASELINE.sha256"
+        if not base.is_file():
+            bad.append(f"{s}: no BASELINE.sha256")
+        else:
+            bad += _baseline_ok(base)
+    detail = "; ".join(bad) if bad else r.stdout.strip() + " + study baselines ok"
+    gate("G1", not bad, detail)
 
 def _nulls(o, p=""):
     out = []
@@ -619,13 +655,75 @@ def g15():
             bad.append(f"{s}: full-evidence top is the quiet story")
     gate("G15", not bad, "; ".join(bad) if bad else "null->quiet, evidence->alarm (both studies)")
 
+def g18():
+    """Ingest watch (P2): every file under data/raw/ is covered by a
+    registered dataset prefix with a real source_url and license.
+
+    Registry: data/raw/REGISTRY.json (operator-owned, untracked).
+    Longest-prefix coverage: files inside a registered export share its
+    entry; a new top-level path fails until registered. Stale entries
+    (matching nothing) fail too — both directions closed.
+    """
+    bad, detail = _g18_check(ROOT / "data" / "raw")
+    gate("G18", not bad, detail)
+
+
+def _g18_check(raw: pathlib.Path):
+    """Returns (problems, detail). Empty problems = green; a missing raw
+    dir is vacuously green (nothing to watch)."""
+    regp = raw / "REGISTRY.json"
+    if not raw.is_dir():
+        return [], "data/raw absent (nothing to watch)"
+    try:
+        reg = json.loads(regp.read_text()).get("entries", {})
+    except (OSError, ValueError, AttributeError) as e:
+        return [f"REGISTRY.json unreadable ({e}); register every raw dataset"], ""
+    bad = []
+    for key, ent in reg.items():
+        if not isinstance(ent, dict) or not ent.get("source_url") or not ent.get("license"):
+            bad.append(f"entry {key!r}: needs source_url + license")
+        elif "FILL" in str(ent.get("source_url")) or "FILL" in str(ent.get("license")):
+            bad.append(f"entry {key!r}: placeholder source/license")
+    files = [f.relative_to(raw).as_posix() for f in raw.rglob("*")
+             if f.is_file() and f.name != "REGISTRY.json"]
+    if not files:
+        bad.append("data/raw/ has no files")
+    for rel in sorted(files):
+        cover = [k for k in reg if rel == k or rel.startswith(k.rstrip("/") + "/")]
+        if not cover:
+            bad.append(f"unregistered raw path: {rel}")
+    prefixes = set()
+    for rel in files:
+        for k in reg:
+            if rel == k or rel.startswith(k.rstrip("/") + "/"):
+                prefixes.add(k)
+    for k in reg:
+        if k not in prefixes:
+            bad.append(f"stale registry entry (matches nothing): {k}")
+    if bad:
+        return bad, "; ".join(bad[:10])
+    return [], f"{len(files)} raw files covered by {len(reg)} registered datasets"
+
+def g17():
+    """Restore drill (P2): wipe results/, rebuild from manifest + cassettes.
+
+    Pipeline outputs must be byte-identical; the store content-identical
+    (its seed clock moves; every artifact hash must match exactly). The
+    drill restores the backup on any mismatch, so the gate is safe to run.
+    """
+    r = subprocess.run([sys.executable, "scripts/restore_drill.py"],
+                       cwd=ROOT, capture_output=True, text=True, timeout=900)
+    ok = r.returncode == 0
+    gate("G17", ok, (r.stdout.strip() or r.stderr.strip()[-200:]) if ok else
+         (r.stdout.strip()[-400:] or r.stderr.strip()[-200:]))
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--setup-only", action="store_true"); a = ap.parse_args()
     g1(); g2(); g8(); g9(a.setup_only); g10()
     if not a.setup_only:
         g3(); g13(); g3b(); g15()
         with tempfile.TemporaryDirectory() as td:
-            tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp); g12(tmp); g14(tmp); g16(tmp)
+            tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp); g12(tmp); g14(tmp); g16(tmp); g17(); g18()
     print("HARDENED:", "FAIL " + ",".join(FAIL) if FAIL else "ALL PASS")
     sys.exit(1 if FAIL else 0)
 

@@ -577,3 +577,12 @@ G14 compute half (replay byte-identical, both studies; setup half needs
 a live key), G15 (zeroed facts rank quiet first on both studies).
 `tests/properties/test_fact_generics.py` (3) +
 `tests/properties/test_study_gates.py` (4) green.
+
+## P2 — Data persistence & provenance (done 2026-10-29)
+
+Every byte traceable: data manifest (992 files) with a no-hand-edit
+record workflow, study baselines verified inside G1, both studies seeded
+in the store and served by the API, restore drill green (G17), ingest
+watch over raw data green (G18, 934 files / 12 datasets). Gate:
+G1–G18 ALL PASS, judge 102. Operator still owns confirming the registry
+licence readings (`QUESTIONS.md`).

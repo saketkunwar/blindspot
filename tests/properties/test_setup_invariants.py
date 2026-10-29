@@ -59,3 +59,67 @@ def test_spec_ledger_branch_for_rules_driven_studies():
     assert "ledger_spec" not in ffrozen
     fled = _ss.build_ledger(fdomain, flood / "inputs", ffrozen)
     assert "F4_cluster_hit" in fled["facts"]
+
+def test_manifest_record_cycle_without_hand_edits(tmp_path):
+    # P2 discipline pin: a full register-then-verify cycle through the
+    # tool only (no JSON hand edits), including the refusal paths.
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from scripts import check_manifest as _cm
+    d = tmp_path / "data"
+    d.mkdir()
+    (d / "a.json").write_text('{"v": 1}')
+    (d / "MANIFEST.json").write_text("{}\n")
+    assert "unlisted file: a.json" in _cm.check(d)
+    rc = _cm.main(["--data-dir", str(d), "--record", "a.json", "--kind", "bogus"])
+    assert rc == 2, "CLI must reject a bad kind"
+    out = _cm.record(d, "a.json", "synthetic", "recorded test fixture", "project synthetic")
+    assert "recorded a.json" in out
+    assert _cm.check(d) == []
+    try:
+        _cm.record(d, "a.json", "synthetic", "x", "y")
+        raise AssertionError("overwrite accepted")
+    except SystemExit as e:
+        assert "already listed" in str(e)
+    try:
+        _cm.record(d, "missing.json", "real", "", "")
+        raise AssertionError("missing file accepted")
+    except SystemExit:
+        pass
+    try:
+        (d / "r.json").write_text("{}")
+        _cm.record(d, "r.json", "real", "", "")
+        raise AssertionError("sourceless real file accepted")
+    except SystemExit as e:
+        assert "source_url" in str(e)
+
+def test_ingest_watch_both_directions(tmp_path):
+    # P2 G18 pin: unregistered paths fail, stale entries fail, covered
+    # trees pass, absent raw dir is vacuously green.
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from scripts import validate_hardened as _vh
+    raw = tmp_path / "raw"
+    bad, _ = _vh._g18_check(raw)
+    assert bad == []
+    raw.mkdir()
+    (raw / "new_export").mkdir()
+    (raw / "new_export" / "a.geojson").write_text("{}")
+    bad, detail = _vh._g18_check(raw)
+    assert any("REGISTRY.json unreadable" in b for b in bad), detail
+    (raw / "REGISTRY.json").write_text('{"version": 1, "entries": {}}')
+    bad, detail = _vh._g18_check(raw)
+    assert any("unregistered raw path" in b for b in bad), detail
+    (raw / "REGISTRY.json").write_text(
+        '{"version": 1, "entries": {"new_export": {"source_url": "s", "license": "l"},'
+        ' "ghost": {"source_url": "s", "license": "l"}}}')
+    bad, _ = _vh._g18_check(raw)
+    assert any("stale registry entry" in b for b in bad), bad
+    (raw / "REGISTRY.json").write_text(
+        '{"version": 1, "entries": {"new_export": {"source_url": "s", "license": "l"}}}')
+    bad, detail = _vh._g18_check(raw)
+    assert bad == [], detail
+    (raw / "REGISTRY.json").write_text(
+        '{"version": 1, "entries": {"new_export": {"source_url": "FILL", "license": "l"}}}')
+    bad, _ = _vh._g18_check(raw)
+    assert any("placeholder" in b for b in bad), bad

@@ -26,6 +26,12 @@ def test_seed_records_study_artifacts_run_and_audit(tmp_path):
     assert {"brief", "gt", "rules", "inputs-audit"} <= kinds
     assert len(db.runs_for(con, "nepal-cascade")) == 1
     assert summary["artifacts"]
+    fire = db.get_study(con, "kalimantan-fire")
+    fdomain = json.loads((ROOT / "demo/fire_study/domain.json").read_text())
+    assert fire and fire["domain_id"] == fdomain["domain_id"]
+    fkinds = {a["kind"] for a in db.artifacts_for(con, "kalimantan-fire")}
+    assert {"brief", "rules", "inputs-audit", "card"} <= fkinds
+    assert len(db.runs_for(con, "kalimantan-fire")) == 1
     con.close()
 
 

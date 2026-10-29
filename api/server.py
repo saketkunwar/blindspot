@@ -35,10 +35,19 @@ PIPELINES = {
 }
 
 # Frozen studies served by /v1/studies/{id}/*. One entry per frozen study;
-# a second study (fire) lands here when P0 Step 6 freezes it — no new routes.
+# no new routes per study. Spec-driven studies (ledger_spec in rules) name
+# their compute inputs so live recompute runs the right pipeline.
 STUDIES = {
     "nepal-cascade": {
         "demo_dir": pathlib.Path("demo") / "nepal_cascade",
+    },
+    "kalimantan-fire": {
+        "demo_dir": pathlib.Path("demo") / "fire_study",
+        "spec": {
+            "inputs": "demo/fire_study/inputs",
+            "rules": "demo/fire_study/rules.json",
+            "domain": "demo/fire_study/domain.json",
+        },
     },
 }
 
@@ -153,10 +162,13 @@ def study_brief(study_id: str, mode: str, request: Request) -> JSONResponse:
     _require_operator(request)
     with tempfile.TemporaryDirectory() as tmp:
         out = pathlib.Path(tmp) / "brief.json"
-        r = subprocess.run(
-            [sys.executable, "-m", "agents.autoinsight", "--model-round", "off",
-             "--out", str(out), "--prompt-log", tmp],
-            cwd=root, capture_output=True, text=True, timeout=900)
+        spec = STUDIES[study_id].get("spec")
+        cmd = [sys.executable, "-m", "agents.autoinsight", "--model-round", "off",
+               "--out", str(out), "--prompt-log", tmp]
+        if spec is not None:
+            cmd += ["--inputs", spec["inputs"], "--rules", spec["rules"],
+                    "--domain", spec["domain"]]
+        r = subprocess.run(cmd, cwd=root, capture_output=True, text=True, timeout=900)
         if r.returncode != 0 or not out.exists():
             raise HTTPException(status_code=502,
                                 detail="live study run failed: " + r.stderr[-500:])

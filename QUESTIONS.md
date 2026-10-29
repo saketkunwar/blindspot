@@ -170,3 +170,18 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   (0.95) and hotspot clumping (0.9) — the same two facts the frozen brief
   leans on. Criterion: setup drafts for both domains pass the null
   red-team — now satisfied for fire as well as flood.
+
+## Raw data registry claims (2026-10-29, operator-confirm pending)
+- `data/raw/REGISTRY.json` registers all 934 raw files under 12 entries
+  (G18 watches both directions). Every licence below is the assistant's
+  reading from filenames/export conventions, written explicitly for
+  correction — none is confirmed:
+- ems_data_sep9 + emsr927: Copernicus EMS Rapid Mapping activation
+  EMSR927 grading products (GRA_28xx, Langtang corridor); claimed
+  licence: Copernicus free/full/open with attribution.
+- flood_data_processed + 4 dated siblings: HOT/OSM/Overture/Tasking
+  Manager exports, operator-processed; claimed ODbL-1.0 (OSM-derived)
+  + CDLA-Permissive-2.0 (Overture).
+- temporal_data split per file: osm_temporal_cascades ODbL-1.0;
+  bipad_/dhm_ captures as-published with no explicit licence stated;
+  candidate_spatial_association as project-internal.

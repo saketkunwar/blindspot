@@ -335,6 +335,12 @@
   "sha256": "60a47444325444de329c855ec7f0cea7344fb8c71835dae842df409b1e8ec15f",
   "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)"
  },
+ "raw/REGISTRY.json": {
+  "kind": "synthetic",
+  "license": "project synthetic",
+  "sha256": "8d12f7b12da169032d764520ee83a734a3ab064961e29bd1167d098a1842c60e",
+  "source_url": "operator-maintained raw dataset registry (P2 ingest watch)"
+ },
  "raw/ems_data_sep9/Bidur/GRA_2855/EMSR927_AOI03_GRA_PRODUCT_areaOfInterestA_v1.dbf": {
   "kind": "real",
   "license": "unknown",

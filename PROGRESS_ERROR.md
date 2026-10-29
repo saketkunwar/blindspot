@@ -529,3 +529,35 @@ took the recommended path) prevented building against phantom inputs.
   to re-record): setup WITH the card fails its own prompt audit on real
   inputs — both committed rounds used `--no-card`. Fix card-embedding
   audit alignment before any card-carrying setup round.
+
+## P2 persistence & provenance (2026-10-29, in progress)
+- `[plain]` The committed `results/flood.json` predated the FHZ work (no
+  `fhz_zones` key) with no recorded lineage — the exact gap P2 closes.
+  Refreshed from current code; both pipelines prove deterministic
+  (byte-identical across runs), so rebuild-identity is achievable.
+- `[hardened]` `results/store.sqlite3` can never be byte-stable: the seed
+  stamps wall-clock time into run/audit rows. The drill compares pipeline
+  outputs byte-for-byte and the store content-for-content (timestamps
+  normalized, every artifact hash exact). Honest downgrade, documented in
+  `scripts/restore_drill.py`.
+- `[hardened]` The store only knew `nepal-cascade` (P1 predates Demo 2).
+  Seed generalized to both studies; API serves `kalimantan-fire/brief`
+  (200, store hash-checked) with the spec-aware live path; `/gt`
+  honestly 404s (no gt artifact); `/geo` stays flood-shaped (502 for
+  fire — presentation work, out of P2 scope).
+- `[hardened]` Manifest registration is now a tool (`check_manifest.py
+  --record`), never a hand edit; study baselines verify inside G1
+  (including `gt_check.json`, newly pinned). New gates G17 (drill) and
+  G18 (ingest watch over `data/raw/REGISTRY.json`, longest-prefix
+  coverage, both directions fail-closed).
+
+## P2 done — provenance green (2026-10-29)
+- `[plain]` Every number now traces back: manifest (992 files, tool-only
+  registration), study baselines verified inside G1, both studies seeded
+  and served, drill green, raw registry green. The one thing the operator
+  still owns: confirming the 12 registry licence readings in
+  `QUESTIONS.md` (assistant's best readings, written for correction).
+- `[hardened]` P2 gate check: G1–G18 ALL PASS; judge 102 passed; web
+  build clean. `results/flood.json` staleness (missing FHZ key) was the
+  drill's first honest FAIL; fixed by rebuilding from current code, not
+  by touching the gate.

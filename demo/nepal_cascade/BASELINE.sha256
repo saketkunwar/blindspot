@@ -16,3 +16,5 @@ b1c044ed8e4779f2cfc70030cf8971f2927d146f3a047ee2cbe5a85a546a5828  output/setup-r
 # Live setup re-record (current builder, --no-card), 2026-10-29.
 e2a3cc61454c51aca894da50e4f4941199ece4962eab1a735cec1989305d5c56  output/setup-prompt-e2a3cc61454c51ac.txt
 f4c0c6e5d1288d25b535fdcf7803dc396d13a7b688b2b35943abdb9264f7ed5b  output/setup-report-e0d4fe88c1e49eba.json
+# GT check (P2 study-manifest discipline).
+7b55b9795b8a4dacfc5e4ab026681b9b5f3e1ffc1784421084932843efe62fee  output/gt_check.json
