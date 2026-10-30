@@ -204,3 +204,117 @@ machinery, all deterministic and offline-testable:
   refusing. The approve path with a clearing replay is unit-proven on
   synthetic histories and override-proven end-to-end; its first real use
   waits for real history.
+
+---
+
+# All-scenes census (2026-10-30)
+
+The M0 census used one five-day scene. This run slides every stored fire
+scene (`python scripts/backtest_episodes.py --all-scenes`; manifest checks
+on, same rule id, no config change). Live artifacts:
+`results/memory_episodes.sqlite3`, `results/memory_census.json`
+(regenerated, untracked — rebuild with the same command).
+
+| Scene | Episodes | Labelled | Unlabelable |
+|---|---|---|---|
+| amazon_sep2026 | 3 | 1 | 2 |
+| attica | 3 | 1 | 2 |
+| chaco_sep2026 | 3 | 1 | 2 |
+| firms_cerrado_15d | 9 | 7 | 2 |
+| firms_iberia_15d | 9 | 7 | 2 |
+| firms_mozambique_10d | 4 | 2 | 2 |
+| firms_naustralia | 3 | 1 | 2 |
+| firms_texas_10d | 4 | 2 | 2 |
+| firms_wusa | 3 | 1 | 2 |
+| kalimantan_c | 4 | 2 | 2 |
+| zambia_sep2026 | 3 | 1 | 2 |
+| **Total (11 scenes)** | **48** | **26** | **22** |
+
+Two files hold no detections (an empty list and an empty dict) and were
+skipped with the reason printed, not silently; 11 thin-history cutoffs
+were skipped the same way. Every episode's frozen top is
+`suppression_then_restart` and every labelled outcome is `restart` — one
+September fire season, burning everywhere, with no quiet window anywhere.
+
+## Verdict: bar met numerically, memory still silent — and why
+
+26 labelled episodes across 11 scenes clears the promotion bar (10 across
+3) on paper. But grouping the 48 episodes by signature yields **48
+patterns of one episode each**: no pattern reaches the speaking threshold
+of 5, so every brief stays silent, for a new reason. The signature is too
+fine, and the census says exactly where: the count bins repeat nicely
+across episodes, but the dict-valued facts (`FF2`, `FF5` gap statistics
+with ever-growing counts and spans) and the raw study-box area (`FF6`, a
+square-metre float) pass through verbatim, fingerprinting every slice.
+Two design facts collide here: `FF6` is documented context-only with no
+time signal, yet its exact area sits in the pattern key; the config
+comment claiming non-integers are "already categorical" is wrong for
+these two facts.
+
+The proposed fix (not applied — it changes preregistered values, so it
+waits in QUESTIONS.md): project the gap dicts to binned day-gap plus
+binned distinct-day count, and drop `FF6` from the key or log-bin it.
+Under that key, today's 48 episodes visibly share a handful of patterns.
+Second caveat for the record: the history is one-sided (26 restarts, 0
+quiets), so memory could only ever reinforce the frozen top; the quiet
+mapping stays unexercised until some scene goes quiet.
+
+---
+
+# v4 signature key (2026-10-30, operator-approved)
+
+The all-scenes census proved the v3 key never repeats, so the key was
+retuned exactly as proposed and approved: gap-statistic dicts project to
+binned whole-day gap plus binned distinct-day count, and raw
+non-integral floats leave the key. Episode and outcome rows are byte
+identical between the v3 and v4 backtest runs (all 48), proving the key
+groups rows for reading only.
+
+Under the v4 key the 48 episodes form **22 patterns** (was 48-of-one),
+and patterns now cross scenes — one key holds Amazon, WUSA, and
+Kalimantan slices together. The strongest patterns:
+
+| Episodes | Labelled | Members |
+|---|---|---|
+| 6 | 4 | Iberia 09-24…28, Texas 09-29 |
+| 4 | 4 | Cerrado 09-24…27 |
+| 3 | 3 | Amazon 09-26, WUSA 09-27, Kalimantan 09-17 |
+| 5 | 2 | Iberia 09-23, Texas 09-27/28, WUSA 09-28/29 |
+
+No pattern reaches the threshold of 5, so every brief stays silent —
+genuinely close this time (the Iberia/Texas key stands at 4 labelled,
+one closed window away). The threshold itself is unchanged: it was
+preregistered, and moving it to meet the data would be tuning.
+
+Two roughnesses on record. First, integral areas still bin (a few keys
+carry a study-box bin) while fractional ones drop, so one scene's area
+flickers between dropped and binned across cutoffs by floating-point
+exactness — ugly, contained (the affected keys still group), and a
+candidate for the next key revision. Second, the history stays one-sided:
+26 restarts, 0 quiets.
+
+---
+
+# Demo-2 showcase (2026-10-30)
+
+Two new pages, `/demo/fire-study/memory` ("What the system remembers —
+and what it refuses to claim") and `/demo/nepal-cascade/memory` ("Why
+this desk is empty — and why that is the point"), built without touching
+the existing demo pages. Both read committed snapshots regenerated from
+live script output only:
+
+- `api/demo2_data/fire.json`: the frozen verdict, the 48/26/11 census,
+  the 22-pattern table with cross-scene members, the labelled null-test
+  arms, and the live hill-climb "nothing meets the bar" report —
+  including an as-of slider that greys out whatever the case could not
+  have known yet.
+- `api/demo2_data/nepal.json`: the frozen verdict, the byte-identity
+  proof (memory-empty brief hash equals frozen hash), the verified
+  emptiness counts (2 real damage days, 8,368 dateless features), and
+  the three unlock conditions.
+
+Served by `/api/demo2/fire-study` and `/api/demo2/nepal-cascade`
+(404 names the regeneration command when snapshots are absent).
+Regenerate both pages' data with one command:
+`python scripts/make_demo2.py`. Footers show rule ids and counts, never
+wall-clock, so snapshots cannot quietly rot into false freshness.

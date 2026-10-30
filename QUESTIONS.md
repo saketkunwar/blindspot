@@ -220,3 +220,27 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   inventing one. Flood has no episodes, so the Skeptic's episode replay is
   fire-only today; the frozen-top check covers whichever study's rules
   change. M4 stays parked with P4 (no production stream, no daemon).
+
+## Signature too fine — fix pending operator decision (2026-10-30)
+- The all-scenes census (48 episodes, 26 labelled, 11 scenes) groups into
+  48 patterns of one: `FF2`/`FF5` gap dicts (growing counts/spans) and the
+  raw `FF6` area float pass through the signature verbatim and fingerprint
+  every slice, so no pattern reaches the speaking threshold of 5.
+- Proposed v4 fix (NOT applied): project gap dicts to (binned day-gap,
+  binned distinct-day count), drop `FF6` from the key or log-bin it
+  (it is documented context-only with no time signal). Applying this
+  changes preregistered values: needs a config version bump, a full
+  backtest re-run, and re-verification of G19/G20/G24 before any brief
+  reads the new key. Awaiting your go.
+- Secondary observation, no action: all 26 labels are restart (one
+  September season, no quiet window); memory could only reinforce the
+  frozen top until some scene goes quiet.
+
+## Signature fix approved and applied (2026-10-30)
+- You approved the v4 key as proposed: gap dicts project to binned
+  day-gap plus binned distinct days, raw floats leave the key. Applied in
+  `engine/memory.py` + config v4 with a new signature test; backtest
+  re-run reproduces all 48 episode rows byte-identically. Result: 22
+  patterns, strongest at 4 labelled — still silent, threshold untouched.
+  Integral-area flicker (dropped vs binned by floating-point exactness)
+  noted in `docs/MEMORY.md` as the next key revision's problem.

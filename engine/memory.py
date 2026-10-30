@@ -56,15 +56,36 @@ def _canon(o) -> str:
     return json.dumps(o, sort_keys=True, separators=(",", ":"))
 
 
+def _project_gap(value: dict, edges: list) -> list:
+    """Project a gap-statistic dict to its pattern shape: the longest gap
+    in whole days plus the binned distinct-day count. Raw counts, totals,
+    and spans grow with every slice and would fingerprint each episode, so
+    they stay out of the key. Dicts without these keys project to zeros
+    (no gap evidence either way)."""
+    try:
+        gap_days = int(round(float(value.get("max_gap_s", 0)) / 86400))
+    except (TypeError, ValueError):
+        gap_days = 0
+    try:
+        distinct = int(value.get("n_distinct", 0))
+    except (TypeError, ValueError):
+        distinct = 0
+    return [bin_count(gap_days, edges), bin_count(distinct, edges)]
+
+
 def signature_for_facts(facts: dict, edges: list) -> dict:
     """Pattern signature of one ledger's facts.
 
     Returns ``{"id": <short hash>, "readable": <sorted tuple>}`` built from
-    active facts only: each fact id paired with its binned count (integers)
-    or verbatim value (everything else, already categorical). Because it is
-    built from the ledger, every element of it can pass the verification
-    gate; because counts are binned coarsely, small-count noise cannot split
-    a pattern in two.
+    active facts only: each fact id paired with its binned count (integers
+    and whole-number floats), its projected gap shape (dicts), or its
+    verbatim value (booleans and strings, already categorical). Raw
+    non-integral floats (areas, extents) are left out: they fingerprint a
+    slice rather than describing a pattern, and the studies mark such
+    facts context-only. Because the key is built from the ledger, every
+    element of it can pass the verification gate; because everything
+    numeric is binned or projected coarsely, slice growth alone cannot
+    split a pattern in two.
     """
     items = []
     for fid in sorted(facts):
@@ -78,8 +99,12 @@ def signature_for_facts(facts: dict, edges: list) -> dict:
             items.append([fid, bin_count(v, edges)])
         elif isinstance(v, float) and v.is_integer():
             items.append([fid, bin_count(int(v), edges)])
-        else:
+        elif isinstance(v, dict):
+            items.append([fid, _project_gap(v, edges)])
+        elif isinstance(v, str):
             items.append([fid, v])
+        # Other raw floats are dropped (see docstring): fingerprints, not
+        # patterns.
     return {"id": hashlib.sha256(_canon(items).encode()).hexdigest()[:16],
             "readable": items}
 

@@ -1,0 +1,790 @@
+{
+ "episodes": [
+  {
+   "cells_pre": 99,
+   "cutoff": "2026-09-26",
+   "episode_id": "amazon_sep2026@2026-09-26",
+   "label": "restart",
+   "n_post": 1448,
+   "n_pre": 587,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "amazon_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-28",
+   "window_start": "2026-09-27"
+  },
+  {
+   "cells_pre": 149,
+   "cutoff": "2026-09-27",
+   "episode_id": "amazon_sep2026@2026-09-27",
+   "label": "unlabelable",
+   "n_post": 781,
+   "n_pre": 1254,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "amazon_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 177,
+   "cutoff": "2026-09-28",
+   "episode_id": "amazon_sep2026@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 2035,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "amazon_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 2,
+   "cutoff": "2026-09-18",
+   "episode_id": "attica@2026-09-18",
+   "label": "restart",
+   "n_post": 4,
+   "n_pre": 4,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "attica",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-20",
+   "window_start": "2026-09-19"
+  },
+  {
+   "cells_pre": 2,
+   "cutoff": "2026-09-19",
+   "episode_id": "attica@2026-09-19",
+   "label": "unlabelable",
+   "n_post": 3,
+   "n_pre": 5,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "attica",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-21",
+   "window_start": "2026-09-20"
+  },
+  {
+   "cells_pre": 3,
+   "cutoff": "2026-09-20",
+   "episode_id": "attica@2026-09-20",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 8,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "attica",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-22",
+   "window_start": "2026-09-21"
+  },
+  {
+   "cells_pre": 118,
+   "cutoff": "2026-09-26",
+   "episode_id": "chaco_sep2026@2026-09-26",
+   "label": "restart",
+   "n_post": 4937,
+   "n_pre": 2052,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "chaco_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-28",
+   "window_start": "2026-09-27"
+  },
+  {
+   "cells_pre": 132,
+   "cutoff": "2026-09-27",
+   "episode_id": "chaco_sep2026@2026-09-27",
+   "label": "unlabelable",
+   "n_post": 2932,
+   "n_pre": 4057,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "chaco_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 143,
+   "cutoff": "2026-09-28",
+   "episode_id": "chaco_sep2026@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 6989,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "chaco_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 164,
+   "cutoff": "2026-09-21",
+   "episode_id": "firms_cerrado_15d@2026-09-21",
+   "label": "restart",
+   "n_post": 2840,
+   "n_pre": 4459,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-23",
+   "window_start": "2026-09-22"
+  },
+  {
+   "cells_pre": 185,
+   "cutoff": "2026-09-22",
+   "episode_id": "firms_cerrado_15d@2026-09-22",
+   "label": "restart",
+   "n_post": 1713,
+   "n_pre": 6195,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-24",
+   "window_start": "2026-09-23"
+  },
+  {
+   "cells_pre": 190,
+   "cutoff": "2026-09-23",
+   "episode_id": "firms_cerrado_15d@2026-09-23",
+   "label": "restart",
+   "n_post": 850,
+   "n_pre": 7299,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-25",
+   "window_start": "2026-09-24"
+  },
+  {
+   "cells_pre": 193,
+   "cutoff": "2026-09-24",
+   "episode_id": "firms_cerrado_15d@2026-09-24",
+   "label": "restart",
+   "n_post": 605,
+   "n_pre": 7908,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-26",
+   "window_start": "2026-09-25"
+  },
+  {
+   "cells_pre": 198,
+   "cutoff": "2026-09-25",
+   "episode_id": "firms_cerrado_15d@2026-09-25",
+   "label": "restart",
+   "n_post": 1568,
+   "n_pre": 8149,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-27",
+   "window_start": "2026-09-26"
+  },
+  {
+   "cells_pre": 203,
+   "cutoff": "2026-09-26",
+   "episode_id": "firms_cerrado_15d@2026-09-26",
+   "label": "restart",
+   "n_post": 2898,
+   "n_pre": 8513,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-28",
+   "window_start": "2026-09-27"
+  },
+  {
+   "cells_pre": 209,
+   "cutoff": "2026-09-27",
+   "episode_id": "firms_cerrado_15d@2026-09-27",
+   "label": "restart",
+   "n_post": 3378,
+   "n_pre": 9717,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 212,
+   "cutoff": "2026-09-28",
+   "episode_id": "firms_cerrado_15d@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 1684,
+   "n_pre": 11411,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 214,
+   "cutoff": "2026-09-29",
+   "episode_id": "firms_cerrado_15d@2026-09-29",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 13095,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_cerrado_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-01",
+   "window_start": "2026-09-30"
+  },
+  {
+   "cells_pre": 32,
+   "cutoff": "2026-09-21",
+   "episode_id": "firms_iberia_15d@2026-09-21",
+   "label": "restart",
+   "n_post": 109,
+   "n_pre": 65,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-23",
+   "window_start": "2026-09-22"
+  },
+  {
+   "cells_pre": 39,
+   "cutoff": "2026-09-22",
+   "episode_id": "firms_iberia_15d@2026-09-22",
+   "label": "restart",
+   "n_post": 157,
+   "n_pre": 101,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-24",
+   "window_start": "2026-09-23"
+  },
+  {
+   "cells_pre": 51,
+   "cutoff": "2026-09-23",
+   "episode_id": "firms_iberia_15d@2026-09-23",
+   "label": "restart",
+   "n_post": 146,
+   "n_pre": 174,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-25",
+   "window_start": "2026-09-24"
+  },
+  {
+   "cells_pre": 58,
+   "cutoff": "2026-09-24",
+   "episode_id": "firms_iberia_15d@2026-09-24",
+   "label": "restart",
+   "n_post": 88,
+   "n_pre": 258,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-26",
+   "window_start": "2026-09-25"
+  },
+  {
+   "cells_pre": 64,
+   "cutoff": "2026-09-25",
+   "episode_id": "firms_iberia_15d@2026-09-25",
+   "label": "restart",
+   "n_post": 33,
+   "n_pre": 320,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-27",
+   "window_start": "2026-09-26"
+  },
+  {
+   "cells_pre": 66,
+   "cutoff": "2026-09-26",
+   "episode_id": "firms_iberia_15d@2026-09-26",
+   "label": "restart",
+   "n_post": 19,
+   "n_pre": 346,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-28",
+   "window_start": "2026-09-27"
+  },
+  {
+   "cells_pre": 67,
+   "cutoff": "2026-09-27",
+   "episode_id": "firms_iberia_15d@2026-09-27",
+   "label": "restart",
+   "n_post": 22,
+   "n_pre": 353,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 70,
+   "cutoff": "2026-09-28",
+   "episode_id": "firms_iberia_15d@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 10,
+   "n_pre": 365,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 71,
+   "cutoff": "2026-09-29",
+   "episode_id": "firms_iberia_15d@2026-09-29",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 375,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_15d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-01",
+   "window_start": "2026-09-30"
+  },
+  {
+   "cells_pre": 160,
+   "cutoff": "2026-09-26",
+   "episode_id": "firms_mozambique_10d@2026-09-26",
+   "label": "restart",
+   "n_post": 12654,
+   "n_pre": 4166,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_mozambique_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-28",
+   "window_start": "2026-09-27"
+  },
+  {
+   "cells_pre": 167,
+   "cutoff": "2026-09-27",
+   "episode_id": "firms_mozambique_10d@2026-09-27",
+   "label": "restart",
+   "n_post": 11382,
+   "n_pre": 9656,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_mozambique_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 168,
+   "cutoff": "2026-09-28",
+   "episode_id": "firms_mozambique_10d@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 4218,
+   "n_pre": 16820,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_mozambique_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 168,
+   "cutoff": "2026-09-29",
+   "episode_id": "firms_mozambique_10d@2026-09-29",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 21038,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_mozambique_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-01",
+   "window_start": "2026-09-30"
+  },
+  {
+   "cells_pre": 54,
+   "cutoff": "2026-09-27",
+   "episode_id": "firms_naustralia@2026-09-27",
+   "label": "restart",
+   "n_post": 2712,
+   "n_pre": 1297,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_naustralia",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 63,
+   "cutoff": "2026-09-28",
+   "episode_id": "firms_naustralia@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 1281,
+   "n_pre": 2728,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_naustralia",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 72,
+   "cutoff": "2026-09-29",
+   "episode_id": "firms_naustralia@2026-09-29",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 4009,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_naustralia",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-01",
+   "window_start": "2026-09-30"
+  },
+  {
+   "cells_pre": 33,
+   "cutoff": "2026-09-26",
+   "episode_id": "firms_texas_10d@2026-09-26",
+   "label": "restart",
+   "n_post": 194,
+   "n_pre": 81,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-28",
+   "window_start": "2026-09-27"
+  },
+  {
+   "cells_pre": 54,
+   "cutoff": "2026-09-27",
+   "episode_id": "firms_texas_10d@2026-09-27",
+   "label": "restart",
+   "n_post": 125,
+   "n_pre": 180,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 65,
+   "cutoff": "2026-09-28",
+   "episode_id": "firms_texas_10d@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 30,
+   "n_pre": 275,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 72,
+   "cutoff": "2026-09-29",
+   "episode_id": "firms_texas_10d@2026-09-29",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 305,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_10d",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-01",
+   "window_start": "2026-09-30"
+  },
+  {
+   "cells_pre": 10,
+   "cutoff": "2026-09-27",
+   "episode_id": "firms_wusa@2026-09-27",
+   "label": "restart",
+   "n_post": 376,
+   "n_pre": 174,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_wusa",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 25,
+   "cutoff": "2026-09-28",
+   "episode_id": "firms_wusa@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 189,
+   "n_pre": 361,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_wusa",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  },
+  {
+   "cells_pre": 38,
+   "cutoff": "2026-09-29",
+   "episode_id": "firms_wusa@2026-09-29",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 550,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_wusa",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-01",
+   "window_start": "2026-09-30"
+  },
+  {
+   "cells_pre": 14,
+   "cutoff": "2026-09-17",
+   "episode_id": "kalimantan_c@2026-09-17",
+   "label": "restart",
+   "n_post": 4793,
+   "n_pre": 503,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_c",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-19",
+   "window_start": "2026-09-18"
+  },
+  {
+   "cells_pre": 20,
+   "cutoff": "2026-09-18",
+   "episode_id": "kalimantan_c@2026-09-18",
+   "label": "restart",
+   "n_post": 4539,
+   "n_pre": 1603,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_c",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-20",
+   "window_start": "2026-09-19"
+  },
+  {
+   "cells_pre": 29,
+   "cutoff": "2026-09-19",
+   "episode_id": "kalimantan_c@2026-09-19",
+   "label": "unlabelable",
+   "n_post": 846,
+   "n_pre": 5296,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_c",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-21",
+   "window_start": "2026-09-20"
+  },
+  {
+   "cells_pre": 30,
+   "cutoff": "2026-09-20",
+   "episode_id": "kalimantan_c@2026-09-20",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 6142,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_c",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-22",
+   "window_start": "2026-09-21"
+  },
+  {
+   "cells_pre": 253,
+   "cutoff": "2026-09-26",
+   "episode_id": "zambia_sep2026@2026-09-26",
+   "label": "restart",
+   "n_post": 4167,
+   "n_pre": 12866,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "zambia_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-28",
+   "window_start": "2026-09-27"
+  },
+  {
+   "cells_pre": 253,
+   "cutoff": "2026-09-27",
+   "episode_id": "zambia_sep2026@2026-09-27",
+   "label": "unlabelable",
+   "n_post": 1330,
+   "n_pre": 15703,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "zambia_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-29",
+   "window_start": "2026-09-28"
+  },
+  {
+   "cells_pre": 253,
+   "cutoff": "2026-09-28",
+   "episode_id": "zambia_sep2026@2026-09-28",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 17033,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "zambia_sep2026",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-09-30",
+   "window_start": "2026-09-29"
+  }
+ ],
+ "frozen": {
+  "cells": 30,
+  "detections": 6142,
+  "mechanisms": 4,
+  "probability": 0.8425,
+  "top": "suppression_then_restart",
+  "top_title": "Suppression wins in late September, then peat restarts",
+  "verdict": "Pre-cutoff evidence most supports 'Suppression wins in late September, then peat restarts' (support 84%). Probabilities are support strengths, not forecasts."
+ },
+ "hill_climb": {
+  "as_of": null,
+  "candidates_filed": 0,
+  "candidates_found": 0,
+  "dropped_over_cap": 0,
+  "filed": [],
+  "traces_read": 0
+ },
+ "hook": "One more closed window and memory speaks for the first time.",
+ "memory_status": {
+  "best_labelled": 4,
+  "episodes": 48,
+  "labelled": 26,
+  "patterns": 22,
+  "rule_id": "restart-noisefloor-v1",
+  "scenes": 11,
+  "speaking": false,
+  "threshold": 5
+ },
+ "null_test": {
+  "note": "preregistered simulation, not study data",
+  "null_edge": -0.13,
+  "signal_edge": 0.27,
+  "trials": 200
+ },
+ "scenes": [
+  {
+   "episodes": 9,
+   "labelled": 7,
+   "scene": "firms_cerrado_15d",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 9,
+   "labelled": 7,
+   "scene": "firms_iberia_15d",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 4,
+   "labelled": 2,
+   "scene": "firms_mozambique_10d",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 4,
+   "labelled": 2,
+   "scene": "firms_texas_10d",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 4,
+   "labelled": 2,
+   "scene": "kalimantan_c",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 3,
+   "labelled": 1,
+   "scene": "amazon_sep2026",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 3,
+   "labelled": 1,
+   "scene": "attica",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 3,
+   "labelled": 1,
+   "scene": "chaco_sep2026",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 3,
+   "labelled": 1,
+   "scene": "firms_naustralia",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 3,
+   "labelled": 1,
+   "scene": "firms_wusa",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 3,
+   "labelled": 1,
+   "scene": "zambia_sep2026",
+   "unlabelable": 2
+  }
+ ],
+ "skipped": {
+  "empty_files": 2,
+  "thin_history": 11
+ },
+ "top_patterns": [
+  {
+   "episodes": 6,
+   "labeled": 4,
+   "labels": {
+    "restart": 4
+   },
+   "members": [
+    "firms_iberia_15d@2026-09-24",
+    "firms_iberia_15d@2026-09-25",
+    "firms_iberia_15d@2026-09-26",
+    "firms_iberia_15d@2026-09-27",
+    "firms_iberia_15d@2026-09-28",
+    "firms_texas_10d@2026-09-29"
+   ]
+  },
+  {
+   "episodes": 4,
+   "labeled": 4,
+   "labels": {
+    "restart": 4
+   },
+   "members": [
+    "firms_cerrado_15d@2026-09-24",
+    "firms_cerrado_15d@2026-09-25",
+    "firms_cerrado_15d@2026-09-26",
+    "firms_cerrado_15d@2026-09-27"
+   ]
+  },
+  {
+   "episodes": 3,
+   "labeled": 3,
+   "labels": {
+    "restart": 3
+   },
+   "members": [
+    "amazon_sep2026@2026-09-26",
+    "firms_wusa@2026-09-27",
+    "kalimantan_c@2026-09-17"
+   ]
+  },
+  {
+   "episodes": 5,
+   "labeled": 2,
+   "labels": {
+    "restart": 2
+   },
+   "members": [
+    "firms_iberia_15d@2026-09-23",
+    "firms_texas_10d@2026-09-27",
+    "firms_texas_10d@2026-09-28",
+    "firms_wusa@2026-09-28",
+    "firms_wusa@2026-09-29"
+   ]
+  }
+ ]
+}

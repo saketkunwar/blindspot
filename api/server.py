@@ -492,6 +492,30 @@ def demo_fire_study_geo(request: Request) -> JSONResponse:
                                       for f in layers if f["properties"].get("kind") == "fire cell")}})
 
 
+@app.get("/api/demo2/fire-study")
+def demo2_fire_study(request: Request) -> JSONResponse:
+    """Demo-2 memory showcase for the fire study: frozen verdict, episode
+    census, pattern table, null-test arms, and the hill-climb report.
+    Committed snapshot built by `scripts/make_demo2.py`; 404 names the
+    regeneration command instead of failing silently."""
+    _ops_log("demo2.fire")
+    return JSONResponse({"mode": "cached",
+                         "data": _read_json(_root() / "api" / "demo2_data" / "fire.json",
+                                            "demo2 snapshots not generated yet "
+                                            "(run: python scripts/make_demo2.py)")})
+
+
+@app.get("/api/demo2/nepal-cascade")
+def demo2_nepal_cascade(request: Request) -> JSONResponse:
+    """Demo-2 memory showcase for the flood study: frozen verdict, the
+    byte-identity proof, and why this domain holds no episodes yet."""
+    _ops_log("demo2.nepal")
+    return JSONResponse({"mode": "cached",
+                         "data": _read_json(_root() / "api" / "demo2_data" / "nepal.json",
+                                            "demo2 snapshots not generated yet "
+                                            "(run: python scripts/make_demo2.py)")})
+
+
 @app.get("/api/evidence")
 def evidence() -> JSONResponse:
     path = _root() / "results" / "evidence.json"

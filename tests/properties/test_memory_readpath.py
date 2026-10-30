@@ -69,6 +69,42 @@ def test_signature_deterministic_and_binned():
     assert e == mem.signature_for_facts(_facts(FF1=6142), EDGES)
 
 
+def _gap(n_dated, n_distinct, max_gap_s=1.0, span_s=1.0):
+    return {"max_gap_s": max_gap_s, "n_dated": n_dated,
+            "n_distinct": n_distinct, "n_total": n_dated, "span_s": span_s}
+
+
+def test_signature_projects_gaps_and_drops_areas():
+    """v4 key: gap dicts with the same day-gap and binned distinct days
+    share a signature despite growing raw counts; raw areas never split one.
+    """
+    base = {"FF1": {"value": 500, "active": True},
+            "FF5": {"value": _gap(587, 2), "active": True},
+            "FF6": {"value": 1219840813331.4, "active": True}}
+    grown = {"FF1": {"value": 900, "active": True},
+             "FF5": {"value": _gap(1603, 2, span_s=2.0), "active": True},
+             "FF6": {"value": 71918394940.6, "active": True}}
+    # FF1 500 vs 900 share a bin; distinct days stay binned together while
+    # raw counts and spans triple; the areas differ wildly and must not
+    # matter.
+    assert (mem.signature_for_facts(base, EDGES) ==
+            mem.signature_for_facts(grown, EDGES))
+    # A longer day-gap or a new distinct-day bin splits the pattern.
+    split_gap = dict(base)
+    split_gap["FF5"] = {"value": _gap(587, 2, max_gap_s=86400.0),
+                        "active": True}
+    assert (mem.signature_for_facts(split_gap, EDGES) !=
+            mem.signature_for_facts(base, EDGES))
+    split_days = dict(base)
+    split_days["FF5"] = {"value": _gap(5000, 12), "active": True}
+    assert (mem.signature_for_facts(split_days, EDGES) !=
+            mem.signature_for_facts(base, EDGES))
+    # Dicts without gap keys project to zeros, deterministically.
+    odd = {"FFX": {"value": {"unrelated": [1, 2]}, "active": True}}
+    assert (mem.signature_for_facts(odd, EDGES) ==
+            mem.signature_for_facts(odd, EDGES))
+
+
 def test_patterns_read_only_the_closed_past():
     eps = [{"episode_id": "s@2026-09-17", "facts": _facts(FF1=10)},
            {"episode_id": "s@2026-09-18", "facts": _facts(FF1=10)}]

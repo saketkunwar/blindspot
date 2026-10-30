@@ -194,6 +194,40 @@
     "summary": "Demo Nepal Cascade Geo"
    }
   },
+  "/api/demo2/fire-study": {
+   "get": {
+    "description": "Demo-2 memory showcase for the fire study: frozen verdict, episode\ncensus, pattern table, null-test arms, and the hill-climb report.\nCommitted snapshot built by `scripts/make_demo2.py`; 404 names the\nregeneration command instead of failing silently.",
+    "operationId": "demo2_fire_study_api_demo2_fire_study_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Demo2 Fire Study"
+   }
+  },
+  "/api/demo2/nepal-cascade": {
+   "get": {
+    "description": "Demo-2 memory showcase for the flood study: frozen verdict, the\nbyte-identity proof, and why this domain holds no episodes yet.",
+    "operationId": "demo2_nepal_cascade_api_demo2_nepal_cascade_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Demo2 Nepal Cascade"
+   }
+  },
   "/api/evidence": {
    "get": {
     "operationId": "evidence_api_evidence_get",

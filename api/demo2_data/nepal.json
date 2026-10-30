@@ -1,0 +1,27 @@
+{
+ "frozen": {
+  "probability": 0.9426,
+  "top": "impoundment_then_burst",
+  "top_title": "Impoundment grows, then the dam bursts",
+  "verdict": "Pre-cutoff evidence most supports 'Impoundment grows, then the dam bursts' (support 94%). Probabilities are support strengths, not forecasts."
+ },
+ "identity": {
+  "frozen_brief_sha256": "00a12ecacf80948eb0d46b4dce1800bfc5e98f320694e2e3f245b0a483485deb",
+  "match": true,
+  "memory_empty_brief_sha256": "00a12ecacf80948eb0d46b4dce1800bfc5e98f320694e2e3f245b0a483485deb"
+ },
+ "memory_status": {
+  "episodes": 0,
+  "note": "not installed for this domain"
+ },
+ "unlock": [
+  "dated flood observations across more days",
+  "a preregistered flood outcome rule",
+  "flood backtest episodes under that rule"
+ ],
+ "why_empty": {
+  "dated_damage_days": 2,
+  "dateless_features": 8368,
+  "note": "Two real damage days cannot support any honest minimum history."
+ }
+}

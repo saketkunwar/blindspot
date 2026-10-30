@@ -131,6 +131,11 @@ def g3():
                 # name itself is content there), not builder code that could
                 # embed scenario answers; engine/pipelines/agents/api and the
                 # rest of web/ stay fully scanned.
+            if base == "api" and "demo2_data" in p.parts:
+                continue  # committed Demo-2 snapshots are presentation data
+                # (episode cutoffs/windows are the content), generated from
+                # live scripts by scripts/make_demo2.py; api/*.py stays
+                # fully scanned.
             text = p.read_text(errors="ignore")
             found = pat.search(text)
             if found: hits.append(f"{p.relative_to(ROOT)}: {found.group()[:40]}")

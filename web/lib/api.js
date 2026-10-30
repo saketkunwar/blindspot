@@ -14,3 +14,5 @@ export const getFloodAssets = () => get(`/api/results/flood/assets`);
 export const getFloodNames = () => get(`/api/results/flood/names`);
 export const getDemoFire = (mode = "cached") => get(`/api/demo/fire-study?mode=${mode}`);
 export const getDemoFireGeo = () => get(`/api/demo/fire-study/geo`);
+export const getDemo2Fire = () => get(`/api/demo2/fire-study`);
+export const getDemo2Nepal = () => get(`/api/demo2/nepal-cascade`);
