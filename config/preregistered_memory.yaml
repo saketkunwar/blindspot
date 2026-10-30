@@ -1,0 +1,123 @@
+# Pre-registered memory backtest rule (BlindSpot tiered-memory M0).
+# Decided BEFORE the first backtest run; changing any value below requires a
+# new rule id and a full re-run. This file is the memory analogue of
+# config/preregistered.yaml: it pins the outcome rule, the look-ahead
+# window, and the minimum history an episode needs to count.
+#
+# Version 2 ADDS the M1 read-path block below (signature bins, speaking
+# threshold, smoothing, shift cap, outcome-to-mechanism mapping), decided
+# before the first memory-adjusted brief existed. The M0 episode/outcome
+# values are untouched: re-running the backtest under v2 yields identical
+# episode and outcome rows (bins only group rows for reading, never for
+# writing).
+version: 3
+rule_id: restart-noisefloor-v1
+
+# Outcome: did the fire restart in the look-ahead window after the cutoff?
+# "restart" = at least restart_min_detections FIRMS detections on days
+# strictly after the cutoff and on/before cutoff + look_ahead_days.
+# The threshold mirrors the study's FIRMS noise floor (an isolated 1-2
+# detections are noise, a cluster of >= 3 is presence), so a restart must
+# clear noise to count. Fewer detections (but >= 1) still mean fire, so the
+# negative label is "quiet", not "out".
+outcome:
+  positive_label: restart
+  negative_label: quiet
+  restart_min_detections: 3
+
+# How far past each cutoff the outcome window reaches, in whole days.
+look_ahead_days: 2
+
+# An episode only counts with this many distinct burn days on/before its
+# cutoff. With fewer days the frozen ranking has no persistence signal and
+# the episode is skipped (recorded in stdout, never stored).
+minimum_history_days: 2
+
+# Episodes whose look-ahead window runs past the last observed scene day
+# cannot be labelled; they are stored with label "unlabelable" and kept in
+# the census so the denominator stays honest.
+unlabelable_label: unlabelable
+
+# Curation mirrors (documented here, values read from this file, never from
+# the frozen study config): detections with day <= cutoff only (the same
+# `day > cutoff: continue` comparison as demo/fire_study/curate.py), sorted
+# (day, lon, lat) traversal, floor grid of grid_cell_deg degrees, and a hot
+# cell tag at >= noise_floor_detections detections. The grid and noise floor
+# repeat the frozen study values so M0 episodes stay comparable to the study
+# ledger; they are re-stated (not imported) so the frozen config stays
+# untouched and the memory rule carries its own provenance.
+curation_mirror:
+  grid_cell_deg: 0.5
+  noise_floor_detections: 3
+
+# Verdict bar for promoting M0 mechanics to tiered-memory M1. The census is
+# small by construction (one stored scene); promotion needs more scenes,
+# not a re-reading of these episodes.
+promotion_bar:
+  min_labelable_episodes: 10
+  min_scenes: 3
+
+# M1 read path (added in v2, before any memory-adjusted brief existed).
+# A case's pattern signature groups past episodes: the sorted ids of active
+# facts, with integer fact values placed in count bins (edges below; value v
+# falls in the first bin with edge > v, so small-count noise cannot split a
+# pattern). Non-integer values are used verbatim — they are already
+# categorical. The bins are deliberately coarse: with so few episodes, fine
+# bins would leave every pattern with a history of one.
+signature:
+  count_bin_edges: [1, 3, 10, 100, 1000, 10000]
+
+# Memory speaks only with at least this many LABELLED past episodes under
+# the case's own signature. Below it the brief is written with no memory
+# section at all (byte-identical to a memory-off run). Five is the smallest
+# count at which a Laplace-smoothed rate starts to mean anything; with the
+# current census of two, memory stays honestly silent.
+memory:
+  min_episodes_to_speak: 5
+  smoothing_alpha: 1.0
+  max_abs_shift: 0.10
+  # Which outcome label counts as evidence FOR each mechanism. Written for
+  # the fire domain, the only domain with episodes: a restart inside the
+  # window is what suppression-then-restart predicts; a quiet window is what
+  # stay-out and burn-out stories predict, and contradicts keep-spreading.
+  # Mechanisms absent here are moved by no label (neutral, shift 0).
+  outcome_supports:
+    restart: [suppression_then_restart]
+    quiet: [sustained_suppression, fuel_burnout]
+
+# M2 honest measurement (added in v3, before the first measure run).
+# The null test asks whether the adjust math can manufacture skill from
+# noise: synthetic histories get random labels (no signal), the signal arm
+# gets labels that always back the true winner, and both arms are scored by
+# how often the adjusted top matches the winner versus the frozen top.
+# The scenario mirrors a four-story ranking with a clear but fallible
+# favorite; truth is drawn from the frozen distribution (the world where
+# the frozen ranking is roughly right). Margins: the null arm must not beat
+# frozen by more than a whisper (it should lose — chasing noise costs);
+# the signal arm must gain clearly, proving the test can detect real help.
+null_test:
+  seed: 7
+  trials: 200
+  history_len: 8
+  frozen_probs: [0.4, 0.3, 0.2, 0.1]
+  max_null_edge: 0.02
+  min_signal_edge: 0.05
+
+# M3 evolution discipline (added in v3, before the first hill-climb run).
+# A proposal holds exactly one change; Track B opens weight-only (other
+# change kinds are rejected as unsupported, not silently held). Recurrence
+# counts independent episodes: cutoffs at least independence_gap_days apart
+# (neighboring slides share most of their data and must not each count).
+# Time splits old-to-new: the first split_propose_frac of the observed span
+# proposes, the next split_validate_frac validates (Skeptic), the remainder
+# is the final test slice selection never touches. A proposal must beat the
+# frozen rules by min_win_margin on validation without moving either frozen
+# study's top. At most max_proposals_per_run leaves one hill-climb run.
+evolver:
+  max_proposals_per_run: 1
+  min_recurrence: 3
+  independence_gap_days: 2
+  split_propose_frac: 0.4
+  split_validate_frac: 0.4
+  min_win_margin: 0.05
+  supported_change_kinds: [weight]

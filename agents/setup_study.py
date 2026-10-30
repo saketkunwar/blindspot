@@ -153,6 +153,10 @@ def main(argv=None) -> int:
     ap.add_argument("--model", default=None)
     ap.add_argument("--no-card", action="store_true",
                     help="skip the redacted Context Card (ledger only)")
+    ap.add_argument("--traces-db", default=None,
+                    help="evolution traces store (optional; one row per round)")
+    ap.add_argument("--traces-label", default=None,
+                    help="run label for the traces row (default: inputs dir name)")
     a = ap.parse_args(argv)
 
     inputs = pathlib.Path(a.inputs)
@@ -216,7 +220,23 @@ def main(argv=None) -> int:
     print(f"setup {res['source']}: overlap={report['overlap']} "
           f"null={'PASS' if report['null_test_pass'] else 'FAIL'} "
           f"top_agrees={report.get('top_agrees')}")
-    return 0 if (draft and not errors and report["null_test_pass"]) else 1
+    satisfied = bool(draft and not errors and report["null_test_pass"])
+    if a.traces_db is not None:
+        import sqlite3 as _sq
+        from store import db as _db
+        con = _sq.connect(a.traces_db)
+        try:
+            con.executescript(_db.SCHEMA)
+            _db.add_trace(
+                con, a.traces_label or inputs.name, "setup_draft", 0,
+                res["request_hash"],
+                hashlib.sha256(res["text"].encode()).hexdigest(),
+                list(errors), "satisfied" if satisfied else "failed_checks",
+                len(res["text"]))
+            con.commit()
+        finally:
+            con.close()
+    return 0 if satisfied else 1
 
 
 if __name__ == "__main__":

@@ -185,3 +185,38 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
 - temporal_data split per file: osm_temporal_cascades ODbL-1.0;
   bipad_/dhm_ captures as-published with no explicit licence stated;
   candidate_spatial_association as project-internal.
+
+## Memory M1 read-path values (2026-10-30, decided before any memory-adjusted brief)
+- `config/preregistered_memory.yaml` v2 keeps `rule_id: restart-noisefloor-v1`
+  (M0 episode/outcome values untouched) and adds: signature count bins
+  `[1, 3, 10, 100, 1000, 10000]` (coarse on purpose — fine bins would leave
+  every pattern with a history of one); `min_episodes_to_speak: 5` (smallest
+  count at which a smoothed rate means anything; current census of 2 stays
+  silent); `smoothing_alpha: 1.0`, `max_abs_shift: 0.10` (a nudge, never a
+  veto); `outcome_supports` for the fire domain only (restart backs
+  suppression-then-restart; quiet backs stay-out/burn-out stories; flood has
+  no episodes so no mapping is claimed there).
+- Openbearing on the plan's flagged judgement call: the outcome labelling
+  rule itself (`restart-noisefloor-v1`, M0) is still the operator's to
+  confirm or revise — everything downstream re-runs deterministically if it
+  changes, under a new rule id.
+
+## Memory v3 values + M3 scoping (2026-10-30, decided before first M2/M3 runs)
+- `null_test`: seed 7, 200 trials, histories of 8, frozen shape
+  [0.4, 0.3, 0.2, 0.1] (a four-story ranking with a clear but fallible
+  favorite; truth drawn from the frozen distribution). `max_null_edge:
+  0.02` (shuffled labels must not beat frozen — expectation is a loss,
+  since chasing noise costs); `min_signal_edge: 0.05` (perfect-signal
+  labels must gain clearly — the positive control). First run observed
+  −0.130 / +0.270: both margins hold with room to spare, no tuning.
+- `evolver`: one proposal per run, recurrence bar 3, independence gap 2
+  days (neighboring slides share most data), propose/validate split
+  0.4/0.4 of the observed span with the final fifth never touched,
+  win margin 0.05 with both frozen tops kept, Track B opens weight-only.
+- Scoping calls: candidates (issue + evidence, no complete change) exist
+  as a distinct status because the deterministic analyzer cannot author
+  fixes — they can never be approved, which G22 pins. The cassette layer
+  reports no token counts, so traces record response length instead of
+  inventing one. Flood has no episodes, so the Skeptic's episode replay is
+  fire-only today; the frozen-top check covers whichever study's rules
+  change. M4 stays parked with P4 (no production stream, no daemon).

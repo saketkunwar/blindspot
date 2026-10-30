@@ -103,9 +103,45 @@ def _print(title: str, head: tuple, rows: list) -> None:
         print("  " + "  ".join(c.ljust(w) for c, w in zip(r, widths)))
 
 
+def memory_table(root: pathlib.Path, db_arg: str | None) -> list:
+    """Rows: (signature, episodes, labeled, labels...). Reads the memory
+    episodes store read-only; a missing file is honest absence, not failure.
+    """
+    from engine import memory as _memory
+    import yaml as _yaml
+    if not db_arg:
+        return []
+    try:
+        episodes, outcomes = _memory.read_episodes_outcomes(db_arg)
+    except (FileNotFoundError, OSError):
+        return []
+    cfg_path = root / "config" / "preregistered_memory.yaml"
+    try:
+        mem = _yaml.safe_load(cfg_path.read_text())
+    except OSError:
+        return []
+    # The operator's now: the latest outcome window the store holds. This
+    # is a read-only census view, not a prediction, so everything observed
+    # so far is in scope — and nothing beyond it can be, by construction.
+    as_of = max([o.get("window_end") or "" for o in outcomes] + [""])
+    if not as_of:
+        return []
+    patterns = _memory.patterns_from_rows(
+        episodes, outcomes, mem["signature"]["count_bin_edges"],
+        mem["memory"]["outcome_supports"], as_of,
+        mem.get("rule_id", "memory-v1"))
+    rows = []
+    for sig, p in sorted(patterns.items()):
+        labels = ",".join(f"{k}={v}" for k, v in sorted(p["labels"].items())) or "-"
+        rows.append((sig[:12], str(p["episodes"]), str(p["labeled"]), labels))
+    return rows
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
+    ap.add_argument("--memory-db", default=None,
+                    help="memory episodes store for the MEMORY table")
     a = ap.parse_args(argv)
     root = pathlib.Path(a.root)
     degraded = False
@@ -116,6 +152,9 @@ def main(argv=None) -> int:
            runs_table(root))
     _print("MODEL USAGE (model, calls, cassette, live, miss, last)",
            ("model", "calls", "cassette", "live", "miss", "last"), usage_table(root))
+    _print("MEMORY (pattern, episodes, labeled, outcome labels)",
+           ("pattern", "episodes", "labeled", "labels"),
+           memory_table(root, a.memory_db))
     print("== GATES (setup-only) ==")
     r = subprocess.run([sys.executable, "scripts/validate_hardened.py", "--setup-only"],
                        cwd=root, capture_output=True, text=True, timeout=600)

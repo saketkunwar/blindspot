@@ -126,6 +126,11 @@ def g3():
                 continue
             if "node_modules" in p.parts or ".next" in p.parts:
                 continue
+            if base == "web" and "demo" in p.parts:
+                continue  # demo pages are user-facing study prose (the study
+                # name itself is content there), not builder code that could
+                # embed scenario answers; engine/pipelines/agents/api and the
+                # rest of web/ stay fully scanned.
             text = p.read_text(errors="ignore")
             found = pat.search(text)
             if found: hits.append(f"{p.relative_to(ROOT)}: {found.group()[:40]}")
@@ -716,6 +721,324 @@ def g17():
     gate("G17", ok, (r.stdout.strip() or r.stderr.strip()[-200:]) if ok else
          (r.stdout.strip()[-400:] or r.stderr.strip()[-200:]))
 
+def g19(tmp):
+    """Frozen identity with memory on but empty: both briefs byte-identical.
+
+    Memory off is G14's replay; this gate covers the other two silence
+    cases — an empty memory store, and a store whose history sits below the
+    speaking threshold. Either way the brief must carry no memory section
+    at all, so the bytes match the frozen baselines exactly.
+    """
+    sys.path.insert(0, str(ROOT))
+    from store import db as _db
+    bad = []
+    empty = tmp / "mem_empty.sqlite3"
+    _db.connect(str(empty)).close()
+    mem = ["--memory-db", str(empty), "--memory-config",
+           "config/preregistered_memory.yaml", "--as-of", "2026-09-20"]
+    flood, fire = ROOT / "demo/nepal_cascade", ROOT / "demo/fire_study"
+    r = subprocess.run(
+        [sys.executable, "-m", "agents.autoinsight", "--model-round", "on",
+         "--out", str(tmp / "flood_mem.json"),
+         "--prompt-log", str(tmp / "mprompts")] + mem,
+        cwd=ROOT, capture_output=True, text=True, timeout=900)
+    if r.returncode != 0 or not (tmp / "flood_mem.json").exists():
+        bad.append(f"flood memory-empty run failed: {r.stderr[-200:]}")
+    elif (tmp / "flood_mem.json").read_bytes() != (flood / "output" / "brief.json").read_bytes():
+        bad.append("flood brief with empty memory differs from frozen brief")
+    r = subprocess.run(
+        [sys.executable, "-m", "agents.autoinsight", "--inputs", "demo/fire_study/inputs",
+         "--rules", "demo/fire_study/rules.json", "--domain", "demo/fire_study/domain.json",
+         "--out", str(tmp / "fire_mem.json"), "--prompt-log", str(tmp / "mfprompts"),
+         "--model-round", "off"] + mem,
+        cwd=ROOT, capture_output=True, text=True, timeout=900)
+    if r.returncode != 0 or not (tmp / "fire_mem.json").exists():
+        bad.append(f"fire memory-empty run failed: {r.stderr[-200:]}")
+    elif (tmp / "fire_mem.json").read_bytes() != (fire / "output" / "brief.json").read_bytes():
+        bad.append("fire brief with empty memory differs from frozen brief")
+    gate("G19", not bad, "; ".join(bad) if bad else
+         "empty-memory briefs byte-identical to frozen baselines (both studies)")
+
+def g20(tmp):
+    """Memory leakage: post-cutoff rows cannot move a brief.
+
+    Builds the real episode store, writes the brief, then deletes every row
+    the case could not have known yet (episodes past the cutoff, outcomes
+    still open at it) and writes the brief again. The two briefs must be
+    byte-identical — the as_of filter, not the delete, is what guarantees
+    it; the delete only proves the filter has something to exclude. The
+    delete count is asserted so the gate cannot pass vacuously, and the
+    brief must equal the frozen baseline (today's history sits below the
+    speaking threshold, so memory stays silent).
+    """
+    import sqlite3 as _sq
+    bad = []
+    fire = ROOT / "demo/fire_study"
+    full = tmp / "mem_full.sqlite3"
+    r = subprocess.run(
+        [sys.executable, "scripts/backtest_episodes.py", "--db", str(full),
+         "--census-out", str(tmp / "g20_census.json")],
+        cwd=ROOT, capture_output=True, text=True, timeout=900)
+    if r.returncode != 0 or not full.is_file():
+        gate("G20", False, f"episode build failed: {r.stderr[-200:]}"); return
+
+    def run_brief(db, out):
+        return subprocess.run(
+            [sys.executable, "-m", "agents.autoinsight", "--inputs", "demo/fire_study/inputs",
+             "--rules", "demo/fire_study/rules.json", "--domain", "demo/fire_study/domain.json",
+             "--out", str(out), "--prompt-log", str(tmp / "g20prompts"),
+             "--model-round", "off", "--memory-db", str(db),
+             "--memory-config", "config/preregistered_memory.yaml",
+             "--as-of", "2026-09-18"],
+            cwd=ROOT, capture_output=True, text=True, timeout=900)
+
+    a_out, b_out = tmp / "g20a.json", tmp / "g20b.json"
+    ra = run_brief(full, a_out)
+    if ra.returncode != 0 or not a_out.is_file():
+        gate("G20", False, f"full-memory brief failed: {ra.stderr[-200:]}"); return
+    pruned = tmp / "mem_pruned.sqlite3"
+    import shutil as _sh
+    _sh.copy(full, pruned)
+    con = _sq.connect(pruned)
+    try:
+        n_ep = con.execute("SELECT COUNT(*) FROM episodes").fetchone()[0]
+        con.execute("DELETE FROM outcomes WHERE window_end > '2026-09-18'")
+        con.execute("DELETE FROM episodes WHERE cutoff > '2026-09-18'")
+        con.commit()
+        n_left = con.execute("SELECT COUNT(*) FROM episodes").fetchone()[0]
+    finally:
+        con.close()
+    if n_left >= n_ep or n_left == 0:
+        gate("G20", False, f"prune excluded nothing ({n_ep} -> {n_left}); gate vacuous"); return
+    rb = run_brief(pruned, b_out)
+    if rb.returncode != 0 or not b_out.is_file():
+        gate("G20", False, f"pruned-memory brief failed: {rb.stderr[-200:]}"); return
+    if a_out.read_bytes() != b_out.read_bytes():
+        bad.append("post-cutoff rows moved the brief (as_of filter leaking)")
+    if a_out.read_bytes() != (fire / "output" / "brief.json").read_bytes():
+        bad.append("memory brief differs from frozen brief below threshold")
+    gate("G20", not bad, "; ".join(bad) if bad else
+         f"post-cutoff rows excluded ({n_ep} -> {n_left} episodes), brief identical to frozen")
+
+def g21():
+    """Honest measurement (M2): the adjust math manufactures no skill.
+
+    Runs the preregistered null/signal simulation: shuffled labels must not
+    beat the frozen ranking (chasing noise costs), while perfect-signal
+    labels must beat it clearly (the positive control proving the test can
+    see real help). A null arm that wins means the pipeline leaks or
+    overfits, and the phase fails.
+    """
+    r = subprocess.run([sys.executable, "scripts/measure_memory.py"],
+                       cwd=ROOT, capture_output=True, text=True, timeout=900)
+    lines = r.stdout.strip().splitlines()
+    detail = "; ".join(lines) if lines else r.stderr.strip()[-200:]
+    gate("G21", r.returncode == 0, detail)
+
+def g22(tmp):
+    """Evolution discipline (M3b): nothing applies without a human verdict.
+
+    The review CLI must refuse unknown ids, missing reasons, candidate
+    (incomplete) proposals, decided proposals, and approvals whose replay
+    clears nothing without an explicit override. Verdicts cannot dangle off
+    missing proposals (foreign key). No frozen file is touched by any of it.
+    """
+    import yaml as _yaml
+    bad = []
+    evo = tmp / "g22evo.sqlite3"
+    mem = tmp / "g22mem.sqlite3"
+    r = subprocess.run(
+        [sys.executable, "scripts/backtest_episodes.py", "--db", str(mem)],
+        cwd=ROOT, capture_output=True, text=True, timeout=900)
+    if r.returncode != 0:
+        gate("G22", False, f"episode build failed: {r.stderr[-200:]}"); return
+
+    def cli(*args):
+        return subprocess.run(
+            [sys.executable, "scripts/review_proposals.py", "--db", str(evo),
+             *args], cwd=ROOT, capture_output=True, text=True, timeout=300)
+
+    if cli("approve", "--id", "99", "--reason", "x",
+           "--override", "y").returncode != 2:
+        bad.append("approve of unknown proposal not refused")
+    import hashlib as _h
+    fire_sha = _h.sha256(
+        (ROOT / "demo/fire_study/rules.json").read_bytes()).hexdigest()
+    prop = {"track": "B", "status": "pending",
+            "issue": "G22 probe proposal.",
+            "recurrence": 3,
+            "change": {"weight": {"fact_id": "FF4_hotspot_clumping",
+                                  "old_weight": 2.0, "new_weight": 2.5}},
+            "cited_episodes": ["kalimantan_c@2026-09-17"],
+            "cited_traces": [], "rejected": [], "base_rules_sha": fire_sha}
+    (tmp / "g22prop.json").write_text(json.dumps(prop))
+    if cli("submit", "--file", str(tmp / "g22prop.json"),
+           "--memory-db", str(mem)).returncode != 0:
+        bad.append("valid proposal submit failed")
+    else:
+        if cli("replay", "--id", "1",
+               "--memory-db", str(mem)).returncode != 0:
+            bad.append("replay on real span failed")
+        if cli("approve", "--id", "1").returncode != 2:
+            bad.append("approve without reason not refused")
+        if cli("approve", "--id", "1", "--reason", "looks fine"
+               ).returncode != 2:
+            bad.append("approve on uncleared replay not refused")
+        if cli("reject", "--id", "1").returncode != 2:
+            bad.append("reject without reason not refused")
+        if cli("reject", "--id", "1", "--reason",
+               "validation span empty; nothing earned").returncode != 0:
+            bad.append("reasoned reject failed")
+        if cli("approve", "--id", "1", "--reason", "late",
+               "--override", "late").returncode != 2:
+            bad.append("decided proposal not closed to approval")
+    sys.path.insert(0, str(ROOT))
+    from store import db as _db
+    con = _db.connect(str(tmp / "g22fk.sqlite3"))
+    try:
+        try:
+            _db.add_verdict(con, 4242, "approve", "dangling", "gate")
+            bad.append("verdict for missing proposal accepted")
+        except Exception:
+            pass
+    finally:
+        con.close()
+    gate("G22", not bad, "; ".join(bad) if bad else
+         "review refuses unsafe paths; verdicts cannot dangle; "
+         "decided proposals stay decided")
+
+def g23(tmp):
+    """Loop bounds (M3a): every loop has a cap and a recorded stop.
+
+    The evolver caps block must be sane; the per-run proposal cap must hold
+    on a constructed two-issue input; setup rounds must log exactly one
+    trace row each with a closed-vocabulary stop reason (single-turn by
+    construction, proven by counting the model calls, not by reading code).
+    """
+    import yaml as _yaml
+    bad = []
+    evo_cfg = _yaml.safe_load(
+        (ROOT / "config/preregistered_memory.yaml").read_text())["evolver"]
+    sane = (int(evo_cfg.get("min_recurrence", 0)) >= 2
+            and int(evo_cfg.get("max_proposals_per_run", 0)) >= 1
+            and int(evo_cfg.get("independence_gap_days", 0)) >= 1
+            and float(evo_cfg.get("min_win_margin", 0)) > 0
+            and list(evo_cfg.get("supported_change_kinds") or []))
+    if not sane:
+        bad.append("evolver caps block missing or not sane")
+    sys.path.insert(0, str(ROOT))
+    from store import db as _db
+    tdb = tmp / "g23traces.sqlite3"
+    con = _db.connect(str(tdb))
+    try:
+        for v in ("first recurring violation", "second recurring violation"):
+            for i in range(int(evo_cfg.get("min_recurrence", 3))):
+                _db.add_trace(con, "gate", "setup_draft", 0, f"g23{i}{v}",
+                              "resp", [v], "failed_checks", 5)
+        con.commit()
+    finally:
+        con.close()
+    r = subprocess.run(
+        [sys.executable, "scripts/hill_climb.py", "--traces-db", str(tdb),
+         "--evolver-db", str(tmp / "g23evo.sqlite3")],
+        cwd=ROOT, capture_output=True, text=True, timeout=300)
+    if r.returncode != 0:
+        bad.append(f"hill_climb failed: {r.stderr[-200:]}")
+    else:
+        try:
+            rep = json.loads(r.stdout)
+        except ValueError:
+            bad.append("hill_climb report not JSON")
+        else:
+            cap = int(evo_cfg["max_proposals_per_run"])
+            if rep.get("candidates_filed", 99) > cap:
+                bad.append("per-run proposal cap exceeded")
+            if rep.get("candidates_found", 0) < 2 or \
+                    rep.get("dropped_over_cap", 0) < 1:
+                bad.append("cap test vacuous (need 2 issues, 1 dropped)")
+    import agents.setup_study as _ss
+    import agents.model_call as _mc
+    calls = []
+    real = _mc.complete
+
+    def counting(*a, **k):
+        calls.append(1)
+        return real(*a, **k)
+
+    _mc.complete = counting
+    try:
+        rc = _ss.main(["--inputs", "demo/nepal_cascade/inputs",
+                       "--domain", "demo/nepal_cascade/domain.json",
+                       "--frozen-rules", "demo/nepal_cascade/rules.json",
+                       "--brief", "demo/nepal_cascade/output/brief.json",
+                       "--out-dir", str(tmp / "g23setup"), "--no-card",
+                       "--traces-db", str(tmp / "g23one.sqlite3")])
+    finally:
+        _mc.complete = real
+    if rc != 0 or len(calls) != 1:
+        bad.append(f"setup round not single-turn (rc={rc}, calls={len(calls)})")
+    else:
+        con = _db.connect(str(tmp / "g23one.sqlite3"))
+        try:
+            rows = _db.traces_for(con)
+            if len(rows) != 1 or rows[0]["iteration"] != 0 or \
+                    rows[0]["stopped_because"] not in (
+                        "satisfied", "failed_checks"):
+                bad.append("trace row missing or stop reason open")
+        finally:
+            con.close()
+    gate("G23", not bad, "; ".join(bad) if bad else
+         "caps sane; per-run cap holds; setup logs one closed trace row")
+
+def g24(tmp):
+    """Feedback leakage (M3a): the analyzer report without future rows.
+
+    Runs the hill-climbing step, then deletes every episode/outcome row the
+    case could not have known yet and runs it again. The two reports must be
+    byte-identical — and the prune must actually remove rows, so the gate
+    cannot pass vacuously. Held-out outcomes never reach the feedback text.
+    """
+    import sqlite3 as _sq
+    bad = []
+    full = tmp / "g24mem.sqlite3"
+    r = subprocess.run(
+        [sys.executable, "scripts/backtest_episodes.py", "--db", str(full)],
+        cwd=ROOT, capture_output=True, text=True, timeout=900)
+    if r.returncode != 0 or not full.is_file():
+        gate("G24", False, f"episode build failed: {r.stderr[-200:]}"); return
+
+    def climb(db, out):
+        return subprocess.run(
+            [sys.executable, "scripts/hill_climb.py", "--traces-db",
+             str(tmp / "g24absent.sqlite3"), "--evolver-db", str(out),
+             "--memory-db", str(db), "--as-of", "2026-09-18"],
+            cwd=ROOT, capture_output=True, text=True, timeout=300)
+
+    ra = climb(full, tmp / "g24a.sqlite3")
+    if ra.returncode != 0:
+        gate("G24", False, f"hill_climb failed: {ra.stderr[-200:]}"); return
+    pruned = tmp / "g24pruned.sqlite3"
+    import shutil as _sh
+    _sh.copy(full, pruned)
+    con = _sq.connect(pruned)
+    try:
+        n_ep = con.execute("SELECT COUNT(*) FROM episodes").fetchone()[0]
+        con.execute("DELETE FROM outcomes WHERE window_end > '2026-09-18'")
+        con.execute("DELETE FROM episodes WHERE cutoff > '2026-09-18'")
+        con.commit()
+        n_left = con.execute("SELECT COUNT(*) FROM episodes").fetchone()[0]
+    finally:
+        con.close()
+    if n_left >= n_ep or n_left == 0:
+        gate("G24", False, f"prune excluded nothing ({n_ep} -> {n_left})"); return
+    rb = climb(pruned, tmp / "g24b.sqlite3")
+    if rb.returncode != 0:
+        gate("G24", False, f"hill_climb on pruned failed: {rb.stderr[-200:]}"); return
+    if ra.stdout != rb.stdout:
+        bad.append("future rows reached the analyzer report")
+    gate("G24", not bad, "; ".join(bad) if bad else
+         f"analyzer report identical without future rows ({n_ep} -> {n_left})")
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--setup-only", action="store_true"); a = ap.parse_args()
     g1(); g2(); g8(); g9(a.setup_only); g10()
@@ -723,6 +1046,7 @@ def main():
         g3(); g13(); g3b(); g15()
         with tempfile.TemporaryDirectory() as td:
             tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp); g12(tmp); g14(tmp); g16(tmp); g17(); g18()
+            g19(tmp); g20(tmp); g21(); g22(tmp); g23(tmp); g24(tmp)
     print("HARDENED:", "FAIL " + ",".join(FAIL) if FAIL else "ALL PASS")
     sys.exit(1 if FAIL else 0)
 

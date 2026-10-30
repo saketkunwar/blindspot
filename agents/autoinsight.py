@@ -67,7 +67,8 @@ __all__ = [
 
 def run(inputs_dir, rules_path, out_path, prompt_log_dir,
         model_round="off", model=None, cassettes_dir=None, usage_path=None,
-        domain_path=None, reach_audit_path=None):
+        domain_path=None, reach_audit_path=None, memory_db=None,
+        memory_config=None, as_of=None):
     from agents import model_call as _mc
 
     inputs_dir = pathlib.Path(inputs_dir)
@@ -140,6 +141,38 @@ def run(inputs_dir, rules_path, out_path, prompt_log_dir,
                 model_info["status"] = "rejected"
 
     top = ranking[0]
+    if memory_db is not None:
+        from engine import memory as _memory
+        import yaml as _yaml
+        if memory_config is None or as_of is None:
+            raise SystemExit("memory needs --memory-config and --as-of (refusing to guess)")
+        mem = _yaml.safe_load(pathlib.Path(memory_config).read_text())
+        try:
+            _memory.check_as_of(as_of)
+        except ValueError as e:
+            raise SystemExit(str(e))
+        episodes, outcomes = _memory.read_episodes_outcomes(memory_db)
+        patterns = _memory.patterns_from_rows(
+            episodes, outcomes, mem["signature"]["count_bin_edges"],
+            mem["memory"]["outcome_supports"], as_of,
+            mem.get("rule_id", "memory-v1"))
+        sig = _memory.signature_for_facts(
+            ledger["facts"], mem["signature"]["count_bin_edges"])
+        adjusted, block = _memory.memory_adjust(
+            ranking, patterns.get(sig["id"]), mem["memory"])
+        if adjusted is None:
+            memory_section = None
+        else:
+            ledger["memory"] = block
+            memory_section = {
+                "status": "memory_adjusted",
+                "signature": sig["id"],
+                "as_of": as_of,
+                "adjusted_mechanisms": adjusted,
+                "note": _memory.memory_note(adjusted, block),
+            }
+    else:
+        memory_section = None
     brief = {
         "prediction": "nepal_cascade_demo",
         "as_of_label": rules["cutoff"]["label"],
@@ -157,6 +190,14 @@ def run(inputs_dir, rules_path, out_path, prompt_log_dir,
                     f"(support {top['probability']:.0%}). Probabilities are "
                     f"support strengths, not forecasts."),
     }
+    if memory_section is not None:
+        # Fail-closed: the section's sentences must restate the ledger block
+        # exactly; a mismatch fails the run instead of writing a bad brief.
+        from engine import memory as _memory
+        brief["memory"] = memory_section
+        violations = _memory.validate_memory_section(brief)
+        if violations:
+            raise SystemExit("memory section failed its check: " + "; ".join(violations))
     out_path = pathlib.Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(brief, indent=1, sort_keys=True) + "\n")
@@ -189,9 +230,15 @@ def main(argv=None) -> int:
     ap.add_argument("--cassettes", default="data/model_cassettes")
     ap.add_argument("--usage", default="meta_usage.json")
     ap.add_argument("--reach-audit-out", default=None)
+    ap.add_argument("--memory-db", default=None,
+                    help="memory episodes store (optional; without it the brief is memory-free)")
+    ap.add_argument("--memory-config", default=None)
+    ap.add_argument("--as-of", default=None,
+                    help="ISO day: only outcomes known by then may be read")
     a = ap.parse_args(argv)
     run(a.inputs, a.rules, a.out, a.prompt_log, a.model_round,
-        a.model, a.cassettes, a.usage, a.domain, a.reach_audit_out)
+        a.model, a.cassettes, a.usage, a.domain, a.reach_audit_out,
+        a.memory_db, a.memory_config, a.as_of)
     return 0
 
 
