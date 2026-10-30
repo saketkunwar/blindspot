@@ -82,6 +82,62 @@
     "summary": "Index"
    }
   },
+  "/api/demo/fire-study": {
+   "get": {
+    "description": "Alias of `/v1/studies/kalimantan-fire/brief` (same behaviour).",
+    "operationId": "demo_fire_study_api_demo_fire_study_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "mode",
+      "required": false,
+      "schema": {
+       "default": "cached",
+       "title": "Mode",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Demo Fire Study"
+   }
+  },
+  "/api/demo/fire-study/geo": {
+   "get": {
+    "description": "Map layers for the fire demo: the 30 curated grid cells as one\n`fire cell` kind (a color MapPane already knows), plus the study-box\noutline for framing. Static inputs, so always cached.",
+    "operationId": "demo_fire_study_geo_api_demo_fire_study_geo_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Demo Fire Study Geo"
+   }
+  },
   "/api/demo/nepal-cascade": {
    "get": {
     "description": "Legacy alias of `/v1/studies/nepal-cascade/brief` (same behaviour).",
@@ -245,6 +301,23 @@
      }
     },
     "summary": "Flood Assets"
+   }
+  },
+  "/api/results/flood/names": {
+   "get": {
+    "description": "OSM names keyed by act-1 feature id (`layer:index`), where the source\ndata carries one \u2014 39 of 171 bridges, all 10 hydropowers, 1 of 14\nhelipads. Separate from /assets (deliberately geometry-only): names\nare display labels, resolved from the manifest-pinned layer files at\nserve time. Unnamed features map to null; callers fall back to the id.",
+    "operationId": "flood_names_api_results_flood_names_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Flood Names"
    }
   },
   "/health": {

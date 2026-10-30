@@ -11,3 +11,6 @@ export const getFire = (mode = "cached") => get(`/api/results/fire?mode=${mode}`
 export const getDemoNepal = (mode = "cached") => get(`/api/demo/nepal-cascade?mode=${mode}`);
 export const getDemoNepalGeo = () => get(`/api/demo/nepal-cascade/geo`);
 export const getFloodAssets = () => get(`/api/results/flood/assets`);
+export const getFloodNames = () => get(`/api/results/flood/names`);
+export const getDemoFire = (mode = "cached") => get(`/api/demo/fire-study?mode=${mode}`);
+export const getDemoFireGeo = () => get(`/api/demo/fire-study/geo`);

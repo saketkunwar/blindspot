@@ -111,6 +111,24 @@ export default function NepalCascadeDemo() {
           <MapPane layers={layers} />
         </div>
       </section>
+
+      <section>
+        <h2>Why this can be trusted</h2>
+        <p className="lede">The deterministic core (QSTR)</p>
+        <p>Every spatial and temporal claim here comes from qualitative relations — RCC-8 topology (overlap, contact, containment) and Allen interval relations (before, during, after) — computed by pure functions over frozen geometry. No embeddings, no sampling, no temperature. The same inputs always produce the same relations, which is why the brief replays byte-for-byte and why every claim in it can be traced to an exact computation. The core cannot hallucinate a relation; it can only report what the shapes and timestamps entail.</p>
+        <p className="lede">The model&apos;s role (setup round)</p>
+        <p>The language model proposes — it drafts the open mechanism set and suggests weights from an anonymized prompt that contains no names, no dates, and no outcome. It never computes evidence and never sees ground truth. Its proposal must pass a null test (all facts quiet means the quiet story wins) and a prompt audit, and its disagreement with the frozen human weights is preserved as expected framing-without-conviction. Conviction lives in the signed weights and the ledger arithmetic, not in the model&apos;s text.</p>
+      </section>
+
+      <section>
+        <h2>Conclusion</h2>
+        <p className="lede">What was studied</p>
+        <p>Whether the 2015 Gorkha earthquake set up a secondary disaster in the Langtang Valley: landslide debris damming a river, water ponding behind it, and the dam bursting into a flood larger than the quake&apos;s direct damage. The evidence is frozen OpenStreetMap data over the valley&apos;s river network, bridges, hydropower sites, and settlements.</p>
+        <p className="lede">How it was studied</p>
+        <p>Raw extracts were curated into pre-cutoff roles, then summarized in a context card with every place name anonymized and every date redacted, so the machinery never saw anything that could identify the event. Eight evidence facts were computed against frozen, human-signed rules and scored into probabilities over an open mechanism set that always included a nothing-happens story. The brief replayed byte-for-byte from cassettes, and ground-truth checks ran only after the freeze.</p>
+        <p className="lede">Insights learned</p>
+        <p>Impoundment-then-burst wins at 0.94 support, carried by one fact above all: 518 damage detections clumped near the channel, a concentration no rival mechanism explains. Reach analysis places the damage downstream of the ponding zone, matching a burst origin rather than scattered quake damage. The hazard-zone gate confirmed every zone is computable from extent, reach, and group relations — while reporting honestly that 113 of 418 zones touch neither outline nor assets (remote wet network, not broken plumbing). And the pipeline graded none of its own homework: the answer was fixed before the ground truth opened.</p>
+      </section>
     </main>
   );
 }

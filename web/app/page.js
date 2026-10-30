@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import MapPane, { legendOf } from "../components/MapPane";
-import { getFire, getFlood, getFloodAssets } from "../lib/api";
+import { getFire, getFlood, getFloodAssets, getFloodNames } from "../lib/api";
 
 export default function Console() {
   const [flood, setFlood] = useState(null);
   const [fire, setFire] = useState(null);
   const [assets, setAssets] = useState({});
+  const [names, setNames] = useState({});
   const [sel, setSel] = useState({ kind: "band", id: "may_be" }); // {kind, id}
   const [error, setError] = useState("");
   const [show, setShow] = useState("flood"); // scenario filter: flood | fire
@@ -16,12 +17,13 @@ export default function Console() {
   const [mapStatus, setMapStatus] = useState("starting");
 
   useEffect(() => {
-    Promise.all([getFlood(), getFire(), getFloodAssets()])
-      .then(([fl, fi, as]) => {
+    Promise.all([getFlood(), getFire(), getFloodAssets(), getFloodNames().catch(() => null)])
+      .then(([fl, fi, as, nm]) => {
         setFlood(fl); setFire(fi);
         const byId = {};
         (as.assets ?? []).forEach((a) => { byId[a.id] = a.geometry; });
         setAssets(byId);
+        if (nm) setNames(nm.data.names ?? {});
       })
       .catch((e) => setError(`API unreachable: ${e.message}`));
   }, []);
@@ -54,7 +56,8 @@ export default function Console() {
         properties: { name: key, part: i }, geometry }));
   };
   const extentFeat = useMemo(() => (assets["flood-extent"]
-    ? [{ type: "Feature", properties: { name: "flood-extent" }, geometry: assets["flood-extent"] }]
+    ? [{ type: "Feature", properties: { name: "flood-extent", id: "flood-extent" },
+        geometry: assets["flood-extent"] }]
     : []), [assets]);
   const layers = useMemo(() => {
     if (!flood || !sel) return [];
@@ -67,10 +70,11 @@ export default function Console() {
       const g = assets[sel.id];
       // The id must ride along: MapPane focuses the feature whose
       // properties.id matches, otherwise the viewport falls back to the
-      // whole band and a 100 m bridge line goes sub-pixel.
+      // whole band and a 100 m bridge line goes sub-pixel. The may_be
+      // wash stays out of this view so the selection reads cleanly.
       const hit = g ? [{ type: "Feature",
         properties: { name: "selected", id: sel.id }, geometry: g }] : [];
-      return [...bandOf("may_be"), ...hit];
+      return [...hit, ...extentFeat];
     }
     if (sel.kind === "claim") return fireCells;
     return [];
@@ -121,7 +125,8 @@ export default function Console() {
         {visibleFeats.slice(0, limit).map((f) => (
           <button key={f.id} className={sel?.id === f.id ? "item active" : "item"}
             onClick={() => setSel({ kind: "feature", id: f.id })}>
-            {f.id} <span className="meta">{f.fwd.rcc8.relation} · {f.fwd.band}</span>
+            {names[f.id] ?? f.id}{" "}
+            <span className="meta">{names[f.id] ? `${f.id} · ` : ""}{f.fwd.rcc8.relation} · {f.fwd.band}</span>
           </button>
         ))}
         {visibleFeats.length > limit && (
@@ -142,18 +147,21 @@ export default function Console() {
         <p className="meta">assets {Object.keys(assets).length} geometries · api {flood?.mode ?? "…"}</p>
       </div>
       <div className="pane-map">
-        <div className="legend">
-          {legendOf(layers).map(([kind, color]) => (
-            <span className="legend-chip" key={kind}>
-              <span className="swatch" style={{ background: color }} />{kind}
-            </span>
-          ))}
-          <span className="meta legend-note">map: {mapStatus}</span>
-        </div>
         <div className="mapwrap">
+          <div className="legend legend-float">
+            {legendOf(layers).map(([kind, color]) => (
+              <span className="legend-chip" key={kind}>
+                <span className="swatch" style={{ background: color }} />{kind}
+              </span>
+            ))}
+            <span className="meta legend-note">map: {mapStatus}</span>
+          </div>
           <MapPane layers={layers} onStatus={setMapStatus}
             focusId={sel?.kind === "band" ? "flood-extent"
-              : sel?.kind === "feature" ? sel.id : undefined} />
+              : sel?.kind === "feature" ? sel.id : undefined}
+            maxZoom={sel?.kind === "feature"
+              ? (floodFeats.find((f) => f.id === sel.id)?.layer === "bridges" ? 20 : 16)
+              : 11} />
         </div>
       </div>
       <div className="pane pane-right">
@@ -161,6 +169,7 @@ export default function Console() {
         {!detail && <p className="meta">Select a feature, band, or claim.</p>}
         {detail?.fwd && (
           <table className="kv"><tbody>
+            {names[detail.id] && <tr><td>name</td><td>{names[detail.id]}</td></tr>}
             <tr><td>relation</td><td>{detail.fwd.rcc8.relation} ({detail.fwd.rcc8.status})</td></tr>
             <tr><td>rectangle</td><td>{detail.fwd.rectangle.join(", ")}</td></tr>
             <tr><td>tiles</td><td>{detail.fwd.tiles.join(" ")}</td></tr>

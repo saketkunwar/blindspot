@@ -68,3 +68,24 @@ def test_flood_assets_cover_act1_ids():
     assert len(ids) == 195 and set(ids) <= set(by_id)
     assert all(isinstance(g, dict) and g.get("type") for g in by_id.values())
     assert by_id["flood-extent"]["type"] == "Polygon"
+
+
+def test_flood_names_reverse_lookup():
+    # OSM names keyed by act-1 id (layer:index); unnamed map to null.
+    body = client.get("/api/results/flood/names").json()["data"]["names"]
+    assert len(body) == 195
+    assert body["bridges:0"] == "Mowa Khola Bridge"
+    assert body["bridges:1"] is None
+    assert sum(1 for k, v in body.items() if k.startswith("hydropowers") and v) == 10
+    feats = client.get("/api/results/flood").json()["data"]["act1"]["features"]
+    assert {f["id"] for f in feats} <= set(body)
+
+
+def test_fire_demo_brief_and_geo():
+    b = client.get("/api/demo/fire-study").json()["data"]
+    assert b["mechanisms"][0]["id"] == "suppression_then_restart"
+    assert len(b["ledger"]["facts"]) == 6
+    g = client.get("/api/demo/fire-study/geo").json()["data"]
+    assert g["cell_count"] == 30 and g["detections"] == 6142
+    kinds = {f["properties"]["kind"] for f in g["layers"]}
+    assert kinds == {"fire cell", "observed fire outline"}

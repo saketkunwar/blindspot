@@ -53,6 +53,7 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
   layersRef.current = layers;
   const focusRef = useRef(focusId);
   focusRef.current = focusId;
+  const lastFocus = useRef(undefined);
   const [failed, setFailed] = useState(false);
   const [ctxLost, setCtxLost] = useState(false);
   const [epoch, setEpoch] = useState(0); // bump to remount the map (retry)
@@ -86,7 +87,7 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
     const draw = () => {
       const feats = layersRef.current;
       try {
-      ["bs-fill", "bs-line", "bs-point"].forEach((id) => {
+      ["bs-fill", "bs-casing", "bs-line", "bs-point"].forEach((id) => {
         if (map.getLayer(id)) map.removeLayer(id);
       });
       if (map.getSource("bs")) map.removeSource("bs");
@@ -106,8 +107,16 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
             "fire cell", KIND_COLORS["fire cell"],
             "flood-extent", KIND_COLORS["flood-extent"],
             FALLBACK_COLOR],
-          "fill-opacity": 0.25,
+          "fill-opacity": 0.14,
         },
+      });
+      // White casing under the selected line so it reads on any base map.
+      map.addLayer({
+        id: "bs-casing", type: "line", source: "bs",
+        filter: ["all",
+          ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
+          ["==", ["coalesce", ["get", "kind"], ["get", "name"]], "selected"]],
+        paint: { "line-color": "#ffffff", "line-width": 7, "line-opacity": 0.9 },
       });
       map.addLayer({
         id: "bs-line", type: "line", source: "bs",
@@ -131,8 +140,11 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
             "selected", KIND_COLORS.selected,
             KIND_COLORS["pre-cutoff damage"]],
           "circle-radius": ["match", ["coalesce", ["get", "kind"], ["get", "name"], ["literal", "?"]],
-            "selected", 6, 3],
-          "circle-opacity": 0.8,
+            "selected", 7, 3.5],
+          "circle-opacity": 0.85,
+          "circle-stroke-width": ["match", ["coalesce", ["get", "kind"], ["get", "name"], ["literal", "?"]],
+            "selected", 2, 0],
+          "circle-stroke-color": "#ffffff",
         },
       });
       // Fit the focused feature (e.g. the selected asset); the rest
@@ -143,7 +155,12 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom }) {
       const b = boundsOf(focus.length ? focus : feats);
       if (b) {
         try {
-          map.fitBounds(b, { padding: 40, maxZoom: maxZoom ?? 10 });
+          const changed = fid !== lastFocus.current;
+          lastFocus.current = fid;
+          const calm = typeof window !== "undefined" && window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          map.fitBounds(b, { padding: 48, maxZoom: maxZoom ?? 10,
+            duration: changed && !calm ? 900 : 0 });
           const c = map.getCenter();
           setStatus(feats.length + " drawn · z" + map.getZoom().toFixed(1)
             + " (" + c.lng.toFixed(2) + "," + c.lat.toFixed(2) + ")");

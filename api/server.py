@@ -380,6 +380,29 @@ def flood_assets() -> JSONResponse:
     return JSONResponse({"assets": out})
 
 
+@app.get("/api/results/flood/names")
+def flood_names() -> JSONResponse:
+    """OSM names keyed by act-1 feature id (`layer:index`), where the source
+    data carries one — 39 of 171 bridges, all 10 hydropowers, 1 of 14
+    helipads. Separate from /assets (deliberately geometry-only): names
+    are display labels, resolved from the manifest-pinned layer files at
+    serve time. Unnamed features map to null; callers fall back to the id.
+    """
+    from pipelines.flood_secondary_dam import LAYER_FILES
+    root = _root()
+    names = {}
+    for layer, fname in LAYER_FILES:
+        try:
+            feats = json.loads((root / "data" / "flood_nepal" / fname).read_text())["features"]
+        except (OSError, json.JSONDecodeError, KeyError) as e:
+            raise HTTPException(status_code=502, detail=f"name layer {fname} unreadable: {e}")
+        for i, f in enumerate(feats):
+            name = (f.get("properties") or {}).get("name") or ""
+            names[f"{layer}:{i}"] = name.strip() or None
+    _ops_log("results.names", layers=len(LAYER_FILES), named=sum(1 for v in names.values() if v))
+    return JSONResponse({"mode": "cached", "data": {"names": names}})
+
+
 @app.get("/api/results/fire")
 def fire_results(request: Request, mode: str = "cached") -> JSONResponse:
     return _results("fire", mode, request)
@@ -427,6 +450,46 @@ def demo_nepal_cascade(request: Request, mode: str = "cached") -> JSONResponse:
 def demo_nepal_cascade_geo(request: Request) -> JSONResponse:
     """Legacy alias of `/v1/studies/nepal-cascade/geo` (same behaviour)."""
     return study_geo("nepal-cascade", request)
+
+
+@app.get("/api/demo/fire-study")
+def demo_fire_study(request: Request, mode: str = "cached") -> JSONResponse:
+    """Alias of `/v1/studies/kalimantan-fire/brief` (same behaviour)."""
+    return study_brief("kalimantan-fire", mode, request)
+
+
+@app.get("/api/demo/fire-study/geo")
+def demo_fire_study_geo(request: Request) -> JSONResponse:
+    """Map layers for the fire demo: the 30 curated grid cells as one
+    `fire cell` kind (a color MapPane already knows), plus the study-box
+    outline for framing. Static inputs, so always cached."""
+    _require_study("kalimantan-fire", request)
+    demo = _study_dir("kalimantan-fire")
+    try:
+        cells = json.loads((demo / "inputs" / "cells.geojson").read_text())["features"]
+        box = json.loads((demo / "inputs" / "extent.json").read_text())["bbox"]
+    except (OSError, json.JSONDecodeError, KeyError) as e:
+        raise HTTPException(status_code=502, detail=f"fire geo inputs unreadable: {e}")
+    layers = []
+    for c in cells:
+        props = c.get("properties") or {}
+        if not isinstance(c.get("geometry"), dict):
+            continue
+        layers.append({"type": "Feature",
+                       "properties": {"kind": "fire cell", "id": props.get("cell_id"),
+                                      "days": props.get("days", []),
+                                      "total": props.get("total", 0)},
+                       "geometry": c["geometry"]})
+    x0, y0, x1, y1 = box
+    layers.append({"type": "Feature", "properties": {"kind": "observed fire outline"},
+                   "geometry": {"type": "Polygon", "coordinates": [[
+                       [x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]}})
+    _ops_log("demo.fire.geo", cells=len(layers) - 1)
+    return JSONResponse({"mode": "cached",
+                         "data": {"layers": layers, "cell_count": len(layers) - 1,
+                                  "detections": sum(
+                                      (f.get("properties") or {}).get("total", 0)
+                                      for f in layers if f["properties"].get("kind") == "fire cell")}})
 
 
 @app.get("/api/evidence")
