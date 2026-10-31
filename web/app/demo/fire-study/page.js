@@ -134,6 +134,29 @@ export default function FireStudyDemo() {
       </section>
 
       <section>
+        <h2>Procedure: step by step</h2>
+        <p>Everything below can be re-run from the pinned files. Follow the steps and you get every number on this page — no flood code executes anywhere in it.</p>
+        <p className="lede">Step 0 — Freeze the world first</p>
+        <p>Same discipline as the flood study: the configuration is locked under a version tag, every input file is hash-pinned, undecided settings raise instead of defaulting, and ground truth opens only after the freeze.</p>
+        <p className="lede">Step 1 — Grid the fire</p>
+        <p>Satellite detections are sorted into tenth-degree map cells holding their day-by-day counts: 6,142 detections over five days (September 16–20) across 30 cells, 28 of them hot. The cutoff, September 20, is read off the data&apos;s last day at curation time — never typed into the prediction. Later September days ride along in a separate timeline file as the sealed envelope.</p>
+        <p className="lede">Steps 2 and 3 — Redact, then lock</p>
+        <p>A context card inventories the inputs with dates blacked out; a freeze script copies everything into the output folder and records fingerprints. One honest limitation: the fire setup round ran without the card, because card-carrying prompts fail their own audit on real inputs — a recorded issue, not a hidden one.</p>
+        <p className="lede">Step 4 — Compute the evidence ledger</p>
+        <p>The spec-driven builder evaluates six fire facts over the cell lists: 6,142 detections; 5 distinct burn days; 30 cells with fire; 6,126 detections clumped near hot cells; the longest gap between burn days (the continuity signal, from auditing each cell day-to-day for vanish-and-reappear patterns — the formal shape of suppression-then-restart); and the study-box area as context. Building this study exposed two engine gaps that turned out to be general, so they were fixed in the shared core and proven generic by the flood brief staying byte-identical: cluster counting against a scoped cell list, and a seconds-to-days divisor in time statistics.</p>
+        <p className="lede">Step 5 — Do the arithmetic, by hand if you like</p>
+        <p>Each story adds the weights of supporting facts and subtracts opposing ones (prior 1 point each; clumping counts double at 2.0; the stay-out story gets a 0.5 caution bonus): restart 5.0, continued spread 3.0, fuel burnout 2.0, sustained suppression −1.25. Converted to shares summing to exactly one (raw they summed to 0.9999, so the same documented rule adds a ten-thousandth to the top entry — the mirror image of the flood correction): 0.8425, 0.1140, 0.0419, 0.0016.</p>
+        <p className="lede">Step 6 — Check every machine-written sentence</p>
+        <p>The same default-deny gate as the flood study: every number must already exist in the ledger, or the brief is blocked.</p>
+        <p className="lede">Step 7 — Hide time, check the answer</p>
+        <p>The ledger saw nothing past September 20. The sealed late-September days confirm suppression then restart — the top story matches an outcome it never read.</p>
+        <p className="lede">Step 8 — Remove half the map, check the answer again</p>
+        <p>The same frozen rules recomputed over the western half only (3,071 of 6,142 detections kept): identical ranking, identical probabilities — possible because scoring depends on which facts are active, not their magnitudes. Every gate still passes on half the map, which is itself the finding: the signal is everywhere, not one hotspot&apos;s doing.</p>
+        <p className="lede">Step 9 — The model&apos;s round</p>
+        <p>The same model, shown only the anonymized pre-cutoff ledger, drafted six mechanisms with its own weights — highest on the unbroken run (0.95) and hotspot clumping (0.9), the same two lead facts the frozen brief leans on — topped smoldering-restart, passed the null test, and disagreed with the frozen top. Expected: framing without conviction. The key was needed once; re-runs replay the recording offline.</p>
+      </section>
+
+      <section>
         <h2>Conclusion</h2>
         <p className="lede">What was studied</p>
         <p>What a mid-September 2026 peatland fire episode in Kalimantan really was: one spreading event, a contained burn, a full cessation — or suppression followed by peat restart. The evidence is 6,142 FIRMS detections over five days across 30 grid cells, 28 of them hot at the noise floor.</p>

@@ -516,6 +516,18 @@ def demo2_nepal_cascade(request: Request) -> JSONResponse:
                                             "(run: python scripts/make_demo2.py)")})
 
 
+@app.get("/api/demo2/nepal-chain")
+def demo2_nepal_chain(request: Request) -> JSONResponse:
+    """Multi-hop algebra showcase: one honest flood chain (bridge, extent,
+    may-be band, target reach) with per-hop relations and the composition
+    that forces the verdict. Built by `scripts/make_chain.py`."""
+    _ops_log("demo2.chain")
+    return JSONResponse({"mode": "cached",
+                         "data": _read_json(_root() / "api" / "demo2_data" / "chain.json",
+                                            "chain snapshot not generated yet "
+                                            "(run: python scripts/make_chain.py)")})
+
+
 @app.get("/api/evidence")
 def evidence() -> JSONResponse:
     path = _root() / "results" / "evidence.json"

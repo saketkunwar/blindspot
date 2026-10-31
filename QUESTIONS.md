@@ -244,3 +244,25 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   patterns, strongest at 4 labelled — still silent, threshold untouched.
   Integral-area flicker (dropped vs binned by floating-point exactness)
   noted in `docs/MEMORY.md` as the next key revision's problem.
+
+## Morning-brief triggers (2026-10-31, preregistered before the runner exists)
+- The daily fire agent (`collab_agent/`) studies the fresh pull only when
+  a trigger fires; otherwise it logs one quiet line. Priority order:
+  (c) labelled count reaches 5, (b) unseen signature, (a) count spike,
+  (d) quiet after a matched window. Reasons:
+- (a) Spike: today >= 2x the trailing 4-day median. Two is the smallest
+  multiple that the October pull (476 vs a 12-25 baseline) clears
+  unambiguously; a lower bar would page the operator on noise, and the
+  FIRMS noise floor is 1-2 isolated detections.
+- (b) New shape: live signature matches no stored pattern. A shape the
+  archive has never seen is definitionally worth one study; no tuning
+  involved, exact signature-id match only.
+- (c) Memory speaks: labelled count under the live signature reaches 5.
+  This is the milestone the whole memory arc waits for; the brief gains
+  its second ranking that morning.
+- (d) Quiet after match: yesterday's pull sat in a matched pattern and
+  today brings < 3 detections. Three mirrors the hotspot rule's own
+  floor (clumped >= 3); below it the window may label quiet once its
+  outcome window closes — never the same morning.
+- Changing any threshold later is a versioned config amendment with the
+  reason recorded here, never a quiet retune.

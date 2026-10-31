@@ -134,6 +134,31 @@ export default function NepalCascadeDemo() {
       </section>
 
       <section>
+        <h2>Procedure: step by step</h2>
+        <p>Everything below can be re-run from the pinned files. Follow the steps and you get every number on this page.</p>
+        <p className="lede">Step 0 — Freeze the world first</p>
+        <p>Before touching any data, the configuration is locked under a version tag and every input file is hash-pinned in a manifest. Any setting left undecided raises an error instead of silently defaulting. Ground truth is opened only after the freeze, reported as-is, and never tuned against.</p>
+        <p className="lede">Step 1 — Gather and clean the maps</p>
+        <p>Raw map exports become the study inputs: the flood outline, the target river reach, the waterway network, and 4,414 mapped features. Of those, 2,092 carry damage dates at or before the cutoff; the rest are dateless — a fact that later decides why flood memory stays empty.</p>
+        <p className="lede">Step 2 — Write the redacted inventory</p>
+        <p>A context card lists what the inputs contain, with every date-like string blacked out, so reference metadata can never smuggle time signals into the model&apos;s prompts.</p>
+        <p className="lede">Step 3 — Lock everything</p>
+        <p>A freeze script copies (never edits) the inputs, prompts, and rules into the output folder and records their fingerprints. From here on, recomputing over moved inputs is refused — the fingerprint check fails first.</p>
+        <p className="lede">Step 4 — Compute the evidence ledger</p>
+        <p>The deterministic builder walks the inputs feature by feature. The algebra it uses is comparison, not simulation: do these two shapes overlap, touch, or contain each other (eight possible answers, always checked both ways); does this time period sit before, during, or after that one (thirteen possible answers, where ending and starting the same day counts as touching); and how far apart are they (five fixed distance bands). Out come eight evidence facts: 2,092 pre-cutoff destroyed features; 51.5% of damage upstream; 72.8% hugging the waterways; a tributary-cluster rule firing on 34 features near the target reach; upstream damage 1.06 times as dense as downstream. That last number carries a story: the first version compared feature areas instead of ground areas and came out 313,269 times — plainly absurd, caught by eye, fixed before freezing.</p>
+        <p className="lede">Step 5 — Do the arithmetic, by hand if you like</p>
+        <p>Each story adds up the weights of the facts that support it (prior 1 point each; the cluster fact counts double at 2.0; the quiet story gets a 0.5 caution bonus for restraint) and subtracts the weights of facts against it: burst 6.0, slope-failure-elsewhere 3.0, downstream-only 1.25, safe drainage −1.0, dam holds −1.0, nothing-further −1.5. Those scores are converted to shares that sum to exactly one (raw they summed to 1.0001, so a documented rule shaves a ten-thousandth off the top entry): 0.9426, 0.0469, 0.0082, 0.0009, 0.0009, 0.0005. These are strengths of support, not weather-forecast chances.</p>
+        <p className="lede">Step 6 — Check every machine-written sentence</p>
+        <p>A default-deny gate verifies that each number in the brief already exists in the ledger (place names masked first, so digits inside an id like bridges:7 are never mistaken for measurements). Anything unverified is stripped or the brief is blocked.</p>
+        <p className="lede">Step 7 — The model&apos;s three rounds</p>
+        <p>The language model (muse-spark-1.2-contributor) was shown only the landscape plus the anonymized ledger — no names, no dates, no outcome — and asked what stories could explain it. Round one failed the null test and was rejected. Round two made 30-odd citation errors, writing short ids where full ones were required — rejected, fixed by a single instruction line. Round three passed and stands. The key was needed once; every re-run since replays the recorded conversation offline.</p>
+        <p className="lede">Step 8 — Prove the model didn&apos;t already know</p>
+        <p>A probe asked the model about the event from anonymized evidence alone. Answer: no knowledge, with a self-stated cutoff predating the flood.</p>
+        <p className="lede">Step 9 — Open the sealed envelope</p>
+        <p>Only after the freeze, the quarantined later snapshot was opened: 754 newly destroyed features in the hidden window, in the channel-adjacent pattern the burst story predicts. Match — the frozen top story consistent with ground truth it never saw, rank 1 of 6, with no re-tuning afterward.</p>
+      </section>
+
+      <section>
         <h2>Conclusion</h2>
         <p className="lede">What was studied</p>
         <p>Whether the 2015 Gorkha earthquake set up a secondary disaster in the Langtang Valley: landslide debris damming a river, water ponding behind it, and the dam bursting into a flood larger than the quake&apos;s direct damage. The evidence is frozen OpenStreetMap data over the valley&apos;s river network, bridges, hydropower sites, and settlements.</p>

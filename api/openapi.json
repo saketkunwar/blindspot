@@ -228,6 +228,23 @@
     "summary": "Demo2 Nepal Cascade"
    }
   },
+  "/api/demo2/nepal-chain": {
+   "get": {
+    "description": "Multi-hop algebra showcase: one honest flood chain (bridge, extent,\nmay-be band, target reach) with per-hop relations and the composition\nthat forces the verdict. Built by `scripts/make_chain.py`.",
+    "operationId": "demo2_nepal_chain_api_demo2_nepal_chain_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Demo2 Nepal Chain"
+   }
+  },
   "/api/evidence": {
    "get": {
     "operationId": "evidence_api_evidence_get",

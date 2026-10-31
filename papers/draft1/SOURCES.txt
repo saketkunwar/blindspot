@@ -55,3 +55,20 @@ fire rules post-freeze amendment (weights locked, rationale filed)
   | PROGRESS_ERROR.md "P5 discipline audit"
 rain news Oct 30 (outside frozen data; next pull verifies)
   | operator report 2026-10-30; web/app/demo/fire-study/page.js outlook section
+procedures: flood facts F1-F8 values + F7 inactive
+  | demo/nepal_cascade/output/brief.json | ledger.facts block
+flood weights/supports/scoring formula + caution 0.5 (worked: 6.0/3.0/1.25/-1.0/-1.0/-1.5)
+  | demo/nepal_cascade/rules.json | facts/mechanisms/scoring/caution_prior (hand-verified softmax)
+fire facts FF1-FF6 values + weights/supports (worked: 5.0/3.0/2.0/-1.25)
+  | demo/fire_study/rules.json + demo/fire_study/output/brief.json (hand-verified softmax)
+4414 mapped features, 2092 pre-cutoff | demo/nepal_cascade/USAGE_DEMO.md findings + brief F1
+density fix 313269x -> 1.06x | PROGRESS_ERROR.md "Demo -- Nepal cascade autoinsight"
+flood setup 3 rounds (M_fluvial null-fail; cite-errors; M6 null PASS), model muse-spark-1.2-contributor
+  | demo/nepal_cascade/output/setup-report-*.json (4 files) + PROGRESS_ERROR.md "Setup round"
+fire setup 6 mechanisms, weights FF5 0.95/FF4 0.9, top smoldering_restart, null PASS
+  | demo/fire_study/output/setup-report-18f6aa3733245198.json
+probe "no knowledge", cutoff Jan 2026 | demo/nepal_cascade/probe_result.json + PROGRESS_ERROR.md
+live scoring (identical within 0.00005) + 6 eps/4 labelled match
+  | scripts/make_demo2.py::_live_snapshot + api/demo2_data/fire.json
+curate outputs (6142/5 days/30 cells; freeze/check commands)
+  | demo/fire_study/USAGE_DEMO.md + demo/nepal_cascade/USAGE_DEMO.md

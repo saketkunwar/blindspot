@@ -1044,6 +1044,51 @@ def g24(tmp):
     gate("G24", not bad, "; ".join(bad) if bad else
          f"analyzer report identical without future rows ({n_ep} -> {n_left})")
 
+def g25(tmp):
+    """Morning-brief drift check. The committed October pull runs twice
+    into scratch dirs: digests must be byte-identical (and non-empty, so
+    the check cannot pass vacuously), every snippet number must live in
+    its ledger block, the pull must leave data/ untouched, and both
+    frozen briefs must hash identically before and after."""
+    import hashlib as _hl
+    briefs = [ROOT / "demo/fire_study/output/brief.json",
+              ROOT / "demo/nepal_cascade/output/brief.json"]
+    before = [_hl.sha256(p.read_bytes()).hexdigest() for p in briefs]
+    outs = []
+    for i in ("a", "b"):
+        out = tmp / f"g25{i}"
+        r = subprocess.run(
+            [sys.executable, "-m", "collab_agent.morning", "--fixture",
+             "oct30", "--out-dir", str(out), "--no-snapshot"],
+            cwd=ROOT, capture_output=True, text=True, timeout=300)
+        if r.returncode != 0:
+            gate("G25", False, f"morning fixture failed: {r.stderr[-200:]}"); return
+        outs.append(out)
+    da = (outs[0] / "digest.json").read_bytes()
+    db = (outs[1] / "digest.json").read_bytes()
+    if not da.strip():
+        gate("G25", False, "empty digest: vacuous determinism"); return
+    if da != db:
+        gate("G25", False, "same pull gave different digests"); return
+    rec = json.loads(da)[-1]
+    import re as _re
+    blob = json.dumps(rec["block"], default=str)
+    missing = [n for n in _re.findall(r"\d[\d,]*\.?\d*", rec["snippet"])
+               if n not in blob]
+    if missing:
+        gate("G25", False, f"snippet numbers outside ledger: {missing}"); return
+    st = subprocess.run(["git", "status", "--porcelain", "--", "data"],
+                        cwd=ROOT, capture_output=True, text=True, timeout=60)
+    touched = [l for l in st.stdout.splitlines() if not l.startswith("??")]
+    if touched:
+        gate("G25", False, f"morning run touched data/: {touched}"); return
+    after = [_hl.sha256(p.read_bytes()).hexdigest() for p in briefs]
+    if after != before:
+        gate("G25", False, "frozen briefs moved under the morning run"); return
+    gate("G25", True,
+         f"digest deterministic ({len(da)} bytes), trigger={rec['trigger']}, "
+         "data/ clean, frozen briefs identical")
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--setup-only", action="store_true"); a = ap.parse_args()
     g1(); g2(); g8(); g9(a.setup_only); g10()
@@ -1051,7 +1096,7 @@ def main():
         g3(); g13(); g3b(); g15()
         with tempfile.TemporaryDirectory() as td:
             tmp = pathlib.Path(td); g5g6(tmp); g4(tmp); g7(tmp); g12(tmp); g14(tmp); g16(tmp); g17(); g18()
-            g19(tmp); g20(tmp); g21(); g22(tmp); g23(tmp); g24(tmp)
+            g19(tmp); g20(tmp); g21(); g22(tmp); g23(tmp); g24(tmp); g25(tmp)
     print("HARDENED:", "FAIL " + ",".join(FAIL) if FAIL else "ALL PASS")
     sys.exit(1 if FAIL else 0)
 

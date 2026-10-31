@@ -7,6 +7,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{microtype}
+\setlength{\emergencystretch}{1.5em}
 \usepackage{hyperref}
 \graphicspath{{figs/}}
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
@@ -409,6 +410,192 @@ highest (run 0.95, clumping 0.9).} \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\section{Procedures: step by step, all three demonstrations}
+\label{sec:procedures}
+
+This section is the lab notebook: every step of each demonstration in order,
+with the command, the inputs and outputs, the algebra operation used, and
+every language-model call. A reader who follows it reproduces every number in
+Section~\ref{sec:demos}.
+
+\paragraph{Step 0 (shared).} Freeze the world before touching it. The
+configuration carries a \verb|prereg| git tag (gate G9 blocks pipeline work
+without it); every input file is hash-pinned in a manifest (992 files,
+tool-registered, never hand-edited); any undecided config value is null and
+raises rather than defaulting. Ground truth is read only after the freeze,
+reported as-is, never tuned against.
+
+\subsection{Nepal flood: curate to ground-truth check}
+
+\emph{Step 1 --- curate.} Raw exports become the study inputs
+(\verb|extent.json|, \verb|target_reach.geojson|, \verb|waterways.geojson|,
+\verb|pre_t1_features.geojson|) under \verb|demo/nepal_cascade/inputs/|,
+with an input audit recording every file hash. Of 4,414 mapped features,
+2,092 carry damage dates at or before the cutoff; the rest are dateless, a
+fact that later decides the fate of flood memory.
+
+\emph{Step 2 --- context card.} \verb|agents/context_card.py| writes a
+redacted inventory (\verb|card.json|, \verb|card.txt|): what the inputs
+contain, with ISO date substrings redacted to \verb|[date]| so reference
+metadata cannot smuggle time signals into prompts.
+
+\emph{Step 3 --- freeze.} \verb|scripts/freeze_study.py| copies (never edits)
+the inputs, prompts, and rules into the output directory and pins them in
+\verb|BASELINE.sha256|. From here on, recomputation over moved inputs is
+refused: the hash check fails first.
+
+\emph{Step 4 --- compute the ledger (no key).} The deterministic builder
+walks the study inputs feature by feature. Snapshot classifications (RCC-8
+both directions, rectangle pairs, tiles, bands) come from
+\verb|engine/qstr_core.py|; the continuity and band logic from
+\verb|engine/gap_auditor.py|; flood-zone sets (418 zones, 518 informative)
+from \verb|engine/fhz.py|. The eight ledger facts compute to: F1, 2,092
+pre-cutoff destroyed features; F2, upstream share 0.5148; F3,
+channel-adjacent share 0.7285; F4, tributary-cluster rule HIT (34 features
+near the target reach); F5, upstream density 1.06$\times$ downstream (ground
+areas, not feature areas --- the first density ratio computed this way came
+out 313269$\times$ and was caught by eye before freezing); F6, static flood
+outline as context; F7, target-reach share 0.0163, inactive; F8, inputs-audit
+clean. Replay command:
+{\footnotesize
+\begin{verbatim}
+python3 -m agents.autoinsight --model-round on \
+  --out /tmp/replay.json --prompt-log /tmp/replay_prompts
+diff /tmp/replay.json demo/nepal_cascade/output/brief.json
+\end{verbatim}
+}
+The \verb|--model-round on| flag replays the committed model cassette
+offline. The diff must print \verb|REPLAY-IDENTICAL|.
+
+\emph{Step 5 --- score (worked).} Active weights: F1 1.0, F2 1.0, F3 1.0, F4
+2.0, F5 1.0, F6 0.25, F8 0.0; F7 inactive. Scores (prior 1.0 each, $+0.5$
+caution on the quiet story only):
+impoundment $1+1+1+2+1=6.0$; slope-failure-elsewhere $1+1+1=3.0$;
+downstream-only $1+1+0.25-1=1.25$; safe-drainage $1+0-2=-1.0$; dam-holds
+$1+1-2-1=-1.0$; no-further-event $1+0-2-1+0.5=-1.5$. Softmax gives raw
+0.9427/0.0469/0.0082/0.0009/0.0009/0.0005, summing to 1.0001; the
+largest-residual correction takes 0.0001 off the top entry, yielding the
+frozen 0.9426. Probabilities are support strengths, not calibrated
+frequencies.
+
+\emph{Step 6 --- gate and brief.} The default-deny verification gate checks
+every model-written sentence against the ledger's annotated numbers (entity
+ids masked first) and the brief is written to
+\verb|demo/nepal_cascade/output/brief.json|.
+
+\emph{Step 7 --- the model's three rounds (key needed once, then cassettes).}
+
+Model: \verb|muse-spark-1.2-contributor|. It was shown only the ontology
+plus the anonymized ledger. Round 1 drafted story \verb|M_fluvial|. It
+\emph{failed} the null red-team (thin framing) --- rejected, kept on record.
+Round 2 failed the citation audit with 30+ short-id errors --- rejected, kept
+on record, fixed by one instruction line. Round 3 (standing draft, top
+\verb|M6|, a safe-drainage-family story) passed the null test --- accepted.
+Re-recording uses \verb|setup_study| with \verb|--no-card|. Live runs need
+\verb|BLINDSPOT_LIVE=1|; replay stays offline from committed cassettes (G14).
+
+\emph{Step 8 --- knowledge probe.} \verb|probe_model.py| asks the model about
+the event from anonymized evidence: ``no knowledge,'' self-stated cutoff
+January 2026, predating the flood.
+
+\emph{Step 9 --- ground-truth check (after freeze only).}
+\verb|demo/nepal_cascade/gt_check.py| opens the quarantined T1--T2 delta:
+754 newly destroyed features, channel-adjacent pattern, frozen top story
+consistent --- MATCH, true-outcome rank 1, no re-tuning afterward.
+
+\subsection{Kalimantan fire: curate to both holdouts}
+
+\emph{Step 1 --- curate.} \verb|demo/fire_study/curate.py| bins the stored
+FIRMS scene into tenth-degree floor-binned cells: 6,142 detections, 5 days
+(September 16--20), 30 cells. The cutoff (September 20) is derived from the
+data's maximum date at curation time, never typed into prediction code.
+Later September days ride along in \verb|timeline.json| as held-out ground
+truth, unreadable from the prediction path.
+
+\emph{Step 2 --- card, Step 3 --- freeze.} Same tools as flood (card, then
+\verb|freeze_study.py| + \verb|BASELINE.sha256|). Known limitation, stated in
+the log: the fire setup round ran \verb|--no-card| because card-carrying
+prompts fail their own audit on real inputs.
+
+\emph{Step 4 --- compute the ledger (no key).} The spec-driven builder
+(\verb|compute_ledger_from_spec|) evaluates the six fire facts over
+role-built cell lists: FF1, 6,142 detections; FF2, 5 distinct burn days; FF3,
+30 cells with fire; FF4, 6,126 detections clumped near hot cells (cluster op
+scoped by reference role and filter --- one of two generic op extensions the
+fire study forced, the other being the seconds-to-days scale divisor in
+time statistics); FF5, longest inter-burn gap (continuity signal from the
+day-to-day auditor); FF6, study-box area as context. Replay command:
+{\footnotesize
+\begin{verbatim}
+python -m agents.autoinsight --inputs demo/fire_study/inputs \
+  --rules demo/fire_study/rules.json \
+  --domain demo/fire_study/domain.json \
+  --out /tmp/fire_replay.json --model-round off
+diff /tmp/fire_replay.json demo/fire_study/output/brief.json
+\end{verbatim}
+}
+
+\emph{Step 5 --- score (worked).} Supports: restart story FF2 (1.0) + FF4
+(2.0) + FF5 (1.0); spread story FF1 + FF3; burnout story FF4 minus FF2;
+stay-out story FF6 (0.25) minus FF2 and FF4, plus the 0.5 caution. Scores:
+$5.0$, $3.0$, $2.0$, $-1.25$. Softmax gives raw
+0.8424/0.1140/0.0419/0.0016, summing to 0.9999; the largest-residual
+correction adds 0.0001 to the top entry, yielding the frozen 0.8425. Note
+the mirror image of the flood correction: the machinery corrects up or down
+by the same rule, and both directions appear in these two studies.
+
+\emph{Step 6 --- gate and brief,} as flood.
+
+\emph{Step 7 --- temporal check.} The ledger saw nothing past September 20;
+the held-out late-September days confirm suppression then restart. The check
+passes when the Step-5 top mechanism matches that outcome --- it does,
+without ever reading the held-out days.
+
+\emph{Step 8 --- spatial check (re-run, not prose).} Mask the eastern half at
+the median detection longitude (3,071 of 6,142 kept), recompute with the same
+frozen rules over \verb|/tmp/fire_holdout/inputs|: identical ranking,
+identical probabilities (scoring depends on active facts, not magnitudes),
+every gate still passing on half the map.
+
+{\sloppy\hbadness=10000
+\emph{Step 9 --- the model's round.} Same model, \verb|--no-card|: six mechanisms (\verb|burnout_suppression|, \verb|smoldering_restart|, \verb|spread_downwind|, \verb|containment_hold|, \verb|flareup_quiet|, \verb|cessation|), weights highest on the unbroken run (0.95) and hotspot clumping (0.9), the same two lead facts the frozen brief leans on. Top: \verb|smoldering_restart| with null PASS on the quiet story, disagreeing with frozen on top. Replay:
+\par}
+{\footnotesize
+\begin{verbatim}
+python -m agents.setup_study --inputs demo/fire_study/inputs \
+  --domain demo/fire_study/domain.json \
+  --frozen-rules demo/fire_study/rules.json \
+  --brief demo/fire_study/output/brief.json \
+  --out-dir /tmp/fsetup --no-card
+\end{verbatim}
+}
+
+\subsection{Live reading: pull to page, no model at all}
+
+\emph{Step 1 --- pull.} Operator keys in environment only (never files,
+cassettes, or logs). Five days of NOAA-20 VIIRS for the study box, October
+26--30: 675 detections (25/12/12/476/150), bounding-box order verified, source
+matching the curated September data. The CSV lands in \verb|/tmp| first, and
+a copy ships beside the snapshot so every number stays checkable. The pull
+never enters \verb|data/| or the frozen study.
+
+\emph{Step 2 --- score with frozen rules.} Role-building, ledger spec, and
+mechanism scoring run exactly as in the fire Step 4--5 over the live slice;
+the ranking must equal the frozen ranking within 0.00005 --- it does,
+identically. No language-model call exists anywhere in this procedure.
+
+\emph{Step 3 --- pattern match.} The live signature is looked up against the
+stored pattern table: 6 episodes, 4 labelled under the best pattern ---
+below the speaking bar of 5, so memory stays silent and the page says so.
+
+\emph{Step 4 --- snapshot and page.}
+\verb|make_demo2.py| with \verb|--live-pull| on the pull CSV
+writes the snapshot; the page carries the timeline (study window, hidden
+test, live days dated to October 30), the no-forecast boundary, and the
+conditional November outlook. When rain arrived after the last pull, no step
+changed: the outlook had named rain as its falsifier, and the next pull
+verifies it the moment daily counts fall.
 
 \section{Tiered memory and the self-evolving agent}
 \label{sec:memory}

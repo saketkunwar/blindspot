@@ -1,0 +1,26 @@
+# collab_agent/config.yaml — version 1.
+# Preregistered 2026-10-31; every value's reason lives in QUESTIONS.md
+# ("Morning-brief triggers"). Changing a value is a versioned amendment
+# with the reason recorded there, never a quiet retune.
+version: 1
+study_box:
+  # The box the October 30 pull verified against (see _live_snapshot's
+  # bbox_check in scripts/make_demo2.py). FIRMS wants west,south,east,north.
+  west: 112.00347
+  south: -2.99993
+  east: 114.99982
+  north: -0.01536
+firms:
+  source: VIIRS_NOAA20_NRT
+  day_range: 5
+  key_env:
+    - FIRMS_MAP_KEY
+    - NASA_FIRMS_MAP_KEY
+triggers:
+  # (a) spike: today >= spike_multiple x trailing median over trailing_days
+  spike_multiple: 2.0
+  trailing_days: 4
+  # (d) quiet: today < quiet_max after a matched-pattern yesterday
+  quiet_max: 3
+  # (c) memory speaks at this many labelled cases under one signature
+  speak_bar: 5

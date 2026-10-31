@@ -799,3 +799,31 @@ took the recommended path) prevented building against phantom inputs.
   verification expanded (what/why, coding-vs-execution split, 8-row
   catches table). 14 pages, microtype, zero warnings. Numbers re-checked,
   gate ALL PASS, judge JUDGE OK 147 passed.
+- `[paper-rev]` Procedures section (all 3 demos, step-by-step with worked
+  score arithmetic both studies incl. both residual-correction directions,
+  all LLM rounds with model id, live pull-to-page with no model): 16 pages,
+  zero warnings, numbers re-checked incl. procedure values, gate ALL PASS,
+  judge JUDGE OK 147 passed. SOURCES.txt extended.
+- `[demo2]` Procedure sections live on all three demo pages (nepal 9 steps,
+  fire 9 steps, live 4 steps, no model): plain-English lab notebooks with
+  fact values, worked arithmetic in words, all LLM rounds, sealed-envelope
+  checks. Web build green, gate ALL PASS, judge JUDGE OK 147 passed.
+
+## Chain showcase + morning agent (2026-10-31, collab_agent/)
+- `[plain]` `scripts/make_chain.py` re-runs frozen code over frozen
+  artifacts: bridges:0 NTPP extent, extent NTPP may_be, reach NTPP
+  may_be, cluster HIT (rule 500m/8, finding 34). compose(NTPP,NTPP)
+  forces [NTPP], observed NTPP — the verdict is entailed, not asserted.
+  act3 impoundment_vs_union is null (missing lake inputs), so no
+  impoundment-geometry hop exists; the temporal MEETS hop is skipped
+  with its reason (as_of is 'pre-T1', not a date). New page
+  `/demo/nepal-cascade/chain` + endpoint; old pages byte-untouched.
+- `[plain]` First quiet-fixture test failed honestly: 8 scattered
+  synthetic detections form a novel signature, so new_shape outranks
+  quiet per the preregistered priority. Test fixed (expects new_shape),
+  rule untouched. Triggers preregistered in QUESTIONS.md before the
+  runner existed; FIRMS area-API shape verified against official docs.
+- `[hardened]` G25 (digest deterministic + non-vacuous, snippet numbers
+  in ledger, data/ clean, frozen briefs identical) green; openapi
+  re-exported for the new endpoint. Full gate ALL PASS (G1-G25); web
+  build green; judge JUDGE OK, 153 passed (147 + 6 new agent tests).

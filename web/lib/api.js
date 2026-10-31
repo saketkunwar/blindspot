@@ -16,3 +16,4 @@ export const getDemoFire = (mode = "cached") => get(`/api/demo/fire-study?mode=$
 export const getDemoFireGeo = () => get(`/api/demo/fire-study/geo`);
 export const getDemo2Fire = () => get(`/api/demo2/fire-study`);
 export const getDemo2Nepal = () => get(`/api/demo2/nepal-cascade`);
+export const getDemo2Chain = () => get(`/api/demo2/nepal-chain`);

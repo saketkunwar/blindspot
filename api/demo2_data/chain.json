@@ -1,0 +1,165 @@
+{
+ "subject": "bridges:0",
+ "question": "is this bridge exposed to the hidden flood process?",
+ "hops": [
+  {
+   "n": 1,
+   "a": "bridges:0",
+   "b": "flood extent (observed outline)",
+   "fwd": {
+    "rcc8": "NTPP",
+    "rectangle": [
+     "d",
+     "d"
+    ],
+    "tiles": [
+     "O"
+    ],
+    "bearing": "W",
+    "edge_gap_m": 0.0,
+    "centroid_dist_km": 39.05169230530203,
+    "band": "CONTACT"
+   },
+   "inv": {
+    "rcc8": "NTPPi",
+    "rectangle": [
+     "di",
+     "di"
+    ],
+    "tiles": [
+     "NW",
+     "N",
+     "NE",
+     "W",
+     "O",
+     "E",
+     "SW",
+     "S",
+     "SE"
+    ],
+    "bearing": "E",
+    "edge_gap_m": 0.0,
+    "centroid_dist_km": 39.05169230530203,
+    "band": "CONTACT"
+   },
+   "says": "the bridge lies inside the observed flood outline",
+   "source": "results/flood.json act1 (frozen pipeline output)"
+  },
+  {
+   "n": 2,
+   "a": "flood extent",
+   "b": "may_be band",
+   "fwd": {
+    "rcc8": "NTPP",
+    "rectangle": [
+     "d",
+     "d"
+    ],
+    "tiles": [
+     "O"
+    ],
+    "bearing": "SE",
+    "edge_gap_m": 0.0,
+    "centroid_dist_km": 8.65418185168605,
+    "band": "CONTACT"
+   },
+   "inv": {
+    "rcc8": "NTPPi",
+    "rectangle": [
+     "di",
+     "di"
+    ],
+    "tiles": [
+     "NW",
+     "N",
+     "NE",
+     "W",
+     "O",
+     "E",
+     "SW",
+     "S",
+     "SE"
+    ],
+    "bearing": "NW",
+    "edge_gap_m": 0.0,
+    "centroid_dist_km": 8.65418185168605,
+    "band": "CONTACT"
+   },
+   "says": "the outline stands in this relation to the maybe region",
+   "source": "recomputed with engine.snapshot_pair over committed inputs"
+  },
+  {
+   "n": 3,
+   "a": "target reach",
+   "b": "may_be band",
+   "fwd": {
+    "rcc8": "NTPP",
+    "rectangle": [
+     "d",
+     "d"
+    ],
+    "tiles": [
+     "O"
+    ],
+    "bearing": "NE",
+    "edge_gap_m": 0.0,
+    "centroid_dist_km": 43.31915001379547,
+    "band": "CONTACT"
+   },
+   "inv": {
+    "rcc8": "NTPPi",
+    "rectangle": [
+     "di",
+     "di"
+    ],
+    "tiles": [
+     "NW",
+     "N",
+     "NE",
+     "W",
+     "O",
+     "E",
+     "SW",
+     "S",
+     "SE"
+    ],
+    "bearing": "SW",
+    "edge_gap_m": 0.0,
+    "centroid_dist_km": 43.31915001379547,
+    "band": "CONTACT"
+   },
+   "says": "the tributary reach stands in this relation to the maybe region",
+   "source": "recomputed with engine.snapshot_pair over committed inputs"
+  },
+  {
+   "n": 4,
+   "a": "damage cluster",
+   "b": "target reach",
+   "rule": {
+    "max_distance_m": 500,
+    "min_features": 8
+   },
+   "finding": "frozen tributary-cluster rule: HIT (34 pre-cutoff features near the target reach)",
+   "says": "the frozen cluster rule fires beside the reach",
+   "source": "frozen brief cluster_finding + rules.json cluster_rule"
+  }
+ ],
+ "composition": {
+  "step": "compose(NTPP, NTPP)",
+  "allowed": [
+   "NTPP"
+  ],
+  "observed": "NTPP",
+  "match": true,
+  "meaning": "chaining hop 1 (bridge-vs-extent) with hop 2 (extent-vs-may_be) constrains bridge-vs-may_be to this set; the observed membership falls inside it, so the verdict is forced by the hops, not asserted"
+ },
+ "temporal": {
+  "hop": "2,092 damage intervals stand Allen-BEFORE the cutoff (definitional: curation dated them at or before it)",
+  "skipped": "no cutoff-MEETS-quarantine hop: the frozen as_of label is 'pre-T1', not a date, so endpoint equality cannot be shown"
+ },
+ "provenance": {
+  "results/flood.json": "6cb61ba0bd94eb90c3e6afa46c2d7fc4e12ec30d25ca3e36ebe052dddaa87271",
+  "brief": "00a12ecacf80948eb0d46b4dce1800bfc5e98f320694e2e3f245b0a483485deb",
+  "rules": "d938e1850f563a02884e85d32dc03b25865955652e6cd1f54654aa140459dc84"
+ }
+}

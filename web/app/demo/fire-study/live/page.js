@@ -107,6 +107,19 @@ export default function FireLiveDemo() {
         <p><a href="/demo/fire-study">The frozen September brief</a> <span className="meta">— the verdict, locked and byte-identical.</span></p>
         <p><a href="/demo/fire-study/memory">What the system remembers</a> <span className="meta">— 48 past episodes across 11 regions, and why memory stays silent.</span></p>
       </section>
+
+      <section>
+        <h2>Procedure: step by step</h2>
+        <p>No language model takes part anywhere below. This page is pure reading: today&apos;s sky through September&apos;s locked rules.</p>
+        <p className="lede">Step 1 — Pull today&apos;s sky</p>
+        <p>Five days of satellite fire detections for the study box, October 26–30: 675 detections (25, 12, 12, 476, 150 day by day), with the map bounds double-checked and the source matching September&apos;s. The access keys live in the operator&apos;s environment only — never in files or logs. The raw pull lands in a temp folder first, and a copy ships beside this page so every number stays checkable. It never enters the frozen study.</p>
+        <p className="lede">Step 2 — Score it with the locked September rules</p>
+        <p>The exact same machinery as September — same cell lists, same six facts, same weights — runs over the live slice. The result must equal the frozen ranking to within five hundred-thousandths. It does, identically: no re-tuning, no new weights, no exceptions.</p>
+        <p className="lede">Step 3 — Ask the past whether it recognises today</p>
+        <p>Today&apos;s evidence shape is looked up against the 48 stored past episodes: it lands inside the best-known pattern — 6 episodes, 4 with known outcomes, all restarts — one case short of the 5 the bar requires. So memory stays silent, and this page says so instead of rounding up.</p>
+        <p className="lede">Step 4 — Publish with the boundary on its face</p>
+        <p>A snapshot script writes this page&apos;s numbers; the page carries the full timeline (study window, hidden test, live days dated to October 30), states it is a reading and not a forecast, and makes the November outlook conditional both ways — dry return means elevated restart risk, rain holding means the pattern breaks. When the rain arrived after the last pull, no step changed: the next pull verifies it the moment daily counts fall.</p>
+      </section>
     </main>
   );
 }
