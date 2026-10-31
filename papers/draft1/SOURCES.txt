@@ -91,3 +91,9 @@ post-backfill counts (60 eps, 32 labelled, 26 patterns, 10 cross-scene,
   | collab_agent/backfill.py x3 + recompute (2026-10-31); census table,
   F4 (regenerated from census.json + crossregion.json), memory/crossregion
   sections rewritten; F4+caption refreshed together per new rule
+recall tier (v5): live query 4x distance-0 Iberia 09-24..27 + 1x d1, 2 same-shape
+  unlabelable (iberia_15d@09-28, texas_10d@09-29: past scene end, not guessed);
+  study query 4x Cerrado d1 + kalimantan_c d1, 2 unlabelable same-shape
+  | engine/memory.py::nearest_cases + api/demo2_data/fire.json recall blocks
+  (top_k 5 preregistered); live page "Windows shaped like today", memory page
+  "Past windows shaped like the study"

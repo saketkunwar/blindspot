@@ -153,6 +153,11 @@ def _fire_snapshot(tmp: pathlib.Path) -> dict:
     labelled = sum(s["labelled"] for s in scenes.values())
     best = max((p["labeled"] for p in pats.values()), default=0)
     need = cfg["memory"]["min_episodes_to_speak"]
+    study_recall = _memory.nearest_cases(
+        (brief.get("ledger") or {}).get("facts") or {}, episodes, outcomes,
+        cfg["signature"]["count_bin_edges"],
+        cfg.get("rule_id", "memory-v1"), ends[-1],
+        cfg.get("recall", {}).get("top_k", 5))
     return {
         "frozen": {
             "verdict": brief["verdict"],
@@ -183,6 +188,7 @@ def _fire_snapshot(tmp: pathlib.Path) -> dict:
         "skipped": {"thin_history": census["stats"]["skipped_thin_history"],
                     "empty_files": census["stats"]["scenes_skipped"]},
         "top_patterns": rows[:4],
+        "recall": study_recall,
         "null_test": _null_edges(),
         "hill_climb": _hill_climb_report(tmp),
         "validation": _fire_validation(tmp, brief),
@@ -284,6 +290,7 @@ def _live_snapshot(pull_csv: pathlib.Path) -> dict:
     sig = _memory.signature_for_facts(
         ledger["facts"], mem["signature"]["count_bin_edges"])
     match = {"episodes": 0, "labelled": 0, "known": False}
+    recall = {"cases": [], "unlabelled_same_shape": 0, "top_k": 5}
     try:
         import sqlite3
         from store import db as _db
@@ -304,6 +311,11 @@ def _live_snapshot(pull_csv: pathlib.Path) -> dict:
         if p is not None:
             match = {"episodes": p["episodes"], "labelled": p["labeled"],
                      "known": True}
+        recall = _memory.nearest_cases(
+            ledger["facts"], eps, outs,
+            mem["signature"]["count_bin_edges"],
+            mem.get("rule_id", "memory-v1"), as_of,
+            mem.get("recall", {}).get("top_k", 5))
     except (OSError, sqlite3.Error):
         pass
     phases = json.loads(
@@ -331,6 +343,7 @@ def _live_snapshot(pull_csv: pathlib.Path) -> dict:
         "matches_frozen": same,
         "signature": sig["id"],
         "pattern_match": match,
+        "recall": recall,
         "note": ("A reading of now, not a forecast of tomorrow: no "
                  "forecasting model exists here, and none was invented."),
     }

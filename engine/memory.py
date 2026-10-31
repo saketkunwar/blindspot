@@ -28,6 +28,7 @@ __all__ = [
     "bin_count",
     "signature_for_facts",
     "patterns_from_rows",
+    "nearest_cases",
     "memory_adjust",
     "memory_note",
     "validate_memory_section",
@@ -143,6 +144,62 @@ def patterns_from_rows(episodes: list, outcomes: list, edges: list,
             if m in p["hits"]:
                 p["hits"][m] += 1
     return patterns
+
+
+def nearest_cases(query_facts: dict, episodes: list, outcomes: list,
+                  edges: list, rule_id: str, as_of: str,
+                  top_k: int = 5) -> dict:
+    """Case retrieval: past windows shaped like the query, nearest first.
+
+    This is the bottom memory tier — actual cases an operator can inspect,
+    not counts. Distance is the number of signature facts that differ
+    (a shared fact in another bin, or a fact one side has and the other
+    lacks), so a distance of 0 is the same shape and every step away is
+    named in ``differing``. Ties break on episode id, so repeated reads
+    are byte-identical.
+
+    Only labelled episodes whose outcome window ends on or before ``as_of``
+    are shown: a case is listed only with what actually followed it.
+    Same-shape episodes with no usable label yet (open windows, or the
+    unlabelable tail) are counted in ``unlabelled_same_shape`` — the
+    memory's visible admission of what it has seen but cannot yet teach.
+    """
+    check_as_of(as_of)
+    label_of = {}
+    post_of = {}
+    for o in outcomes:
+        if o.get("rule_id") == rule_id and o.get("label") not in (
+                "unlabelable",):
+            if o.get("window_end") and o["window_end"] <= as_of:
+                label_of[o["episode_id"]] = o["label"]
+                post_of[o["episode_id"]] = o
+    query = {fid: _canon(val) for fid, val in
+             signature_for_facts(query_facts or {}, edges)["readable"]}
+    scored = []
+    unlabelled_same = 0
+    for ep in episodes:
+        past = {fid: _canon(val) for fid, val in
+                signature_for_facts(ep.get("facts") or {}, edges)["readable"]}
+        differing = sorted(fid for fid in set(query) | set(past)
+                           if query.get(fid) != past.get(fid))
+        distance = len(differing)
+        label = label_of.get(ep.get("episode_id"))
+        if label is None:
+            if distance == 0:
+                unlabelled_same += 1
+            continue
+        post = post_of[ep["episode_id"]]
+        scored.append({
+            "episode_id": ep.get("episode_id"), "scene": ep.get("scene"),
+            "cutoff": ep.get("cutoff"),
+            "window_start": post.get("window_start"),
+            "window_end": post.get("window_end"), "label": label,
+            "n_pre": ep.get("n_pre"), "n_post": post.get("n_post"),
+            "top_mechanism": ep.get("top_mechanism"),
+            "distance": distance, "differing": differing})
+    scored.sort(key=lambda r: (r["distance"], r["episode_id"]))
+    return {"cases": scored[:max(0, top_k)],
+            "unlabelled_same_shape": unlabelled_same, "top_k": top_k}
 
 
 def memory_adjust(ranking: list, stats: dict | None, mem: dict) -> tuple:

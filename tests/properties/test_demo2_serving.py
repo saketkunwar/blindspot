@@ -75,6 +75,15 @@ def test_demo2_live_reading():
     assert d["ranking"][0]["id"] == "suppression_then_restart"
     assert d["pattern_match"] == {"episodes": 6, "labelled": 4,
                                   "known": True}
+    rec = d["recall"]
+    assert rec["top_k"] == 5 and len(rec["cases"]) == 5
+    dists = [c["distance"] for c in rec["cases"]]
+    assert dists == sorted(dists)  # nearest first
+    assert all(c["label"] != "unlabelable" for c in rec["cases"])
+    assert rec["cases"][0]["differing"] == []  # same shape as today
+    assert rec["unlabelled_same_shape"] == 2  # seen but not judgeable
+    top = client.get("/api/demo2/fire-study").json()["data"]["recall"]
+    assert len(top["cases"]) == 5 and top["top_k"] == 5
 
 
 def test_demo2_openapi_lists_both():

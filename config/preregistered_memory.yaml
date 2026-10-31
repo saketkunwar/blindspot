@@ -18,7 +18,13 @@
 # mark such facts context-only). Episode/outcome rows are still untouched:
 # the key groups rows for reading only, so the re-run must reproduce
 # identical episode and outcome rows — checked, not assumed.
-version: 4
+#
+# Version 5 ADDS the recall block below (case-retrieval tier, operator-
+# approved 2026-10-31, before the first recall snapshot existed): the query
+# returns the top_k nearest labelled past windows by signature-fact
+# difference count, ties broken on episode id. Rows untouched again, for
+# the same reading-only reason; the re-run check from v4 still stands.
+version: 5
 rule_id: restart-noisefloor-v1
 
 # Outcome: did the fire restart in the look-ahead window after the cutoff?
@@ -95,6 +101,17 @@ memory:
   outcome_supports:
     restart: [suppression_then_restart]
     quiet: [sustained_suppression, fuel_burnout]
+
+# Recall tier (added in v5, before the first recall snapshot existed).
+# The bottom tier returns actual past windows an operator can inspect,
+# nearest first: distance is the count of signature facts that differ
+# (shared fact in another bin, or a fact one side has and the other
+# lacks), ties broken on episode id for byte-identical repeats. Only
+# labelled episodes whose outcome window closed on/before as_of are
+# shown; same-shape windows with no usable label yet are counted, never
+# displayed as known.
+recall:
+  top_k: 5
 
 # M2 honest measurement (added in v3, before the first measure run).
 # The null test asks whether the adjust math can manufacture skill from

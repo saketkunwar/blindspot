@@ -340,9 +340,11 @@ with the masked re-run specified as what-it-would-take rather than invented.}
 
 A live page extends the study to the ongoing fire without extending its
 claims. Five October days (26--30) pulled from FIRMS under operator keys
-score identically under the frozen rules, and the live signature matches the
-strongest stored pattern at five labelled cases of five, so the page carries
-the labelled second ranking beside the frozen one. The page states its
+score identically under the frozen rules, and the live signature lands in
+the Iberia-led shape at four labelled cases of five --- so the counts tier
+stays silent for today's reading, while the page names the four matching
+windows it can actually show (four September windows over Iberia, with
+dates and what followed). The page states its
 boundary on its face: this is a reading of today, not a forecast of tomorrow,
 because no forecasting model exists here and none was invented. Its November
 outlook is conditional arithmetic, not prediction: \emph{if} the dry regime
@@ -593,11 +595,16 @@ mechanism scoring run exactly as in the fire Step 4--5 over the live slice;
 the ranking must equal the frozen ranking within 0.00005 --- it does,
 identically. No language-model call exists anywhere in this procedure.
 
-\emph{Step 3 --- pattern match.} The live signature is looked up against the
-stored pattern table: 60 episodes, 32 labelled, and the live shape matches
-the best-known one at 5 labelled of the 5 the bar requires --- so memory
-speaks here, and the page prints the labelled second ranking with the frozen
-ranking untouched beside it.
+\emph{Step 3 --- pattern match and recall.} The live signature is looked up
+against the stored pattern table: 60 episodes, 32 labelled, and today's
+shape sits in the Iberia-led pattern at 4 labelled of the 5 the bar
+requires --- so the counts tier stays silent and the page says so. The new
+recall tier then shows what silence hides: the four same-shape windows
+(September 24--27 over Iberia, all restarted, with their detection counts),
+plus the two it refuses to call known --- same shape, but past their
+scenes' last observed day, so kept unlabelable rather than guessed. This is
+the two tiers disagreeing honestly: one counts to four and stops, the other
+shows its work.
 
 \emph{Step 4 --- snapshot and page.}
 \verb|make_demo2.py| with \verb|--live-pull| on the pull CSV
@@ -626,12 +633,20 @@ by hash. T1 is episodic: one append-only row per run, holding the case
 fingerprint, the frozen ranking, and --- recorded later, never revised ---
 the outcome and any operator verdict with its written reason. T2 is semantic:
 a pattern table that is \emph{not stored at all} but recomputed on demand as
-a pure function of T1, so it cannot be tampered with silently. T3 is
+a pure function of T1, so it cannot be tampered with silently. Below T2 sits
+the tier an operator actually looks at, case recall: given a window's facts,
+the five nearest labelled past windows, ordered by how many signature facts
+differ, each shown with its scene, cutoff, outcome window, and what
+followed --- every step away named, so a near-match says how it differs,
+not just that it does. T3 is
 procedural: the rules, which change only by versioned amendment a human
-approves. Reads take an \verb|as_of| date and see only episodes whose outcome
-window ended before the case's own cutoff; deleting every row a case could
+approves. All three reading tiers take an \verb|as_of| date and see only
+episodes whose outcome window ended before the case's own cutoff; deleting
+every row a case could
 not have known leaves its brief byte-identical (gate G20, the memory
-counterpart of the leakage gate).
+counterpart of the leakage gate). Windows with no usable label yet are never
+displayed as known --- same-shape ones are counted beside the results, so
+the missing quiet case stays visible instead of buried.
 
 A pattern's signature is a short hash over binned fact values only: gap
 dictionaries project to binned day-gaps, raw floats (areas, magnitudes) leave
@@ -761,9 +776,11 @@ Walk one real morning to see what this feels like. October 30: 150
 detections against a trailing median of 18.5 — roughly eight times the
 normal level, past the two-times bar, so the spike rule fires with its
 reason attached. The frozen rules read suppression-then-restart at 84.25,
-identical to September. The past is asked: sixty episodes, 32 labelled, the
-live shape matching the best-known one at the full 5 of 5 — speaking, stated.
-The human lines go out naming the watch
+identical to September. The past is asked: sixty episodes, 32 labelled, and
+today's shape sits at 4 labelled of 5 in its pattern — silent by the counts,
+stated as such, with the four matching Iberia windows listed beside the
+verdict and the two unjudgeable same-shape windows named as refused. The
+human lines go out naming the watch
 instruction for the week: daily counts near this level mean the burn run is
 unbroken. Every sentence of that morning traces to a number in the ledger,
 and the whole round replays byte-for-byte from the committed pull.

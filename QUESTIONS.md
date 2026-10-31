@@ -279,3 +279,23 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
 - Success reads: 5th label (memory speaks, before/after brief as demo),
   pattern break (regionality finding, same weight), first quiet label
   (missing arm exercised). All read as-is; rule and key stay frozen.
+
+## Recall tier (2026-10-31, operator decision: counts are not a memory)
+- The counts-only memory stood accused, fairly, of being a lookup table
+  rather than recollection. New bottom tier `engine/memory.py::nearest_cases`:
+  given a window's facts, return the top_k nearest labelled past windows
+  (scene, cutoff, outcome window, label, detections before/after, frozen top
+  story), ordered by signature-fact difference count, ties on episode id.
+- Distance counts differing facts (shared fact in another bin, or a fact
+  one side lacks); every step away is named in `differing` so the operator
+  sees HOW a case differs, not just that it does.
+- Same as-of discipline as the pattern table: only outcome windows closed
+  on/before as_of are shown. Same-shape windows with no usable label yet
+  are counted (`unlabelled_same_shape`), never displayed as known — this
+  is where the missing quiet case stays visible instead of buried.
+- Preregistered as `recall: {top_k: 5}` under memory config version 5
+  (reading-only addition; episode/outcome rows untouched, v4 re-run check
+  still stands). Changing top_k later is a versioned amendment.
+- Scope held: brief-level memory (autoinsight note + adjust math) is
+  untouched, so G19/G20-pinned briefs do not move. Recall first appears in
+  the Demo-2 snapshots (study-shaped and live-shaped queries) and pages.

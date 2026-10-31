@@ -866,6 +866,79 @@
     "title": "Fires go out and stay out"
    }
   ],
+  "recall": {
+   "cases": [
+    {
+     "cutoff": "2026-09-24",
+     "differing": [],
+     "distance": 0,
+     "episode_id": "firms_iberia_15d@2026-09-24",
+     "label": "restart",
+     "n_post": 88,
+     "n_pre": 258,
+     "scene": "firms_iberia_15d",
+     "top_mechanism": "suppression_then_restart",
+     "window_end": "2026-09-26",
+     "window_start": "2026-09-25"
+    },
+    {
+     "cutoff": "2026-09-25",
+     "differing": [],
+     "distance": 0,
+     "episode_id": "firms_iberia_15d@2026-09-25",
+     "label": "restart",
+     "n_post": 33,
+     "n_pre": 320,
+     "scene": "firms_iberia_15d",
+     "top_mechanism": "suppression_then_restart",
+     "window_end": "2026-09-27",
+     "window_start": "2026-09-26"
+    },
+    {
+     "cutoff": "2026-09-26",
+     "differing": [],
+     "distance": 0,
+     "episode_id": "firms_iberia_15d@2026-09-26",
+     "label": "restart",
+     "n_post": 19,
+     "n_pre": 346,
+     "scene": "firms_iberia_15d",
+     "top_mechanism": "suppression_then_restart",
+     "window_end": "2026-09-28",
+     "window_start": "2026-09-27"
+    },
+    {
+     "cutoff": "2026-09-27",
+     "differing": [],
+     "distance": 0,
+     "episode_id": "firms_iberia_15d@2026-09-27",
+     "label": "restart",
+     "n_post": 22,
+     "n_pre": 353,
+     "scene": "firms_iberia_15d",
+     "top_mechanism": "suppression_then_restart",
+     "window_end": "2026-09-29",
+     "window_start": "2026-09-28"
+    },
+    {
+     "cutoff": "2026-09-23",
+     "differing": [
+      "FF2_burn_days"
+     ],
+     "distance": 1,
+     "episode_id": "firms_iberia_15d@2026-09-23",
+     "label": "restart",
+     "n_post": 146,
+     "n_pre": 174,
+     "scene": "firms_iberia_15d",
+     "top_mechanism": "suppression_then_restart",
+     "window_end": "2026-09-25",
+     "window_start": "2026-09-24"
+    }
+   ],
+   "top_k": 5,
+   "unlabelled_same_shape": 2
+  },
   "signature": "1032a1958cef4829",
   "study_window": [
    "2026-09-16",
@@ -887,6 +960,87 @@
   "null_edge": -0.13,
   "signal_edge": 0.27,
   "trials": 200
+ },
+ "recall": {
+  "cases": [
+   {
+    "cutoff": "2026-09-24",
+    "differing": [
+     "FF3_cells_with_fire"
+    ],
+    "distance": 1,
+    "episode_id": "firms_cerrado_15d@2026-09-24",
+    "label": "restart",
+    "n_post": 605,
+    "n_pre": 7908,
+    "scene": "firms_cerrado_15d",
+    "top_mechanism": "suppression_then_restart",
+    "window_end": "2026-09-26",
+    "window_start": "2026-09-25"
+   },
+   {
+    "cutoff": "2026-09-25",
+    "differing": [
+     "FF3_cells_with_fire"
+    ],
+    "distance": 1,
+    "episode_id": "firms_cerrado_15d@2026-09-25",
+    "label": "restart",
+    "n_post": 1568,
+    "n_pre": 8149,
+    "scene": "firms_cerrado_15d",
+    "top_mechanism": "suppression_then_restart",
+    "window_end": "2026-09-27",
+    "window_start": "2026-09-26"
+   },
+   {
+    "cutoff": "2026-09-26",
+    "differing": [
+     "FF3_cells_with_fire"
+    ],
+    "distance": 1,
+    "episode_id": "firms_cerrado_15d@2026-09-26",
+    "label": "restart",
+    "n_post": 2898,
+    "n_pre": 8513,
+    "scene": "firms_cerrado_15d",
+    "top_mechanism": "suppression_then_restart",
+    "window_end": "2026-09-28",
+    "window_start": "2026-09-27"
+   },
+   {
+    "cutoff": "2026-09-27",
+    "differing": [
+     "FF3_cells_with_fire"
+    ],
+    "distance": 1,
+    "episode_id": "firms_cerrado_15d@2026-09-27",
+    "label": "restart",
+    "n_post": 3378,
+    "n_pre": 9717,
+    "scene": "firms_cerrado_15d",
+    "top_mechanism": "suppression_then_restart",
+    "window_end": "2026-09-29",
+    "window_start": "2026-09-28"
+   },
+   {
+    "cutoff": "2026-09-18",
+    "differing": [
+     "FF2_burn_days"
+    ],
+    "distance": 1,
+    "episode_id": "kalimantan_c@2026-09-18",
+    "label": "restart",
+    "n_post": 4539,
+    "n_pre": 1603,
+    "scene": "kalimantan_c",
+    "top_mechanism": "suppression_then_restart",
+    "window_end": "2026-09-20",
+    "window_start": "2026-09-19"
+   }
+  ],
+  "top_k": 5,
+  "unlabelled_same_shape": 2
  },
  "scenes": [
   {

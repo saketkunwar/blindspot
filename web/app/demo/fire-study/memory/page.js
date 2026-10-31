@@ -130,6 +130,34 @@ export default function FireMemoryDemo() {
       </section>
 
       <section>
+        <h2>Past windows shaped like the study</h2>
+        <p>
+          The study window itself is a shape the archive has seen before. Below are the nearest
+          past windows to it — nearest first, each with its place, its dates, and what followed.
+          Counting patterns is the middle tier; this is the bottom one, the actual cases, and the
+          two tiers are shown side by side on purpose so you can watch them agree or disagree.
+        </p>
+        <ol className="steps">
+          {(d.recall?.cases || []).map((c) => (
+            <li key={c.episode_id}>
+              <p><strong>{c.scene}, cutoff {c.cutoff}.</strong></p>
+              <p className="meta">
+                {c.distance === 0
+                  ? "Same evidence shape as the study. "
+                  : `Differs in ${c.distance} respect${c.distance === 1 ? "" : "s"} (${c.differing.join(", ")}). `}
+                {c.n_pre} detections before the cutoff, {c.n_post} after across {c.window_start} to {c.window_end} — labelled {c.label}, and the frozen story that morning was {c.top_mechanism.replace(/_/g, " ")}.
+              </p>
+            </li>
+          ))}
+        </ol>
+        {(d.recall?.unlabelled_same_shape || 0) > 0 && (
+          <p className="meta">
+            {d.recall.unlabelled_same_shape} more window{d.recall.unlabelled_same_shape === 1 ? "" : "s"} with the study&apos;s exact shape exist{d.recall.unlabelled_same_shape === 1 ? "s" : ""} but sit past their scenes&apos; last observed day, so they stay unlabelled rather than guessed. No quiet window has ever been recorded — that absence is part of the memory, stated here instead of buried.
+          </p>
+        )}
+      </section>
+
+      <section>
         <h2>Could the maths invent skill?</h2>
         <p>
           Before trusting the adjustment, it was tested on {nt.trials} rounds of coin flips. With

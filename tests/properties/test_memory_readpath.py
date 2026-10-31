@@ -238,6 +238,63 @@ def test_memory_flags_fail_closed(tmp_path):
     assert not (tmp_path / "nope.sqlite3").exists()
 
 
+def _ep(epid, facts=None, scene="s", cutoff="2026-09-18",
+       top="suppression_then_restart", n_pre=10):
+    return {"episode_id": epid, "scene": scene, "cutoff": cutoff,
+            "facts": facts if facts is not None else _facts(FF1=10),
+            "top_mechanism": top, "n_pre": n_pre, "cells_pre": 3}
+
+
+def _out(epid, label="restart", start="2026-09-19", end="2026-09-20",
+         n_post=9):
+    return {"episode_id": epid, "rule_id": RULE, "label": label,
+            "window_start": start, "window_end": end, "n_post": n_post}
+
+
+def test_recall_returns_nearest_labelled_first():
+    eps = [_ep("s@2026-09-18", _facts(FF1=10)),
+           _ep("s@2026-09-19", _facts(FF1=5)),
+           _ep("s@2026-09-20", _facts(FF9=7))]
+    outs = [_out("s@2026-09-18"), _out("s@2026-09-19"), _out("s@2026-09-20")]
+    rec = mem.nearest_cases(_facts(FF1=10), eps, outs, EDGES, RULE,
+                            "2026-09-22", 5)
+    got = [(c["episode_id"], c["distance"]) for c in rec["cases"]]
+    assert got == [("s@2026-09-18", 0), ("s@2026-09-19", 1),
+                   ("s@2026-09-20", 2)]
+    first = rec["cases"][0]
+    assert first["differing"] == []
+    assert rec["cases"][1]["differing"] == ["FF1"]
+    for c in rec["cases"]:
+        for k in ("episode_id", "scene", "cutoff", "window_start",
+                  "window_end", "label", "n_pre", "n_post",
+                  "top_mechanism", "distance", "differing"):
+            assert k in c
+    # Deterministic and capped.
+    again = mem.nearest_cases(_facts(FF1=10), eps, outs, EDGES, RULE,
+                              "2026-09-22", 2)
+    assert [c["episode_id"] for c in again["cases"]] == \
+        ["s@2026-09-18", "s@2026-09-19"]
+    assert mem.nearest_cases(_facts(FF1=10), eps, outs, EDGES, RULE,
+                             "2026-09-22", 5) == rec
+
+
+def test_recall_reads_only_the_closed_past():
+    eps = [_ep("s@2026-09-18", _facts(FF1=10)),
+           _ep("s@2026-09-19", _facts(FF1=10))]
+    outs = [_out("s@2026-09-18", end="2026-09-20"),
+            _out("s@2026-09-19", end="2026-09-25")]
+    rec = mem.nearest_cases(_facts(FF1=10), eps, outs, EDGES, RULE,
+                            "2026-09-20", 5)
+    assert [c["episode_id"] for c in rec["cases"]] == ["s@2026-09-18"]
+    # The still-open same-shape window is counted, never shown as known.
+    assert rec["unlabelled_same_shape"] == 1
+    with pytest.raises(ValueError):
+        mem.nearest_cases(_facts(FF1=10), eps, outs, EDGES, RULE, "soon", 5)
+    empty = mem.nearest_cases(_facts(FF1=10), eps, outs, EDGES,
+                              "other-rule", "2026-09-25", 5)
+    assert empty["cases"] == []
+
+
 def test_status_memory_table_reads_store(tmp_path):
     from scripts import status as st
     dbp = _run_backtest(tmp_path / "mem.sqlite3")

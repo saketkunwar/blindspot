@@ -29,7 +29,7 @@ const DEMOS = [
   {
     href: "/demo/fire-study/memory",
     title: "Fire memory — it speaks: one pattern at 5 of 5",
-    body: "Rolling-origin backtests across 14 regions, the null test that keeps memory honest, the as-of slider, and the evolution desk. Best pattern at 5 of 5 across three continents — memory speaks.",
+    body: "Rolling-origin backtests across 14 regions, the null test that keeps memory honest, the as-of slider, the evolution desk — and the new recall tier: the actual past windows behind the counts, nearest first, with what followed. Best pattern at 5 of 5 across three continents — memory speaks.",
   },
   {
     href: "/demo/fire-study/cross-region",

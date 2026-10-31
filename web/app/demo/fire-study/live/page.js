@@ -154,10 +154,35 @@ export default function FireLiveDemo() {
         <h2>Does the past recognise today?</h2>
         <p>
           {pm.known
-            ? `Yes. Today matches the strongest known pattern: ${pm.episodes} past episodes, ${pm.labelled} with known outcomes, all restarts. It stands at ${pm.labelled} of 5 — still silent, one closed window away from speaking.`
+            ? `Yes. Today matches a familiar pattern: ${pm.episodes} past episodes, ${pm.labelled} with known outcomes, all restarts. It stands at ${pm.labelled} of 5 — still silent, one closed window away from speaking.`
             : "No. Today matches no known pattern — an unseen shape of evidence, which the system records rather than forcing into a familiar box."}
         </p>
         <p className="meta">The outcome windows for the last two days are still open, so they cannot be labelled yet — memory never grades unfinished homework.</p>
+      </section>
+
+      <section>
+        <h2>Windows shaped like today</h2>
+        <p>
+          Counting is not remembering. Below are the actual past windows the archive holds that look most like today&apos;s — nearest first, each with its place, its dates, and what followed. A near-match names how it differs, so you can see the resemblance instead of taking it on faith.
+        </p>
+        <ol className="steps">
+          {(live.recall?.cases || []).map((c) => (
+            <li key={c.episode_id}>
+              <p><strong>{c.scene}, cutoff {c.cutoff}.</strong></p>
+              <p className="meta">
+                {c.distance === 0
+                  ? "Same evidence shape as today. "
+                  : `Differs in ${c.distance} respect${c.distance === 1 ? "" : "s"} (${c.differing.join(", ")}). `}
+                {c.n_pre} detections before the cutoff, {c.n_post} after across {c.window_start} to {c.window_end} — labelled {c.label}, and the frozen story that morning was {c.top_mechanism.replace(/_/g, " ")}.
+              </p>
+            </li>
+          ))}
+        </ol>
+        {(live.recall?.unlabelled_same_shape || 0) > 0 && (
+          <p className="meta">
+            {live.recall.unlabelled_same_shape} more window{live.recall.unlabelled_same_shape === 1 ? "" : "s"} with today&apos;s exact shape exist{live.recall.unlabelled_same_shape === 1 ? "s" : ""} but sit past their scenes&apos; last observed day, so they stay unlabelled rather than guessed.
+          </p>
+        )}
       </section>
 
       <section>
