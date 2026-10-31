@@ -72,3 +72,13 @@ live scoring (identical within 0.00005) + 6 eps/4 labelled match
   | scripts/make_demo2.py::_live_snapshot + api/demo2_data/fire.json
 curate outputs (6142/5 days/30 cells; freeze/check commands)
   | demo/fire_study/USAGE_DEMO.md + demo/nepal_cascade/USAGE_DEMO.md
+morning agent package layout, 5 steps, templates, digest
+  | collab_agent/*.py (morning/pull/study/decide/brief/digest) + collab_agent/README.md
+triggers 2x/4-day/new-shape/5th-label/quiet-<3 + reasons
+  | collab_agent/config.yaml + QUESTIONS.md "Morning-brief triggers"
+Oct 30 worked morning (150 vs 18.5, spike, 6 eps/4 labelled, silent)
+  | collab_agent/morning.py --fixture oct30 (deterministic; G25 replays it)
+novel-quiet test behaviour (8 synthetic detections open a study)
+  | tests/properties/test_collab_agent.py + PROGRESS_ERROR.md chain+agent entry
+FIRMS area-API shape (csv/KEY/SOURCE/box/range/date, NOAA20, 1..5)
+  | https://firms.modaps.eosdis.nasa.gov/api/area/ (fetched 2026-10-31)

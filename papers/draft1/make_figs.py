@@ -181,6 +181,41 @@ ax.set_title("Two studies, two holdouts each: three pass, one is declared missin
              fontsize=9.5, weight="bold", color=INK, pad=10)
 save(fig, "f5_validation_matrix.png")
 
+# F7: the morning round ----------------------------------------------------
+fig, ax = plt.subplots(figsize=(7.2, 3.2))
+ax.set_xlim(0, 10)
+ax.set_ylim(0, 5.2)
+ax.axis("off")
+steps = [
+    (0.2, "Wake\non schedule", "your machine's\nclock, not\na server"),
+    (2.2, "Pull\nthe sky", "5 days\nFIRMS"),
+    (4.2, "Study\nfrozen rules", "same scores\nas September"),
+    (6.2, "Ask\nthe past", "episodes\nvs bar of 5"),
+    (8.0, "Decide\n+ write", "trigger?\nsnippet or\nquiet line"),
+]
+for x, title, sub in steps:
+    ax.add_patch(FancyBboxPatch((x, 1.4), 1.6, 2.2,
+                                boxstyle="round,pad=0.08",
+                                ec=INK, fc="white", lw=1.4))
+    ax.text(x + 0.8, 2.9, title, ha="center", va="center",
+            fontsize=8, weight="bold", color=INK)
+    ax.text(x + 0.8, 2.0, sub, ha="center", va="center",
+            fontsize=7, color="#444444")
+for i in range(len(steps) - 1):
+    x1 = steps[i][0] + 1.6
+    x2 = steps[i + 1][0]
+    ax.add_patch(FancyArrowPatch((x1, 2.5), (x2, 2.5), arrowstyle="-|>",
+                                 color=INK, lw=1.2, mutation_scale=10))
+ax.text(2.5, 0.85, "guardrails: keys in environment only · pull never enters data/",
+        ha="center", fontsize=7.5, style="italic", color="#444444")
+ax.text(7.5, 0.85, "snippets are templates · every number pre-checked",
+        ha="center", fontsize=7.5, style="italic", color="#444444")
+ax.text(5, 4.35, "No model writes a word; the human lines are assembled, not composed.",
+        ha="center", fontsize=8, style="italic", color=WARM, weight="bold")
+ax.set_title("The morning round: five steps from sky to human lines, all of them checkable.",
+             fontsize=9.5, weight="bold", color=INK, pad=10)
+save(fig, "f7_morning.png")
+
 # F6: gate growth + catches ----------------------------------------------------
 fig, ax = plt.subplots(figsize=(7.2, 3.0))
 steps = ["Setup-\nPipes\n(G1-10)", "Hardening\n(+G11)", "Nepal\ndemo\n(+G12)",
