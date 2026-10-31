@@ -37,7 +37,14 @@ def curate(pull_path: pathlib.Path, tag: str) -> pathlib.Path:
         rows = list(csv.DictReader(fh))
     if not rows or "acq_date" not in rows[0]:
         raise RuntimeError(f"{pull_path} is not a FIRMS pull CSV")
-    scene = [{k: r[k] for k in KEEP if k in r} for r in rows]
+    NUMERIC = ("latitude", "longitude", "frp")
+    scene = []
+    for r in rows:
+        d = {k: r[k] for k in KEEP if k in r}
+        for k in NUMERIC:  # curated scenes carry numbers, not CSV strings
+            if k in d:
+                d[k] = float(d[k])
+        scene.append(d)
     dest = ROOT / "data" / "fire_kalimantan" / f"{tag}.json"
     if dest.exists():
         raise RuntimeError(f"scene exists, refusing to overwrite: {dest}")
