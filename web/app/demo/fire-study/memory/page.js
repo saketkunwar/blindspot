@@ -79,12 +79,14 @@ export default function FireMemoryDemo() {
       </section>
 
       <section>
-        <h2>Why it stays silent</h2>
+        <h2>{ms.speaking ? "It speaks — for the first time" : "Why it stays silent"}</h2>
         <p>
           Memory only speaks when one pattern has <strong>{ms.threshold} past cases</strong> behind
-          it. The strongest pattern has <strong>{ms.best_labelled}</strong>. So every brief leaves
-          the memory section out entirely — and that absence is checked letter-for-letter against
-          the frozen brief, not promised in words. {d.hook}
+          it. The strongest pattern has <strong>{ms.best_labelled}</strong>.{" "}
+          {ms.speaking
+            ? "So the bar is met: new briefs gain a second, labelled ranking beside the frozen one — the same adjustment the coin-flip test below already proved cannot invent skill. The five cases are one Amazon, one Texan, one western-US, and two Kalimantan episodes: three continents, one shape."
+            : "So every brief leaves the memory section out entirely — and that absence is checked letter-for-letter against the frozen brief, not promised in words."}{" "}
+          {d.hook}
         </p>
       </section>
 

@@ -139,23 +139,31 @@ save(fig, "f3_ranking_null.png")
 # -> shapes grouped -> best shape vs the bar. Conclusion first.
 census = json.load(open(ROOT / "results" / "memory_census.json"))
 stats = census["stats"]
-assert stats["episodes"] == 48
+n_ep = stats["episodes"]
+n_lab = sum(1 for e in census["episodes"] if e.get("label") != "unlabelable")
+n_unlab = n_ep - n_lab
+# Pattern counts come from the committed cross-region snapshot (itself
+# recomputed from the memory store), never hand-typed: keep this figure
+# and its caption in step on every backfill (see SOURCES.txt).
+xr = json.load(open(ROOT / "api" / "demo2_data" / "crossregion.json"))
+n_pat = xr["patterns"]
+best = xr["top_patterns"][0]["labelled"]
 fig, (c1, c2) = plt.subplots(1, 2, figsize=(7.2, 2.9),
                              gridspec_kw={"width_ratios": [1, 1.2]})
-c1.bar(["cases with\na known outcome", "cases without\none"], [26, 22],
+c1.bar(["cases with\na known outcome", "cases without\none"], [n_lab, n_unlab],
        color=[ACCENT, GREY], edgecolor="white", width=0.6)
-c1.set_title("48 past cases, 26 usable", fontsize=9, weight="bold")
+c1.set_title(f"{n_ep} past cases, {n_lab} usable", fontsize=9, weight="bold")
 c1.set_ylabel("episodes")
-for x, v in zip([0, 1], [26, 22]):
+for x, v in zip([0, 1], [n_lab, n_unlab]):
     c1.text(x, v + 0.5, str(v), ha="center", fontsize=9, weight="bold")
 c2.barh(["distinct\nshapes found", "best shape\n(known outcomes)", "bar to\nspeak"],
-        [22, 4, 5], color=[BLUE, WARM, INK], edgecolor="white")
-c2.set_title("Best shape holds 4 of the 5 needed", fontsize=9, weight="bold")
+        [n_pat, best, 5], color=[BLUE, ACCENT, INK], edgecolor="white")
+c2.set_title(f"Best shape: {best} of 5", fontsize=9, weight="bold")
 c2.set_xlabel("count")
-c2.text(4, 1, "4 cases", ha="center", va="bottom", fontsize=8, weight="bold",
-        color=WARM)
+c2.text(best, 1, f"{best} cases" + (" — speaks" if best >= 5 else ""),
+        ha="center", va="bottom", fontsize=8, weight="bold", color=ACCENT)
 c2.text(5, 2, "bar is 5", ha="center", va="bottom", fontsize=8, color=INK)
-fig.suptitle("Why memory stays silent: the best-known pattern is one case short of speaking.",
+fig.suptitle("The census, read honestly: the best-known pattern against the bar.",
              fontsize=9.5, weight="bold", color=INK)
 save(fig, "f4_census.png")
 

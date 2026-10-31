@@ -1,8 +1,8 @@
 {
- "episodes": 48,
- "labelled": 26,
- "patterns": 22,
- "cross_scene": 9,
+ "episodes": 60,
+ "labelled": 32,
+ "patterns": 26,
+ "cross_scene": 10,
  "scenes": [
   {
    "scene": "amazon_sep2026",
@@ -30,6 +30,11 @@
    "labelled": 7
   },
   {
+   "scene": "firms_iberia_ext",
+   "episodes": 4,
+   "labelled": 2
+  },
+  {
    "scene": "firms_mozambique_10d",
    "episodes": 4,
    "labelled": 2
@@ -45,9 +50,19 @@
    "labelled": 2
   },
   {
+   "scene": "firms_texas_ext",
+   "episodes": 4,
+   "labelled": 2
+  },
+  {
    "scene": "firms_wusa",
    "episodes": 3,
    "labelled": 1
+  },
+  {
+   "scene": "kalimantan_aug10",
+   "episodes": 4,
+   "labelled": 2
   },
   {
    "scene": "kalimantan_c",
@@ -62,6 +77,28 @@
  ],
  "top_patterns": [
   {
+   "labelled": 5,
+   "episodes": 5,
+   "scenes": {
+    "amazon_sep2026": 1,
+    "firms_texas_ext": 1,
+    "firms_wusa": 1,
+    "kalimantan_aug10": 1,
+    "kalimantan_c": 1
+   }
+  },
+  {
+   "labelled": 4,
+   "episodes": 8,
+   "scenes": {
+    "firms_iberia_15d": 1,
+    "firms_texas_10d": 2,
+    "firms_texas_ext": 2,
+    "firms_wusa": 2,
+    "kalimantan_aug10": 1
+   }
+  },
+  {
    "labelled": 4,
    "episodes": 6,
    "scenes": {
@@ -74,24 +111,6 @@
    "episodes": 4,
    "scenes": {
     "firms_cerrado_15d": 4
-   }
-  },
-  {
-   "labelled": 3,
-   "episodes": 3,
-   "scenes": {
-    "amazon_sep2026": 1,
-    "firms_wusa": 1,
-    "kalimantan_c": 1
-   }
-  },
-  {
-   "labelled": 2,
-   "episodes": 5,
-   "scenes": {
-    "firms_iberia_15d": 1,
-    "firms_texas_10d": 2,
-    "firms_wusa": 2
    }
   },
   {
@@ -122,21 +141,22 @@
   },
   {
    "labelled": 1,
-   "episodes": 4,
+   "episodes": 5,
    "scenes": {
     "firms_naustralia": 2,
+    "kalimantan_aug10": 1,
     "kalimantan_c": 2
    }
   }
  ],
  "speak_bar": 5,
  "pending_pulls": {
-  "iberia_ext": "pending",
-  "texas_ext": "pending",
-  "quiet": "pending"
+  "iberia_ext": "present",
+  "texas_ext": "present",
+  "quiet": "present"
  },
  "provenance": {
-  "results/memory_episodes.sqlite3": "f1a6cdd4ec67ee9cd3efe7dbd33e009bf46c471b02210aaf51ac4a9e602c7db5",
+  "results/memory_episodes.sqlite3": "4c36a7dbef25063a7152b4de72c2c76f64604cf54c92fba57347be1bc2835345",
   "config/preregistered_memory.yaml": "2dac04ae31b25bd3ed1cf2b5c28b5d6c5e5ed90d684d812d01d39e6fc1347720"
  }
 }

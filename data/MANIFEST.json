@@ -59,6 +59,12 @@
   "sha256": "ddf0686de462a2a503d856f146f1ce15f44e510c953e983f6605a9e6628c6ba8",
   "source_url": "NASA FIRMS VIIRS NRT local export"
  },
+ "fire_kalimantan/firms_iberia_ext.json": {
+  "kind": "real",
+  "license": "",
+  "sha256": "155e43050d5331169117340b32fcf9a493c94ae8a6310e0d06e5aa8da540146e",
+  "source_url": "FIRMS area API csv/VIIRS_NOAA20_NRT/-9.0,37.0,-2.0,43.0/5/2026-09-30"
+ },
  "fire_kalimantan/firms_kalimantan_c.json": {
   "kind": "real",
   "license": "NASA FIRMS terms of use",
@@ -83,6 +89,12 @@
   "sha256": "6b4b077e6687fecfd4951c007a116fd60ce8463311732045f10a6a752300b0fc",
   "source_url": "NASA FIRMS VIIRS NRT local export"
  },
+ "fire_kalimantan/firms_texas_ext.json": {
+  "kind": "real",
+  "license": "",
+  "sha256": "2753baf6c3f350008697c9e59d57fff056ca82a3e613e11f3dd7edef51397a26",
+  "source_url": "FIRMS area API csv/VIIRS_NOAA20_NRT/-104.0,30.0,-94.0,36.0/5/2026-09-30"
+ },
  "fire_kalimantan/firms_wusa.json": {
   "kind": "real",
   "license": "NASA FIRMS terms of use",
@@ -94,6 +106,12 @@
   "license": "NASA FIRMS terms of use",
   "sha256": "cff17628d8d95b5926238291d8887b8c610ed57ed6139f8b022e0ae1ac1b5e1d",
   "source_url": "NASA FIRMS VIIRS NRT local export"
+ },
+ "fire_kalimantan/kalimantan_aug10.json": {
+  "kind": "real",
+  "license": "",
+  "sha256": "eedc41ae44f87763a520444901d54eaaa02a31a3960dd57e308f473a26e32e34",
+  "source_url": "FIRMS area API csv/VIIRS_NOAA20_NRT/112.0,-3.0,115.0,0.0/5/2026-08-10"
  },
  "flood_nepal/bridges.geojson": {
   "kind": "real",
@@ -336,10 +354,10 @@
   "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)"
  },
  "raw/REGISTRY.json": {
-  "kind": "synthetic",
-  "license": "project synthetic",
-  "sha256": "8d12f7b12da169032d764520ee83a734a3ab064961e29bd1167d098a1842c60e",
-  "source_url": "operator-maintained raw dataset registry (P2 ingest watch)"
+  "kind": "real",
+  "license": "Project-internal working file (operator-confirm)",
+  "sha256": "398465e613f16b790bb828366ced1b6b1e132be9494f650d606c09dc694cc30d",
+  "source_url": "Operator-maintained raw dataset registry"
  },
  "raw/ems_data_sep9/Bidur/GRA_2855/EMSR927_AOI03_GRA_PRODUCT_areaOfInterestA_v1.dbf": {
   "kind": "real",
@@ -4943,6 +4961,18 @@
   "sha256": "0363ada4a77ac6bc4ef5fd1e1953afa3abae74065195e038a7e56046876076bc",
   "source_url": "local-staging:user-provided-raw"
  },
+ "raw/firms_iberia_ext.csv": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "d42f45d20418d213282062323cf084af392d6db307f589039d7a78f3a7c61c37",
+  "source_url": "NASA FIRMS area API (VIIRS NOAA-20 NRT), operator key via env"
+ },
+ "raw/firms_texas_ext.csv": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "dd5d11ec3e2d28efe2f0b5692e7f1c9488e6536bb19d1c27c34fd70b1f07739b",
+  "source_url": "NASA FIRMS area API (VIIRS NOAA-20 NRT), operator key via env"
+ },
  "raw/flood_data_processed/barrier_lake_area_log.json": {
   "kind": "real",
   "license": "unknown",
@@ -5914,6 +5944,12 @@
   "license": "unknown",
   "sha256": "4180d20fed464fecafae5fc5b3ee47cc70afe11b8bcf1e7035ecbcdc3e6e1e5f",
   "source_url": "local-staging:user-provided-raw"
+ },
+ "raw/kalimantan_quiet.csv": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "fbecd4639deb2a659edc9a9419749acf8f5606f05d44fe1ca9a4a3f00d6eb35b",
+  "source_url": "NASA FIRMS area API (VIIRS NOAA-20 NRT), operator key via env"
  },
  "raw/temporal_data/bipad_recent_incidents.csv": {
   "kind": "real",

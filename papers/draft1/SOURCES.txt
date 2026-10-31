@@ -18,11 +18,11 @@ fire temporal cutoff 2026-09-20, held-out late-Sep restart
 live pull 675 rows; daily 25/12/12/476/150 Oct 26-30
   | api/demo2_data/live_pull_2026-10-30.csv
   | count rows grouped by acq_date (make_figs.py asserts ==675)
-live pattern 6 episodes / 4 labelled; live ranking == frozen ranking
+live pattern matches best shape at 5/5 (speaks); live ranking == frozen ranking
   | api/demo2_data/fire.json | validation.live + live_reading blocks
-census 48 episodes / 26 labelled (all restart) / 22 unlabelable; 11 scenes; rule restart-noisefloor-v1
+census 60 episodes / 32 labelled (all restart) / 28 unlabelable; 14 scenes; rule restart-noisefloor-v1
   | results/memory_census.json | stats block + label counts
-22 patterns under v4 key; best 4 labelled vs bar 5
+26 patterns under v4 key; best 5 labelled vs bar 5 (speaks)
   | api/demo2_data/fire.json (top_patterns) + PROGRESS_ERROR.md "v4 signature key"
 memory params: min_episodes_to_speak 5, smoothing_alpha 1.0, max_abs_shift 0.10
   | config/preregistered_memory.yaml | memory: block
@@ -86,3 +86,8 @@ cross-region counts (48 eps, 22 patterns, 9 cross-scene, leader 4/5,
   Iberia+Texas; trio Amazon/WUSA/Kalimantan at 3)
   | scripts/make_crossregion.py over results/memory_episodes.sqlite3
   (recomputed 2026-10-31; snapshot api/demo2_data/crossregion.json)
+post-backfill counts (60 eps, 32 labelled, 26 patterns, 10 cross-scene,
+  leader 5/5 Amazon+Texas+WUSA+Kalimantan x2; old Iberia leader holds 4)
+  | collab_agent/backfill.py x3 + recompute (2026-10-31); census table,
+  F4 (regenerated from census.json + crossregion.json), memory/crossregion
+  sections rewritten; F4+caption refreshed together per new rule

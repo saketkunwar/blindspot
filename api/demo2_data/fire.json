@@ -352,6 +352,58 @@
    "window_start": "2026-09-30"
   },
   {
+   "cells_pre": 10,
+   "cutoff": "2026-10-01",
+   "episode_id": "firms_iberia_ext@2026-10-01",
+   "label": "restart",
+   "n_post": 39,
+   "n_pre": 14,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-03",
+   "window_start": "2026-10-02"
+  },
+  {
+   "cells_pre": 17,
+   "cutoff": "2026-10-02",
+   "episode_id": "firms_iberia_ext@2026-10-02",
+   "label": "restart",
+   "n_post": 30,
+   "n_pre": 30,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-04",
+   "window_start": "2026-10-03"
+  },
+  {
+   "cells_pre": 27,
+   "cutoff": "2026-10-03",
+   "episode_id": "firms_iberia_ext@2026-10-03",
+   "label": "unlabelable",
+   "n_post": 7,
+   "n_pre": 53,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-05",
+   "window_start": "2026-10-04"
+  },
+  {
+   "cells_pre": 27,
+   "cutoff": "2026-10-04",
+   "episode_id": "firms_iberia_ext@2026-10-04",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 60,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_iberia_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-06",
+   "window_start": "2026-10-05"
+  },
+  {
    "cells_pre": 160,
    "cutoff": "2026-09-26",
    "episode_id": "firms_mozambique_10d@2026-09-26",
@@ -495,6 +547,58 @@
    "window_start": "2026-09-30"
   },
   {
+   "cells_pre": 38,
+   "cutoff": "2026-10-01",
+   "episode_id": "firms_texas_ext@2026-10-01",
+   "label": "restart",
+   "n_post": 21,
+   "n_pre": 158,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-03",
+   "window_start": "2026-10-02"
+  },
+  {
+   "cells_pre": 39,
+   "cutoff": "2026-10-02",
+   "episode_id": "firms_texas_ext@2026-10-02",
+   "label": "restart",
+   "n_post": 63,
+   "n_pre": 167,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-04",
+   "window_start": "2026-10-03"
+  },
+  {
+   "cells_pre": 43,
+   "cutoff": "2026-10-03",
+   "episode_id": "firms_texas_ext@2026-10-03",
+   "label": "unlabelable",
+   "n_post": 51,
+   "n_pre": 179,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-05",
+   "window_start": "2026-10-04"
+  },
+  {
+   "cells_pre": 48,
+   "cutoff": "2026-10-04",
+   "episode_id": "firms_texas_ext@2026-10-04",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 230,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "firms_texas_ext",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-10-06",
+   "window_start": "2026-10-05"
+  },
+  {
    "cells_pre": 10,
    "cutoff": "2026-09-27",
    "episode_id": "firms_wusa@2026-09-27",
@@ -532,6 +636,58 @@
    "top_mechanism": "suppression_then_restart",
    "window_end": "2026-10-01",
    "window_start": "2026-09-30"
+  },
+  {
+   "cells_pre": 31,
+   "cutoff": "2026-08-11",
+   "episode_id": "kalimantan_aug10@2026-08-11",
+   "label": "restart",
+   "n_post": 410,
+   "n_pre": 707,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_aug10",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-08-13",
+   "window_start": "2026-08-12"
+  },
+  {
+   "cells_pre": 32,
+   "cutoff": "2026-08-12",
+   "episode_id": "kalimantan_aug10@2026-08-12",
+   "label": "restart",
+   "n_post": 487,
+   "n_pre": 947,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_aug10",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-08-14",
+   "window_start": "2026-08-13"
+  },
+  {
+   "cells_pre": 32,
+   "cutoff": "2026-08-13",
+   "episode_id": "kalimantan_aug10@2026-08-13",
+   "label": "unlabelable",
+   "n_post": 317,
+   "n_pre": 1117,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_aug10",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-08-15",
+   "window_start": "2026-08-14"
+  },
+  {
+   "cells_pre": 33,
+   "cutoff": "2026-08-14",
+   "episode_id": "kalimantan_aug10@2026-08-14",
+   "label": "unlabelable",
+   "n_post": 0,
+   "n_pre": 1434,
+   "rule_id": "restart-noisefloor-v1",
+   "scene": "kalimantan_aug10",
+   "top_mechanism": "suppression_then_restart",
+   "window_end": "2026-08-16",
+   "window_start": "2026-08-15"
   },
   {
    "cells_pre": 14,
@@ -642,7 +798,7 @@
   "filed": [],
   "traces_read": 0
  },
- "hook": "One more closed window and memory speaks for the first time.",
+ "hook": "Memory speaks: one pattern holds 5 labelled cases against a bar of 5.",
  "live": {
   "as_of": "2026-10-30",
   "bbox_check": {
@@ -717,13 +873,13 @@
   ]
  },
  "memory_status": {
-  "best_labelled": 4,
-  "episodes": 48,
-  "labelled": 26,
-  "patterns": 22,
+  "best_labelled": 5,
+  "episodes": 60,
+  "labelled": 32,
+  "patterns": 26,
   "rule_id": "restart-noisefloor-v1",
-  "scenes": 11,
-  "speaking": false,
+  "scenes": 14,
+  "speaking": true,
   "threshold": 5
  },
  "null_test": {
@@ -748,6 +904,12 @@
   {
    "episodes": 4,
    "labelled": 2,
+   "scene": "firms_iberia_ext",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 4,
+   "labelled": 2,
    "scene": "firms_mozambique_10d",
    "unlabelable": 2
   },
@@ -755,6 +917,18 @@
    "episodes": 4,
    "labelled": 2,
    "scene": "firms_texas_10d",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 4,
+   "labelled": 2,
+   "scene": "firms_texas_ext",
+   "unlabelable": 2
+  },
+  {
+   "episodes": 4,
+   "labelled": 2,
+   "scene": "kalimantan_aug10",
    "unlabelable": 2
   },
   {
@@ -802,9 +976,40 @@
  ],
  "skipped": {
   "empty_files": 2,
-  "thin_history": 11
+  "thin_history": 14
  },
  "top_patterns": [
+  {
+   "episodes": 5,
+   "labeled": 5,
+   "labels": {
+    "restart": 5
+   },
+   "members": [
+    "amazon_sep2026@2026-09-26",
+    "firms_texas_ext@2026-10-01",
+    "firms_wusa@2026-09-27",
+    "kalimantan_aug10@2026-08-11",
+    "kalimantan_c@2026-09-17"
+   ]
+  },
+  {
+   "episodes": 8,
+   "labeled": 4,
+   "labels": {
+    "restart": 4
+   },
+   "members": [
+    "firms_iberia_15d@2026-09-23",
+    "firms_texas_10d@2026-09-27",
+    "firms_texas_10d@2026-09-28",
+    "firms_texas_ext@2026-10-02",
+    "firms_texas_ext@2026-10-03",
+    "firms_wusa@2026-09-28",
+    "firms_wusa@2026-09-29",
+    "kalimantan_aug10@2026-08-12"
+   ]
+  },
   {
    "episodes": 6,
    "labeled": 4,
@@ -831,32 +1036,6 @@
     "firms_cerrado_15d@2026-09-25",
     "firms_cerrado_15d@2026-09-26",
     "firms_cerrado_15d@2026-09-27"
-   ]
-  },
-  {
-   "episodes": 3,
-   "labeled": 3,
-   "labels": {
-    "restart": 3
-   },
-   "members": [
-    "amazon_sep2026@2026-09-26",
-    "firms_wusa@2026-09-27",
-    "kalimantan_c@2026-09-17"
-   ]
-  },
-  {
-   "episodes": 5,
-   "labeled": 2,
-   "labels": {
-    "restart": 2
-   },
-   "members": [
-    "firms_iberia_15d@2026-09-23",
-    "firms_texas_10d@2026-09-27",
-    "firms_texas_10d@2026-09-28",
-    "firms_wusa@2026-09-28",
-    "firms_wusa@2026-09-29"
    ]
   }
  ],

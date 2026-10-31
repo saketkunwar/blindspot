@@ -57,7 +57,9 @@ export default function CrossRegionDemo() {
         <p>
           The leading shape holds {lead.labelled} labelled cases of the {d.speak_bar} the bar
           requires — {lead.episodes} episodes across {Object.keys(lead.scenes).join(", ")}{" "}
-          — one case short of letting memory speak. The runner-up stands at{" "}
+          — {lead.labelled >= d.speak_bar
+            ? "the bar is met: memory speaks, three continents in one shape."
+            : "one case short of letting memory speak."} The runner-up stands at{" "}
           {d.top_patterns[1].labelled} of {d.speak_bar}.
         </p>
         <table className="kv"><tbody>
@@ -86,11 +88,13 @@ export default function CrossRegionDemo() {
       <section>
         <h2>What comes next — the three pulls</h2>
         <p>
-          The diagnosis this page is built on says the highest-value data in the world is
-          narrow: extend the Iberian and Texan windows (the leader needs one more labelled
-          case) and fetch one quiet window for a matched box (the labelling rule&apos;s arm
-          that has never fired). No new regions — different fuels add patterns of one, and
-          the key is strict on purpose.
+          The diagnosis this page is built on said the highest-value data in the world is
+          narrow: extend the Iberian and Texan windows and fetch one quiet window for a
+          matched box (the labelling rule&apos;s arm that has never fired). No new regions —
+          different fuels add patterns of one, and the key is strict on purpose. Those three
+          pulls have now landed — statuses below — and the count above is what they chose.
+          The August window burned, so the quiet arm stays missing; that absence is reported,
+          not hidden.
         </p>
         <table className="kv"><tbody>
           <tr><td>Iberia extension</td><td>{d.pending_pulls.iberia_ext} — five September–October days over the Iberian box</td></tr>

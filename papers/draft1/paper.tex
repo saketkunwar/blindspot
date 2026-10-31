@@ -341,7 +341,8 @@ with the masked re-run specified as what-it-would-take rather than invented.}
 A live page extends the study to the ongoing fire without extending its
 claims. Five October days (26--30) pulled from FIRMS under operator keys
 score identically under the frozen rules, and the live signature matches the
-strongest stored pattern at four labelled cases of five. The page states its
+strongest stored pattern at five labelled cases of five, so the page carries
+the labelled second ranking beside the frozen one. The page states its
 boundary on its face: this is a reading of today, not a forecast of tomorrow,
 because no forecasting model exists here and none was invented. Its November
 outlook is conditional arithmetic, not prediction: \emph{if} the dry regime
@@ -593,8 +594,10 @@ the ranking must equal the frozen ranking within 0.00005 --- it does,
 identically. No language-model call exists anywhere in this procedure.
 
 \emph{Step 3 --- pattern match.} The live signature is looked up against the
-stored pattern table: 6 episodes, 4 labelled under the best pattern ---
-below the speaking bar of 5, so memory stays silent and the page says so.
+stored pattern table: 60 episodes, 32 labelled, and the live shape matches
+the best-known one at 5 labelled of the 5 the bar requires --- so memory
+speaks here, and the page prints the labelled second ranking with the frozen
+ranking untouched beside it.
 
 \emph{Step 4 --- snapshot and page.}
 \verb|make_demo2.py| with \verb|--live-pull| on the pull CSV
@@ -614,8 +617,9 @@ backtest slides the cutoff across the stored fire history, runs the frozen
 prediction on pre-cutoff data only, and labels the outcome with the
 preregistered rule \verb|restart-noisefloor-v1| (a restart inside the window
 supports the restart story; a quiet window supports the stay-out stories).
-Across eleven usable scenes this yields 48 episodes, 26 of them labelled ---
-all restart, because no archived scene has yet gone quiet.
+Across fourteen scene files from eleven regions this yields 60 episodes, 32 of
+them labelled --- all restart, because no archived scene has yet gone quiet
+(the August window, fetched as a quiet candidate, burned).
 
 Memory is four tiers. T0 is the run itself, today's ledger and brief, pinned
 by hash. T1 is episodic: one append-only row per run, holding the case
@@ -633,22 +637,27 @@ A pattern's signature is a short hash over binned fact values only: gap
 dictionaries project to binned day-gaps, raw floats (areas, magnitudes) leave
 the key entirely, because an early key fingerprinted every slice and produced
 48 patterns of one. After the approved retune, 48 patterns collapse to 22
-with cross-scene grouping --- and the strongest stands at four labelled cases
-against a speaking threshold of five (Figure~\ref{fig:census}). So memory
-stays silent, for a verified reason rather than a promised one: with the
-section absent, briefs are byte-identical to the frozen baselines (G19).
+with cross-scene grouping --- and for months the strongest stood at four
+labelled cases against a speaking threshold of five (Figure~\ref{fig:census},
+drawn from that era). Memory stayed silent then, for a verified reason rather
+than a promised one: with the section absent, briefs are byte-identical to
+the frozen baselines (G19). Then three targeted pulls (Section~\ref{sec:crossregion})
+carried one shape over the bar, and the silence proved it was real by ending:
+new briefs gain the labelled second ranking, computed below, with the frozen
+ranking untouched beside it.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{f4_census.png}
-\caption{Why memory stays silent, in one chart. Left: of 48 manufactured past
-cases, 26 have known outcomes (all restart). Right: they form 22 distinct
-shapes, and the best-known shape holds 4 of the 5 cases the preregistered bar
-requires --- one case short of speaking.}
+\caption{The census at the silent era's end, in one chart. Left: of 60 manufactured past
+cases, 32 have known outcomes (all restart). Right: they form 26 distinct
+shapes, and the best-known shape holds 5 of the 5 cases the preregistered bar
+requires --- Amazon, Texas, the western US, and two Kalimantan windows, three
+continents in one shape. The chart that once read ``one short'' now reads met.}
 \label{fig:census}
 \end{figure}
 
-When the bar is eventually met, the adjustment is deliberately weak. For each
+When the bar is met, the adjustment is deliberately weak. For each
 mechanism, with Laplace smoothing $\alpha = 1.0$ over $n$ labelled cases:
 \begin{equation}
 r_m = \frac{\mathrm{hits}_m + \alpha}{n + 2\alpha}, \qquad
@@ -673,9 +682,9 @@ three-way time split whose final fifth is never touched during selection; and
 a human approves or rejects with a written reason, with approval minting a
 new version directory under a new tag. Instructions for the evolver's own
 agents evolve on a separate, cheaper track that cannot alter any scientific
-result. On today's data every path correctly does nothing --- no pattern
-qualifies, no replay clears, and the review tool proves it by refusing ---
-which is the behaviour the gates pin (G22--G24).
+result. On today's data memory speaks on one shape while the evolver path
+still files nothing --- zero candidates, no replay to clear, and the review
+tool proves it by refusing --- which is the behaviour the gates pin (G22--G24).
 
 \begin{table}[t]
 \centering
@@ -687,12 +696,12 @@ cutoffs skipped with printed reasons.}
 \toprule
 Item & Count \\
 \midrule
-Scenes slid & 11 \\
-Episodes & 48 \\
-Labelled (all restart) & 26 \\
-Unlabelable & 22 \\
-Patterns under v4 key & 22 \\
-Best pattern (labelled) & 4 of bar 5 \\
+Scene files (eleven regions) & 14 \\
+Episodes & 60 \\
+Labelled (all restart) & 32 \\
+Unlabelable & 28 \\
+Patterns under v4 key & 26 \\
+Best pattern (labelled) & 5 of bar 5: speaks \\
 Quiet scenes (mapping unexercised) & 0 \\
 \bottomrule
 \end{tabular}
@@ -731,7 +740,7 @@ five days of satellite detections for the study box. Then it studies them
 with the frozen September rules — the same scoring code, the same weights,
 compared against the frozen ranking to within five hundred-thousandths; a
 difference would be reported, never adjusted. Then it asks the past: the
-live evidence shape is looked up against the 48 stored episodes, and the
+live evidence shape is looked up against the 60 stored episodes, and the
 page says exactly where today stands against the bar of five — speaking, or
 silent with the count shown. Then it decides, and this is the step with the
 most design in it: four preregistered trigger rules, in fixed priority
@@ -752,8 +761,9 @@ Walk one real morning to see what this feels like. October 30: 150
 detections against a trailing median of 18.5 — roughly eight times the
 normal level, past the two-times bar, so the spike rule fires with its
 reason attached. The frozen rules read suppression-then-restart at 84.25,
-identical to September. The past is asked: six episodes, four labelled, one
-short of speaking — silent, stated. The human lines go out naming the watch
+identical to September. The past is asked: sixty episodes, 32 labelled, the
+live shape matching the best-known one at the full 5 of 5 — speaking, stated.
+The human lines go out naming the watch
 instruction for the week: daily counts near this level mean the burn run is
 unbroken. Every sentence of that morning traces to a number in the ledger,
 and the whole round replays byte-for-byte from the committed pull.
@@ -779,32 +789,30 @@ Amazon rainforest, Cerrado savanna, Iberian scrub, Texas brush, Chaco,
 Mozambique, Zambia, northern Australia, the western US, Attica), each slid
 day by day through the same frozen rules — predict from everything before a
 cutoff, label from everything after — under one frozen outcome rule and one
-frozen pattern key. Forty-eight past episodes, 26 with known outcomes, 22
+frozen pattern key. Sixty past episodes, 32 with known outcomes, 26
 distinct shapes.
 
-The count, recomputed from the memory store for this draft: 9 of the 22
-shapes span more than one region. The leader holds four labelled cases of
-the five the bar requires — five Iberian episodes and one Texan. The
-runner-up is Cerrado alone at four of four. Third is the most romantic
-finding in the project: one Amazon episode, one western-US episode, one
-Kalimantan episode, one shape, three continents. An operator reading this
-should feel both directions at once: the groups could be the beginning of
-general fire knowledge, or the key could be strict enough that only
-neighbours ever repeat.
+The count, recomputed from the memory store for this draft: 10 of the 26
+shapes span more than one scene. The leader holds five labelled cases of
+the five the bar requires — one Amazon, one Texan, one western-US, and two
+Kalimantan episodes, three continents in one shape — so memory speaks, and
+the silence section of this paper records when it ended. The old leader
+(Iberia plus Texas at four) still stands beneath it, unmoved; the new
+Iberian episodes formed different shapes, which is the bar working rather
+than bending. An operator reading this should feel both directions at once:
+the groups could be the beginning of general fire knowledge, or the key
+could be strict enough that such meetings stay rare.
 
-So the study was designed to end, not to linger. The diagnosis says the
-highest-value data in the world is narrow: extend the Iberian and Texan
-windows (the leader needs one more labelled case), and fetch one quiet
-window for a matched box (the labelling rule's arm that has never fired).
-No new regions — different fuels add patterns of one, and the key is strict
-on purpose. Three readings are possible, all stated before the pulls: the
-fifth label (memory speaks, and the before/after brief becomes the
-demonstration), a pattern break (regionality proven, logged with equal
-weight), or a first quiet (the missing arm exercised). The backfill path —
-curate into a pinned scene, rebuild the census cleanly, record the
-before/after — is the same agent code as the morning round, so the daily
-system and the learning system stay one system. Whatever the pulls say goes
-in the record as-is.
+So the study was designed to end, not to linger, and it ended like this.
+The diagnosis said the highest-value data in the world is narrow: extend
+the Iberian and Texan windows, and fetch one quiet window for a matched
+box. Three pulls landed; the extensions joined the Amazon trio's shape
+instead of the Iberian leader's — the data chose which pattern to complete,
+not the plan. The August window burned, so the quiet arm stays missing;
+that absence is reported, not hidden. The backfill path — curate into a
+pinned scene, rebuild the census cleanly, record the before/after — is the
+same agent code as the morning round, so the daily system and the learning
+system stay one system. Whatever the pulls say goes in the record as-is.
 
 \section{Hardened verification, and how useful it was}
 \label{sec:verification}
@@ -1039,9 +1047,9 @@ BlindSpot's claim is small enough to check: qualitative relations over
 sensing gaps, scored by frozen weights, framed but never moved by a language
 model, verified by gates that have caught real defects and state their blind
 spots in writing. The fire study passes two holdouts; the flood study passes
-one with the other openly pending; memory stays silent for verified reasons
-and knows exactly what would let it speak; the evolver proposes, tests, and
-waits. The rain that arrived during drafting gets the last word it earned:
+one with the other openly pending; memory spoke once its bar was met, after
+staying silent for verified reasons while it was short; the evolver proposes,
+tests, and waits. The rain that arrived during drafting gets the last word it earned:
 the system named its falsifier in advance, and the next satellite pull will
 say whether the pattern held. Whatever it says goes in the record as-is ---
 that is the whole design, in one sentence.

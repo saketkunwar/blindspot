@@ -23,11 +23,11 @@ def test_demo2_fire_serves_real_census():
     assert body["mode"] == "cached"
     d = body["data"]
     ms = d["memory_status"]
-    assert (ms["episodes"], ms["labelled"], ms["scenes"]) == (48, 26, 11)
-    assert ms["patterns"] == 22 and ms["best_labelled"] == 4
-    assert ms["speaking"] is False  # 4 of 5: silence, verified not promised
+    assert (ms["episodes"], ms["labelled"], ms["scenes"]) == (60, 32, 14)
+    assert ms["patterns"] == 26 and ms["best_labelled"] == 5
+    assert ms["speaking"] is True  # 5 of 5: the bar met by new episodes
     assert len(d["episodes"]) == ms["episodes"]
-    assert sum(1 for e in d["episodes"] if e["label"] != "unlabelable") == 26
+    assert sum(1 for e in d["episodes"] if e["label"] != "unlabelable") == 32
     assert d["null_test"]["null_edge"] == -0.13
     assert d["null_test"]["signal_edge"] == 0.27
     assert d["hill_climb"]["candidates_filed"] == 0

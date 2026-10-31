@@ -40,7 +40,7 @@ export default function FireLiveDemo() {
       <section>
         <h2>Meanwhile</h2>
         <p><a href="/demo/fire-study">The frozen Kalimantan fire brief</a> <span className="meta">— unchanged.</span></p>
-        <p><a href="/demo/fire-study/memory">What the system remembers</a> <span className="meta">— 48 past episodes, honest silence.</span></p>
+        <p><a href="/demo/fire-study/memory">What the system remembers</a> <span className="meta">— 60 past episodes, one pattern speaking.</span></p>
       </section>
     </main>
   );
@@ -163,7 +163,7 @@ export default function FireLiveDemo() {
       <section>
         <h2>How we know what we know</h2>
         <p><a href="/demo/fire-study">The frozen September brief</a> <span className="meta">— the verdict, locked and byte-identical.</span></p>
-        <p><a href="/demo/fire-study/memory">What the system remembers</a> <span className="meta">— 48 past episodes across 11 regions, and why memory stays silent.</span></p>
+        <p><a href="/demo/fire-study/memory">What the system remembers</a> <span className="meta">— 60 past episodes across 11 regions, and the morning one pattern started speaking.</span></p>
       </section>
 
       <section>
@@ -174,7 +174,7 @@ export default function FireLiveDemo() {
         <p className="lede">Step 2 — Score it with the locked September rules</p>
         <p>The exact same machinery as September — same cell lists, same six facts, same weights — runs over the live slice. The result must equal the frozen ranking to within five hundred-thousandths. It does, identically: no re-tuning, no new weights, no exceptions.</p>
         <p className="lede">Step 3 — Ask the past whether it recognises today</p>
-        <p>Today&apos;s evidence shape is looked up against the 48 stored past episodes: it lands inside the best-known pattern — 6 episodes, 4 with known outcomes, all restarts — one case short of the 5 the bar requires. So memory stays silent, and this page says so instead of rounding up.</p>
+        <p>Today&apos;s evidence shape is looked up against the 60 stored past episodes: it lands inside a familiar pattern — 6 episodes, 4 with known outcomes, all restarts — still one case short of the 5 the bar requires for that shape, so for today&apos;s reading memory stays silent, and this page says so instead of rounding up. (Elsewhere in the archive a different shape has since reached 5 of 5 — see the memory page.)</p>
         <p className="lede">Step 4 — Publish with the boundary on its face</p>
         <p>A snapshot script writes this page&apos;s numbers; the page carries the full timeline (study window, hidden test, live days dated to October 30), states it is a reading and not a forecast, and makes the November outlook conditional both ways — dry return means elevated restart risk, rain holding means the pattern breaks. When the rain arrived after the last pull, no step changed: the next pull verifies it the moment daily counts fall.</p>
       </section>

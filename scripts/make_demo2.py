@@ -173,7 +173,10 @@ def _fire_snapshot(tmp: pathlib.Path) -> dict:
             "threshold": need,
             "speaking": best >= need,
         },
-        "hook": ("One more closed window and memory speaks "
+        "hook": (f"Memory speaks: one pattern holds {best} labelled "
+                 f"cases against a bar of {need}."
+                 if best >= need else
+                 "One more closed window and memory speaks "
                  "for the first time."),
         "episodes": census["episodes"],
         "scenes": sorted(scenes.values(), key=lambda d: -d["labelled"]),

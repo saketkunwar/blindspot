@@ -46,12 +46,14 @@ def curate(pull_path: pathlib.Path, tag: str) -> pathlib.Path:
     return dest
 
 
-def _best_labelled(census_path: pathlib.Path) -> tuple[int, int]:
+def _census_counts(census_path: pathlib.Path) -> tuple[int, int]:
+    """(episodes, labelled) counted from the episode rows themselves —
+    never from summary keys that may not exist."""
     c = json.loads(census_path.read_text())
-    stats = c.get("stats", {})
-    return (int(stats.get("labelled", 0)),
-            int(max((p.get("labeled", 0) for p in
-                     c.get("top_patterns", [])), default=0)))
+    eps = c.get("episodes", [])
+    unlab = "unlabelable"
+    labelled = sum(1 for e in eps if e.get("label", unlab) != unlab)
+    return (len(eps), labelled)
 
 
 def main(argv=None) -> int:
@@ -85,14 +87,14 @@ def main(argv=None) -> int:
     else:
         rc = _manifest.main(["--data-dir", "data", "--record",
                              f"fire_kalimantan/{tag}.json", "--kind",
-                             "firms-pull-scene", "--source-url",
+                             "real", "--source-url",
                              args.source_url])
         if rc != 0:
             print("manifest record failed; scene left unregistered")
             return rc
 
     census_path = pathlib.Path(args.census_out)
-    before = _best_labelled(census_path) if census_path.exists() else (0, 0)
+    before = _census_counts(census_path) if census_path.exists() else (0, 0)
     cmd = [sys.executable, "scripts/backtest_episodes.py", "--all-scenes",
            "--db", args.db, "--census-out", args.census_out,
            "--rules", args.rules, "--memory-config", args.memory_config]
@@ -103,14 +105,14 @@ def main(argv=None) -> int:
     if r.returncode != 0:
         print(f"backtest failed:\n{r.stdout[-1500:]}\n{r.stderr[-500:]}")
         return r.returncode
-    after = _best_labelled(census_path)
+    after = _census_counts(census_path)
     _digest.append(ROOT / args.digest, {
         "kind": "backfill", "tag": tag,
-        "labelled_before": before[0], "best_before": before[1],
-        "labelled_after": after[0], "best_after": after[1],
+        "episodes_before": before[0], "labelled_before": before[1],
+        "episodes_after": after[0], "labelled_after": after[1],
     })
-    print(f"backfill {tag}: labelled {before[0]}->{after[0]}, "
-          f"best pattern {before[1]}->{after[1]}")
+    print(f"backfill {tag}: episodes {before[0]}->{after[0]}, "
+          f"labelled {before[1]}->{after[1]}")
     return 0
 
 
