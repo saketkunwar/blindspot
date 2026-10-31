@@ -23,7 +23,11 @@ a Framing Model, and Hardened Verification}
 \begin{abstract}
 Many operational failures hide inside sensing gaps: the days a peat fire burns
 under cloud, the hours a river valley is unwatched between satellite passes.
-BlindSpot is a system that reasons about what such gaps may conceal. Its core
+BlindSpot is a system that reasons about what such gaps may conceal. Most
+operational systems interpolate what was seen; BlindSpot reasons about what
+was not seen — the days lost to cloud and the ground between clear views —
+in space and time together, which is the capability few current systems
+offer. Its core
 is deterministic and qualitative: detections become dated grid cells or mapped
 assets, a hand-written ledger of facts is scored by frozen human weights into a
 ranked set of mechanism stories, and every conclusion carries the spatial and
@@ -37,7 +41,10 @@ episode, where the brief named suppression-then-restart at 0.84 and both a
 hidden time window and a masked half-map confirmed it. A tiered memory layer
 records past episodes and stays provably silent until five labelled cases share
 one pattern; a self-evolving agent may propose rule changes, test them on
-held-out history, and then wait for a human. Twenty-four hardened gates enforce
+held-out history, and then wait for a human. A morning agent runs the daily
+round on the operator's own machine — pull, frozen study, memory lookup,
+preregistered triggers, and two human lines assembled from ledger values,
+with no model writing a word. Twenty-four hardened gates enforce
 all of this, and they have caught real defects --- from a shifted composition
 table to a vacuous-truth hole that let empty results pass. This draft reports
 the misses honestly: one-sided history, an empty flood memory, a pending flood
@@ -691,6 +698,76 @@ Quiet scenes (mapping unexercised) & 0 \\
 \end{tabular}
 \end{table}
 
+\section{The morning agent: a daily round, watched}
+\label{sec:morning}
+
+Picture the operator's morning. Before coffee, before briefings, someone
+should have looked at last night's sky over the peat blocks and answered
+three questions: is anything new burning, does the past recognise it, and is
+today worth a full study? For the length of this project a person did that
+by hand. The morning agent is that round, automated — and automated in a way
+that cannot quietly become something else.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{f7_morning.png}
+\caption{Five steps from sky to human lines. The guardrails are not
+aspirations: keys live in the environment, the pull never enters the frozen
+data, and no model writes a word of the digest.}
+\label{fig:morning}
+\end{figure}
+
+It lives in its own directory, \verb|collab_agent/|, with one module per
+job: pulling the sky, studying it, deciding, writing the human lines, and
+keeping the append-only digest. It wakes on the operator's own machine, on a
+schedule the operator owns — not as a hosted service, a boundary the project
+keeps deliberately (Section~\ref{sec:future} says what would have to change
+before that line moves). Its keys travel in the environment only. If no key
+is present it logs ``skipped'' and exits cleanly: silence is reported, never
+faked, and a missing credential can never become an invented reading.
+
+The round itself is five steps (Figure~\ref{fig:morning}). First it pulls
+five days of satellite detections for the study box. Then it studies them
+with the frozen September rules — the same scoring code, the same weights,
+compared against the frozen ranking to within five hundred-thousandths; a
+difference would be reported, never adjusted. Then it asks the past: the
+live evidence shape is looked up against the 48 stored episodes, and the
+page says exactly where today stands against the bar of five — speaking, or
+silent with the count shown. Then it decides, and this is the step with the
+most design in it: four preregistered trigger rules, in fixed priority
+order, each with its reason written down before the runner existed. A day
+with twice the trailing median earns a study. A shape the archive has never
+seen earns one study. The fifth labelled case under one pattern is the
+morning memory speaks. A near-zero day after a matched pattern is logged as
+a possible first quiet — and nothing is labelled that morning, because a
+window is labelled only after it closes. If none fires, the agent writes one
+quiet line and stops; quiet days are evidence too, and the archive is
+starving for them. Finally it writes its two or three human lines — not
+composed by a model but assembled from a fixed template over ledger values,
+with every number checked against the ledger block before anything is
+written. A snippet that fails its number check is never published; the run
+fails instead.
+
+Walk one real morning to see what this feels like. October 30: 150
+detections against a trailing median of 18.5 — roughly eight times the
+normal level, past the two-times bar, so the spike rule fires with its
+reason attached. The frozen rules read suppression-then-restart at 84.25,
+identical to September. The past is asked: six episodes, four labelled, one
+short of speaking — silent, stated. The human lines go out naming the watch
+instruction for the week: daily counts near this level mean the burn run is
+unbroken. Every sentence of that morning traces to a number in the ledger,
+and the whole round replays byte-for-byte from the committed pull.
+
+Two honest behaviours are worth naming because most automation hides them.
+The first is what happened the first time the runner met eight scattered
+synthetic detections in testing: they formed a shape the archive had never
+seen, so the agent opened a study instead of logging quiet — exactly what
+the preregistered priority order demands, and the test was corrected to
+expect it rather than the rule bent to expect quiet. The second is the
+missing-key morning: no credential, no drama, one logged line, exit zero.
+An agent that reports its own inability is one an operator can trust with
+the mornings it can handle.
+
 \section{Hardened verification, and how useful it was}
 \label{sec:verification}
 
@@ -906,12 +983,16 @@ memory learning that fires can end, on record.
 text unblocks setup rounds that read the full redacted inventory. Fresh
 cassettes, and a new prompt-hash lineage to show for the fix.
 
-\paragraph{A third scenario, then the daemon.} A third domain (storm surge is
+\paragraph{A third scenario, then the full daemon.} A third domain (storm surge is
 the natural candidate: same gap shape, different physics) proves the catalog
-first. Only then does the event-driven loop earn its place: a scheduled
+first. Only then does the fuller event-driven loop earn its place: a scheduled
 trigger that slides cutoffs over arriving data and starts a hill-climbing
-step, with every proposal still waiting for a human. The demo is an
-operator's morning brief that wrote its own audit trail overnight.
+step, with every proposal still waiting for a human. The morning
+agent of Section~\ref{sec:morning} is already that loop's first, deliberately
+small form — running on the operator's machine, on the operator's schedule,
+and only reading. The demo is an
+operator's morning brief that wrote its own audit trail overnight. Unfreezing
+anything more remains an evidence decision, not an anticipation.
 
 \section{Conclusion}
 \label{sec:conclusion}

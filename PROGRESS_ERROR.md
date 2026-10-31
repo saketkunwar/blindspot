@@ -842,5 +842,14 @@ took the recommended path) prevented building against phantom inputs.
   the comment. New serving tests (chain verdict, morning-run steps).
   Full gate ALL PASS (G1-G25); web build green; judge JUDGE OK,
   155 passed (153 + 2 new serving tests).
+- `[demo2]` Headline claim planted everywhere it was missing ("reasons
+  about what was not seen — days lost to cloud, ground between clear
+  views — in space and time together"): both demo heroes, demos index,
+  paper abstract. Build green, paper zero warnings, gate ALL PASS.
 - `[demo2]` Spike reason rewritten in human words ("roughly 8 times the
   normal level, past the 2x bar that earns a study"); tests + gate green.
+- `[paper-rev]` Morning-agent section (operator's morning, 5 steps, 4
+  triggers in words, Oct 30 worked example, novel-quiet + missing-key
+  honesty) + F7 figure + abstract line + daemon paragraph updated to the
+  built reality. 18 pages, zero warnings. Gate ALL PASS; judge JUDGE
+  OK, 155 passed.

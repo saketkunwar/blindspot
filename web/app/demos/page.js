@@ -43,6 +43,11 @@ export default function DemosIndex() {
           Each demo below is a frozen, re-runnable claim — not a slideshow. Verdicts replay
           byte-for-byte, holdouts are data rather than prose, and everything silent says why.
         </p>
+        <p>
+          The thing one pipeline does that few current systems can: reason about what the
+          satellites could not see — the days lost to cloud and the ground between clear
+          views — in space and time together. That is what every demo on this page exercises.
+        </p>
       </header>
       {DEMOS.map((d) => (
         <section key={d.href}>

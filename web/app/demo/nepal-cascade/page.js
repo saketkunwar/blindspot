@@ -43,6 +43,7 @@ export default function NepalCascadeDemo() {
         <p className="eyebrow">BlindSpot demo · pre-cutoff autoinsight <span className="mode">{brief.mode}</span></p>
         <h1>Valley survey: what the pre-cutoff evidence supports</h1>
         <p className="lede">{d.verdict}</p>
+        <p>Most systems interpolate what was seen. BlindSpot reasons about what was not seen — the days lost to cloud and the ground between clear views — in space and time together, and every conclusion carries the relations it came from.</p>
         <p className="meta">{d.probability_semantics} · snapshot {d.as_of_label}</p>
       </header>
 
