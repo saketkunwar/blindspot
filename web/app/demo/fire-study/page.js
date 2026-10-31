@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import MapPane, { legendOf } from "../../../components/MapPane";
-import { getDemoFire, getDemoFireGeo } from "../../../lib/api";
+import { getDemoFire, getDemoFireGeo, getDemo2Fire } from "../../../lib/api";
 
 const STEPS = [
   { k: "Detect", d: "FIRMS detections gridded into cells over five pre-cutoff days; hotspot cells tagged at the noise floor." },
@@ -13,12 +13,14 @@ const STEPS = [
 export default function FireStudyDemo() {
   const [brief, setBrief] = useState(null);
   const [geo, setGeo] = useState(null);
+  const [mem, setMem] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     Promise.all([getDemoFire(), getDemoFireGeo()])
       .then(([b, g]) => { setBrief(b); setGeo(g); })
       .catch((e) => setError(`API unreachable: ${e.message}`));
+    getDemo2Fire().then((m) => setMem(m)).catch(() => {});
   }, []);
 
   if (error) return <main className="demo"><p className="meta">{error}</p></main>;
@@ -95,6 +97,17 @@ export default function FireStudyDemo() {
         ))}
       </section>
 
+      {mem && (
+      <section>
+        <h2>Tested, not just computed</h2>
+        <p>A verdict this strong needs enemies: ground truth the brief never saw, in two independent forms.</p>
+        <p className="lede">Time held out</p>
+        <p>The ledger only saw detections up to {mem.data.validation.temporal.cutoff_day}. Everything after that — {mem.data.validation.temporal.held_out} — was locked away before the brief was written, and the frozen top story still points straight at it. That is a match the system could not have arranged.</p>
+        <p className="lede">Half the map removed</p>
+        <p>Same frozen rules, but {mem.data.validation.spatial.masked} ({mem.data.validation.spatial.kept.toLocaleString()} of {mem.data.validation.spatial.total.toLocaleString()} detections kept): the ranking came back identical — same order, same probabilities. The fire signal is everywhere on the map, not one hotspot&apos;s doing.</p>
+      </section>
+      )}
+
       <section>
         <h2>Legend map</h2>
         <div className="legend">
@@ -128,6 +141,18 @@ export default function FireStudyDemo() {
         <p>The same pipeline shape as the flood study, with no flood code executing: detections gridded into dated cells, human-authored rules with weights locked before compute, and a rules-driven builder scoring six facts into four mechanisms. Two independent holdouts carry the claim — every detection after September 20 locked away (the brief had to predict the restart unseen), and the eastern half of the map masked out (the ranking had to survive half its data). A live setup round then drafted its own mechanisms from the pre-cutoff ledger alone.</p>
         <p className="lede">Insights learned</p>
         <p>Suppression-then-restart wins at 0.84 against 0.11 for continued spread: a clean multi-day gap followed by an unbroken burn run already favors it, and the held-out days confirm it. The spatial holdout kept the identical ranking on half the map — the signal is pervasive, not one hotspot&apos;s doing. The setup round independently weighted the same two lead facts highest while disagreeing on top, which is exactly what framing without conviction looks like. And the study paid for itself in engine improvements — scoped cluster counting, a time-scale divisor, weights inside fact entries — each proven generic by the flood brief staying byte-identical throughout.</p>
+      </section>
+
+      <section>
+        <h2>Looking ahead: the first week of November</h2>
+        <p className="lede">This is an outlook, not a forecast</p>
+        <p>Nothing in this pipeline predicts the weather. There is no rain model, no wind model, and no forecast anywhere in the system — what follows is the validated September finding pointed at today&apos;s live data, extended one week forward. Read it as a watch brief, not a prediction.</p>
+        <p className="lede">Where things stand on October 30</p>
+        <p>The five live days (October 26–30) brought 675 satellite detections, with 476 of them on October 29 alone — the heaviest single day in the window. That shape matches the stored restart pattern in four of five past cases: long burning, peat character, the same signature as the September episode that ended in restart. Since then, news reports say rain has eased the fire — that rain falls after our last satellite pull, so it is not yet confirmed in our data, and the next live pull will verify it the moment daily counts fall.</p>
+        <p className="lede">What that means for November 1–7, if things remain as they are</p>
+        <p>The outlook below is conditional on the dry regime returning. If the rain holds through the week and the ground stays wet, the pattern breaks: restart risk for the first week of November drops, and the live reading should move out of the restart signature on the next pull. But if dry weather returns and things go back to how they were — counts climbing back toward the October 29 spike of 476 — then the opening days of November carry an elevated restart risk in the same peat blocks. The honest extension of the validated finding is that this pattern restarts rather than dies out whenever it stays dry. The single biggest thing to watch is the daily count: counts staying near spike level mean the burn run is unbroken; a new multi-day gap would reset the clock, exactly as the September gap did before the restart.</p>
+        <p className="lede">What would prove this wrong</p>
+        <p>A wet week is precisely what breaks the pattern — and per news reports, that week may have started. Sustained rain moves the live reading out of the restart signature, and the next pull will show it. The satellites see heat, not causes, so suppression on the ground can also end the episode in ways no detection count will announce in advance. And one caution from the ledger itself: the archive holds 26 restarts and zero quiets, so the system has never yet watched a matched pattern go quiet — a rain-quenched quiet would be new evidence, recorded as a fifth labelled case, and it is the case that finally lets memory speak.</p>
       </section>
     </main>
   );

@@ -19,6 +19,19 @@
   "a preregistered flood outcome rule",
   "flood backtest episodes under that rule"
  ],
+ "validation": {
+  "spatial": {
+   "reason": "no masked re-run exists for this study",
+   "status": "pending",
+   "what_it_would_take": "the same frozen rules recomputed over a masked half of the valley, with the ranking required to hold"
+  },
+  "temporal": {
+   "frozen_top": "impoundment_then_burst",
+   "gt_window": "(2026-09-04T03:56:20Z, 2026-09-09T03:54:39Z]",
+   "match": true,
+   "newly_destroyed": 754
+  }
+ },
  "why_empty": {
   "dated_damage_days": 2,
   "dateless_features": 8368,

@@ -723,3 +723,79 @@ took the recommended path) prevented building against phantom inputs.
   Old demo pages proven byte-untouched vs HEAD (empty diff); `api/server.py`
   +24 lines additive; web production build green. Staged, uncommitted —
   commit stays human.
+
+## Demo validation sections (2026-10-30)
+- `[plain]` Both main demo pages now carry their holdout checks as data,
+  not prose: fire shows the temporal match plus the live spatial re-run
+  (3,071 of 6,142 kept, identical ranking and probabilities — reproduced
+  during the build, not quoted from memory); flood shows its temporal
+  MATCH (754 newly destroyed features in the quarantined window, gt_check
+  re-run byte-identical) with the spatial half openly pending — verified
+  absent by repository-wide search, with the masked re-run written up as
+  what-it-would-take instead of invented. Old pages fetch the new
+  endpoints separately and render nothing if they are down.
+- `[hardened]` Flood spatial was checked three ways (inputs carry no
+  dates, two real damage days across all exports, no holdout anywhere in
+  history) before declaring it missing. New snapshot blocks pinned by two
+  more serving tests.
+- Terminal evidence for the validation sections: `HARDENED: ALL PASS`
+  (G1–G24, twice in one run) plus `JUDGE OK — 146 passed`, observed
+  exit 0. Both main pages build clean with their new sections.
+
+## Live fire page (2026-10-30, operator key, /tmp pull + committed snapshot)
+- `[plain]` New page `/demo/fire-study/live` for the ongoing fire: 675
+  live detections (Oct 26–30, spike 476 on the 29th), frozen-rules
+  reading identical to September, pattern match at 4 of 5 — written for
+  non-experts with the no-forecast boundary stated on the page itself.
+  The pull CSV ships beside the snapshot so every number stays
+  checkable; the pull never entered data/ or the frozen study.
+- `[hardened]` Snapshot generator briefly printed "wrote" without
+  writing (dropped lines in an edit) — caught because the very next
+  command read the file back; writes restored, stale-file confusion
+  impossible since the read-back is part of the flow.
+- Terminal evidence for the live page: `HARDENED: ALL PASS` (G1–G24)
+  plus `JUDGE OK — 147 passed`, observed exit 0. Uncommitted — commit
+  stays human.
+
+## Live pull morning briefing (2026-10-30, operator key, /tmp only)
+- `[plain]` NASA FIRMS is reachable from here after all (200, ~2s), so the
+  "unreachable" note in the operator's puller script is stale. Pulled 5
+  days of NOAA-20 VIIRS for the study box (675 detections, Oct 26–30,
+  all inside the box — bbox order verified, source matches the curated
+  September data). Spike: 476 on Oct 29, 150 so far today.
+- `[plain]` Frozen September rules over the live slice reproduce the
+  frozen ranking exactly (0.8425/0.1140/0.0419/0.0016), and the live
+  signature matches the strongest known pattern (6 episodes, 4 labelled
+  — still below the speaking threshold of 5). This is a reading of today,
+  not a forecast of tomorrow: no forecasting model exists here, and none
+  was invented. Frozen studies untouched; the pull never entered data/.
+- `[hardened]` Keys live in process environment for the pull commands
+  only — never files, cassettes, or logs. Keys pasted into chat should
+  still be rotated.
+- `[demo2]` Nov 1-7 outlook added to fire page bottom: labelled outlook
+  (not forecast), Oct 29 spike 476 vs 675 total, watch-daily-counts
+  guidance, wet-week falsifier, 26-restarts-0-quiets caution. Web build
+  green.
+- `[demo2]` Outlook revised per rain news: rain after last pull, unverified
+  in data, next pull confirms via falling counts; Nov 1-7 risk now
+  conditional on dry return, rain-holds path drops risk. Web build green.
+
+## arXiv draft 1 (2026-10-31, papers/draft1/)
+- `[plain]` 12-page LaTeX paper (abstract -> conclusion + references), 6
+  matplotlib figures regenerated from committed data only (make_figs.py
+  asserts 6142/675 sums), 4 tables, SOURCES.txt tracing every number.
+  References verified against primary sources (Guesgen TR-89-049, FIRMS/LANCE).
+  Compiled with a downloaded Tectonic binary (no local TeX toolchain);
+  zero warnings. Number cross-check script passes (rankings, 754, 3071/6142,
+  675/476/150, census 48/26, memory params, null margins, 986/992).
+- `[hardened]` Full gate ALL PASS (G1-G24) on the paper tree; judge
+  JUDGE OK, 147 passed. Placeholder author line; web-map war stories
+  omitted per operator instruction.
+- `[paper-rev]` Draft 2 (operator-clarified): intro tape/second-doctor
+  framings; concept section gains the spatial blind-spot half; algebra
+  plain opening + rectangles-vs-tiles direction sentence; demos as
+  executive narrative with dam-burst lead and asset stakes; LLM section
+  grounded in the two 2026 emergencies; F4 redesigned conclusion-first;
+  verification expanded (what/why, coding-vs-execution split, 8-row
+  catches table). 14 pages, microtype, zero warnings. Numbers re-checked,
+  gate ALL PASS, judge JUDGE OK 147 passed.

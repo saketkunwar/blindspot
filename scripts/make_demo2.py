@@ -66,6 +66,53 @@ def _hill_climb_report(tmp: pathlib.Path) -> dict:
     return json.loads(r.stdout)
 
 
+def _fire_validation(tmp: pathlib.Path, brief: dict) -> dict:
+    """Re-run both holdouts live: the temporal outcome recorded at freeze
+    time, and a masked eastern half recomputed with the frozen rules."""
+    import shutil
+    import statistics
+    from agents import autoinsight as ai
+    src = ROOT / "demo/fire_study/inputs"
+    dets = json.loads((src / "detections.geojson").read_text())["features"]
+    cut = statistics.median(f["geometry"]["coordinates"][0] for f in dets)
+    west = [f for f in dets if f["geometry"]["coordinates"][0] <= cut]
+    hold = tmp / "holdout" / "inputs"
+    shutil.rmtree(hold, ignore_errors=True)
+    hold.mkdir(parents=True)
+    (hold / "detections.geojson").write_text(
+        json.dumps({"type": "FeatureCollection", "features": west}))
+    for f in ["cells.geojson", "timeline.json", "extent.json",
+              "input_audit.json"]:
+        shutil.copy(src / f, hold / f)
+    out = tmp / "holdout.json"
+    ai.run(str(hold), "demo/fire_study/rules.json",
+           str(out), str(tmp / "holdout_prompts"), model_round="off",
+           domain_path="demo/fire_study/domain.json")
+    rebrief = json.loads(out.read_text())
+    frozen_ids = [m["id"] for m in brief["mechanisms"]]
+    re_ids = [m["id"] for m in rebrief["mechanisms"]]
+    probs_same = all(abs(a["probability"] - b["probability"]) < 0.00005
+                     for a, b in zip(brief["mechanisms"],
+                                     rebrief["mechanisms"]))
+    return {
+        "temporal": {
+            "cutoff_day": "2026-09-20",
+            "held_out": "the late-September restart",
+            "frozen_top": brief["mechanisms"][0]["id"],
+            "match": brief["mechanisms"][0]["id"] == "suppression_then_restart",
+        },
+        "spatial": {
+            "masked": "the eastern half of the map",
+            "kept": len(west),
+            "total": len(dets),
+            "meridian": round(cut, 4),
+            "top": rebrief["mechanisms"][0]["id"],
+            "ranking_identical": re_ids == frozen_ids,
+            "probabilities_identical": probs_same,
+        },
+    }
+
+
 def _fire_snapshot(tmp: pathlib.Path) -> dict:
     import yaml
     from engine import memory as _memory
@@ -135,6 +182,7 @@ def _fire_snapshot(tmp: pathlib.Path) -> dict:
         "top_patterns": rows[:4],
         "null_test": _null_edges(),
         "hill_climb": _hill_climb_report(tmp),
+        "validation": _fire_validation(tmp, brief),
     }
 
 
@@ -166,12 +214,28 @@ def _nepal_snapshot(tmp: pathlib.Path) -> dict:
                 days[day] += 1
             else:
                 dateless += 1
+    gt = json.loads((ROOT / "demo/nepal_cascade/output/gt_check.json").read_text())
     return {
         "frozen": {
             "verdict": brief["verdict"],
             "top": brief["mechanisms"][0]["id"],
             "top_title": brief["mechanisms"][0]["title"],
             "probability": brief["mechanisms"][0]["probability"],
+        },
+        "validation": {
+            "temporal": {
+                "gt_window": gt["gt_signature"]["gt_window"],
+                "newly_destroyed": gt["gt_signature"]["gt_newly_destroyed"],
+                "frozen_top": gt["frozen_top_mechanism"],
+                "match": gt["true_outcome_rank"] == 1,
+            },
+            "spatial": {
+                "status": "pending",
+                "reason": "no masked re-run exists for this study",
+                "what_it_would_take": "the same frozen rules recomputed "
+                                      "over a masked half of the valley, "
+                                      "with the ranking required to hold",
+            },
         },
         "memory_status": {"episodes": 0,
                           "note": "not installed for this domain"},
@@ -188,9 +252,92 @@ def _nepal_snapshot(tmp: pathlib.Path) -> dict:
     }
 
 
+def _live_snapshot(pull_csv: pathlib.Path) -> dict:
+    """Today's reading from a live FIRMS pull (committed beside the
+    snapshot so the numbers stay checkable). The pull never enters data/
+    or the frozen study; this section is dated by its own latest
+    detection day, never by wall-clock. It is a reading of now, not a
+    forecast of tomorrow: no forecasting model exists here."""
+    import csv
+    from collections import Counter
+    from scripts import backtest_episodes as be
+    from engine.ledger import compute_ledger_from_spec, score_mechanisms
+    from engine import memory as _memory
+    import yaml
+    rows = list(csv.DictReader(pull_csv.open()))
+    dets = [(r["acq_date"], float(r["longitude"]), float(r["latitude"]))
+            for r in rows]
+    roles, _ = be._build_roles(dets, 0.5, 3)
+    rules = json.loads((ROOT / "demo/fire_study/rules.json").read_text())
+    ledger = compute_ledger_from_spec(rules, roles)
+    ranking = score_mechanisms(rules, ledger)
+    frozen = json.loads(
+        (ROOT / "demo/fire_study/output/brief.json").read_text())
+    same = ([m["id"] for m in ranking] ==
+            [m["id"] for m in frozen["mechanisms"]] and
+            all(abs(a["probability"] - b["probability"]) < 0.00005
+                for a, b in zip(ranking, frozen["mechanisms"])))
+    mem = yaml.safe_load(MEM_CFG.read_text())
+    sig = _memory.signature_for_facts(
+        ledger["facts"], mem["signature"]["count_bin_edges"])
+    match = {"episodes": 0, "labelled": 0, "known": False}
+    try:
+        import sqlite3
+        from store import db as _db
+        mdb = ROOT / "results" / "memory_episodes.sqlite3"
+        con = sqlite3.connect(f"file:{mdb.resolve()}?mode=ro", uri=True)
+        try:
+            eps = _db.episodes_for(con)
+            outs = _db.outcomes_for(con)
+        finally:
+            con.close()
+        as_of = max(o["window_end"] for o in outs
+                    if o["label"] != "unlabelable")
+        pats = _memory.patterns_from_rows(
+            eps, outs, mem["signature"]["count_bin_edges"],
+            mem["memory"]["outcome_supports"], as_of,
+            mem.get("rule_id", "memory-v1"))
+        p = pats.get(sig["id"])
+        if p is not None:
+            match = {"episodes": p["episodes"], "labelled": p["labeled"],
+                     "known": True}
+    except (OSError, sqlite3.Error):
+        pass
+    phases = json.loads(
+        (ROOT / "demo/fire_study/inputs/timeline.json").read_text())["phases"]
+    study_days = sorted(p["start"][:10] for p in phases)
+    by_day = sorted(Counter(r["acq_date"] for r in rows).items())
+    lats = [float(r["latitude"]) for r in rows]
+    lons = [float(r["longitude"]) for r in rows]
+    return {
+        "as_of": by_day[-1][0],
+        "partial_last_day": True,
+        "study_window": [study_days[0], study_days[-1]],
+        "held_out": "the late-September restart, confirmed after the freeze",
+        "detections": len(rows),
+        "days": [{"day": day, "detections": n} for day, n in by_day],
+        "bbox_check": {
+            "lat": [min(lats), max(lats)],
+            "lon": [min(lons), max(lons)],
+            "inside_study_box": (
+                min(lats) >= -2.99993 and max(lats) <= -0.01536
+                and min(lons) >= 112.00347 and max(lons) <= 114.99982),
+        },
+        "ranking": [{"id": m["id"], "title": m["title"],
+                     "probability": m["probability"]} for m in ranking],
+        "matches_frozen": same,
+        "signature": sig["id"],
+        "pattern_match": match,
+        "note": ("A reading of now, not a forecast of tomorrow: no "
+                 "forecasting model exists here, and none was invented."),
+    }
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out-dir", default=str(ROOT / "api/demo2_data"))
+    ap.add_argument("--live-pull", default=None,
+                    help="live FIRMS pull CSV (committed beside snapshots)")
     a = ap.parse_args(argv)
     out_dir = pathlib.Path(a.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -198,6 +345,13 @@ def main(argv=None) -> int:
         tmp = pathlib.Path(td)
         fire = _fire_snapshot(tmp)
         nepal = _nepal_snapshot(tmp)
+        if a.live_pull:
+            src = pathlib.Path(a.live_pull)
+            dst = out_dir / "live_pull.csv"
+            dst.write_bytes(src.read_bytes())
+            fire["live"] = _live_snapshot(dst)
+            dated = out_dir / f"live_pull_{fire['live']['as_of']}.csv"
+            dst.rename(dated)
     (out_dir / "fire.json").write_text(
         json.dumps(fire, indent=1, sort_keys=True) + "\n")
     (out_dir / "nepal.json").write_text(

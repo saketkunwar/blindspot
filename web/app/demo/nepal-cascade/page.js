@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import MapPane, { legendOf } from "../../../components/MapPane";
-import { getDemoNepal, getDemoNepalGeo } from "../../../lib/api";
+import { getDemoNepal, getDemoNepalGeo, getDemo2Nepal } from "../../../lib/api";
 
 const STEPS = [
   { k: "Detect", d: "Per-snapshot kernel pass over pre-cutoff damage: reach split, channel adjacency, tributary-cluster rule." },
@@ -13,12 +13,14 @@ const STEPS = [
 export default function NepalCascadeDemo() {
   const [brief, setBrief] = useState(null);
   const [geo, setGeo] = useState(null);
+  const [mem, setMem] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     Promise.all([getDemoNepal(), getDemoNepalGeo()])
       .then(([b, g]) => { setBrief(b); setGeo(g); })
       .catch((e) => setError(`API unreachable: ${e.message}`));
+    getDemo2Nepal().then((m) => setMem(m)).catch(() => {});
   }, []);
 
   if (error) return <main className="demo"><p className="meta">{error}</p></main>;
@@ -94,6 +96,17 @@ export default function NepalCascadeDemo() {
           </div>
         ))}
       </section>
+
+      {mem && (
+      <section>
+        <h2>Tested, not just computed</h2>
+        <p>A verdict this strong needs enemies: ground truth the brief never saw.</p>
+        <p className="lede">Time held out</p>
+        <p>After the freeze, {mem.data.validation.temporal.newly_destroyed} newly destroyed features from the quarantined window {mem.data.validation.temporal.gt_window} were checked against the frozen top story — along with the satellite barrier-lake log between the snapshots. Match: the answer was fixed before the ground truth opened.</p>
+        <p className="lede">Space: still open</p>
+        <p>{mem.data.validation.spatial.reason.charAt(0).toUpperCase() + mem.data.validation.spatial.reason.slice(1)} — {mem.data.validation.spatial.what_it_would_take}. Until that re-run exists, this half of the validation is openly pending, not quietly assumed.</p>
+      </section>
+      )}
 
       <section>
         <h2>Legend map</h2>

@@ -643,6 +643,79 @@
   "traces_read": 0
  },
  "hook": "One more closed window and memory speaks for the first time.",
+ "live": {
+  "as_of": "2026-10-30",
+  "bbox_check": {
+   "inside_study_box": true,
+   "lat": [
+    -2.97984,
+    -0.04935
+   ],
+   "lon": [
+    112.03209,
+    114.96002
+   ]
+  },
+  "days": [
+   {
+    "day": "2026-10-26",
+    "detections": 25
+   },
+   {
+    "day": "2026-10-27",
+    "detections": 12
+   },
+   {
+    "day": "2026-10-28",
+    "detections": 12
+   },
+   {
+    "day": "2026-10-29",
+    "detections": 476
+   },
+   {
+    "day": "2026-10-30",
+    "detections": 150
+   }
+  ],
+  "detections": 675,
+  "held_out": "the late-September restart, confirmed after the freeze",
+  "matches_frozen": true,
+  "note": "A reading of now, not a forecast of tomorrow: no forecasting model exists here, and none was invented.",
+  "partial_last_day": true,
+  "pattern_match": {
+   "episodes": 6,
+   "known": true,
+   "labelled": 4
+  },
+  "ranking": [
+   {
+    "id": "suppression_then_restart",
+    "probability": 0.8425,
+    "title": "Suppression wins in late September, then peat restarts"
+   },
+   {
+    "id": "continued_spread",
+    "probability": 0.114,
+    "title": "Fire keeps spreading into new cells"
+   },
+   {
+    "id": "fuel_burnout",
+    "probability": 0.0419,
+    "title": "Concentrated burn consumes its fuel and dies out"
+   },
+   {
+    "id": "sustained_suppression",
+    "probability": 0.0016,
+    "title": "Fires go out and stay out"
+   }
+  ],
+  "signature": "1032a1958cef4829",
+  "study_window": [
+   "2026-09-16",
+   "2026-09-20"
+  ]
+ },
  "memory_status": {
   "best_labelled": 4,
   "episodes": 48,
@@ -786,5 +859,22 @@
     "firms_wusa@2026-09-29"
    ]
   }
- ]
+ ],
+ "validation": {
+  "spatial": {
+   "kept": 3071,
+   "masked": "the eastern half of the map",
+   "meridian": 113.3751,
+   "probabilities_identical": true,
+   "ranking_identical": true,
+   "top": "suppression_then_restart",
+   "total": 6142
+  },
+  "temporal": {
+   "cutoff_day": "2026-09-20",
+   "frozen_top": "suppression_then_restart",
+   "held_out": "the late-September restart",
+   "match": true
+  }
+ }
 }

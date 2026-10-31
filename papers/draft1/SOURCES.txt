@@ -1,0 +1,57 @@
+# SOURCES.txt -- every load-bearing number in paper.tex traces to one of these.
+# Verified 2026-10-31 by re-reading the files (not from memory).
+# Format: number | file | how to see it
+
+fire ranking 0.8425/0.1140/0.0419/0.0016, top suppression_then_restart
+  | demo/fire_study/output/brief.json
+  | python -c "import json; print(json.load(open('demo/fire_study/output/brief.json'))['mechanisms'])"
+flood ranking top impoundment_then_burst 0.9426 (+0.0469/0.0082/0.0009/0.0009/0.0005)
+  | demo/nepal_cascade/output/brief.json | same lookup
+flood gt MATCH, rank 1, 754 newly destroyed, window (2026-09-04T03:56:20Z, 2026-09-09T03:54:39Z]
+  | demo/nepal_cascade/output/gt_check.json | read file
+Sep daily counts 28/475/1100/3693/846 = 6142; 30 cells; dates 09-16..09-20
+  | results/fire.json | sum cell counts per date (make_figs.py asserts ==6142)
+west-half spatial: 3071 of 6142 kept, identical ranking+probabilities
+  | api/demo2_data/fire.json | validation.spatial block
+fire temporal cutoff 2026-09-20, held-out late-Sep restart
+  | QUESTIONS.md ("Temporal check" section) + demo/fire_study/rules.json
+live pull 675 rows; daily 25/12/12/476/150 Oct 26-30
+  | api/demo2_data/live_pull_2026-10-30.csv
+  | count rows grouped by acq_date (make_figs.py asserts ==675)
+live pattern 6 episodes / 4 labelled; live ranking == frozen ranking
+  | api/demo2_data/fire.json | validation.live + live_reading blocks
+census 48 episodes / 26 labelled (all restart) / 22 unlabelable; 11 scenes; rule restart-noisefloor-v1
+  | results/memory_census.json | stats block + label counts
+22 patterns under v4 key; best 4 labelled vs bar 5
+  | api/demo2_data/fire.json (top_patterns) + PROGRESS_ERROR.md "v4 signature key"
+memory params: min_episodes_to_speak 5, smoothing_alpha 1.0, max_abs_shift 0.10
+  | config/preregistered_memory.yaml | memory: block
+null test seed 7, 200 trials, edges 0.02/0.05, observed -0.130/+0.270
+  | QUESTIONS.md ("Memory v3 values") + docs/MEMORY.md
+evolver: recurrence 3, independence gap 2 days, split 0.4/0.4 + final fifth, margin 0.05
+  | QUESTIONS.md ("Memory v3 values")
+memory_adjust math (rate/shift/clip/renormalize, frozen never mutated)
+  | engine/memory.py::memory_adjust (docstring + code)
+195 features (171 bridges/14 hydro/10 helipads); may_be band 172.8km
+  | PROGRESS_ERROR.md "Web leg" + "Viewport bug" entries
+8368 dateless vs 2 dated damage days (flood memory empty); spatial pending 3-way check
+  | PROGRESS_ERROR.md "Demo validation sections"
+FHZ 418 zones / informative 518 | PROGRESS_ERROR.md "P2 generalize-the-filling"
+setup: flood probe "no knowledge", cutoff Jan 4 2026; 3 rounds, 2 rejections kept
+  | PROGRESS_ERROR.md "Demo live call" + "Setup round"
+fire setup: 6 mechanisms, null PASS, FF5 0.95/FF4 0.9, top smoldering_restart
+  | QUESTIONS.md "Demo 2 setup round result" + PROGRESS_ERROR.md "P0 live-key follow-up"
+flood model top safe drainage vs ledger burst 0.94
+  | PROGRESS_ERROR.md "Demo live call"
+30+ cite-id errors fixed by one instruction line
+  | PROGRESS_ERROR.md "Setup round (three live rounds...)"
+gates G1-G24 ALL PASS; JUDGE OK 147 passed (live-page milestone)
+  | PROGRESS_ERROR.md "Live fire page" + scripts/validate_hardened.py::gate(..) calls
+manifest 992 files; cassettes 986 | PROGRESS_ERROR.md "P2 done" + "Demo cassette collision"
+composition table row-shift bug; vacuous-truth hole + doctored-file control
+  | PROGRESS_ERROR.md "Phase 1" + "Hardening pass/follow-up"
+store timestamp honest downgrade | PROGRESS_ERROR.md "P2 persistence & provenance"
+fire rules post-freeze amendment (weights locked, rationale filed)
+  | PROGRESS_ERROR.md "P5 discipline audit"
+rain news Oct 30 (outside frozen data; next pull verifies)
+  | operator report 2026-10-30; web/app/demo/fire-study/page.js outlook section

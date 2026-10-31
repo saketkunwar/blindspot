@@ -33,6 +33,25 @@ def test_demo2_fire_serves_real_census():
     assert d["hill_climb"]["candidates_filed"] == 0
 
 
+def test_demo2_fire_validation_blocks():
+    d = client.get("/api/demo2/fire-study").json()["data"]["validation"]
+    assert d["temporal"]["match"] is True
+    assert d["temporal"]["cutoff_day"] == "2026-09-20"
+    s = d["spatial"]
+    assert (s["kept"], s["total"]) == (3071, 6142)
+    assert s["top"] == "suppression_then_restart"
+    assert s["ranking_identical"] is True
+    assert s["probabilities_identical"] is True
+
+
+def test_demo2_nepal_validation_blocks():
+    d = client.get("/api/demo2/nepal-cascade").json()["data"]["validation"]
+    assert d["temporal"]["match"] is True
+    assert d["temporal"]["newly_destroyed"] == 754
+    assert d["temporal"]["frozen_top"] == "impoundment_then_burst"
+    assert d["spatial"]["status"] == "pending"
+
+
 def test_demo2_nepal_proves_identity_and_emptiness():
     body = client.get("/api/demo2/nepal-cascade").json()
     d = body["data"]
@@ -43,6 +62,19 @@ def test_demo2_nepal_proves_identity_and_emptiness():
     assert d["why_empty"]["dated_damage_days"] == 2
     assert d["why_empty"]["dateless_features"] == 8368
     assert len(d["unlock"]) == 3
+
+
+def test_demo2_live_reading():
+    d = client.get("/api/demo2/fire-study").json()["data"]["live"]
+    assert d["as_of"] == "2026-10-30" and d["detections"] == 675
+    assert d["study_window"] == ["2026-09-16", "2026-09-20"]
+    assert "restart" in d["held_out"]
+    assert sum(x["detections"] for x in d["days"]) == 675
+    assert d["bbox_check"]["inside_study_box"] is True
+    assert d["matches_frozen"] is True
+    assert d["ranking"][0]["id"] == "suppression_then_restart"
+    assert d["pattern_match"] == {"episodes": 6, "labelled": 4,
+                                  "known": True}
 
 
 def test_demo2_openapi_lists_both():
