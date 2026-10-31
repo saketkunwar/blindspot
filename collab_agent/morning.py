@@ -49,9 +49,11 @@ def _by_day(rows):
 
 
 def run(rows, prev, cfg, date=None):
-    """One morning from pull rows. Pure orchestration; returns the record
-    (without seq) that the caller appends. Raises on validator failure —
-    a snippet that fails its number check is never written."""
+    """One morning from pull rows. Pure orchestration; returns
+    (record, steps). The steps are the agent narrating its own work for
+    the demo page, including how and whether it used memory. Raises on
+    validator failure — a snippet that fails its number check is never
+    written."""
     by_day = _by_day(rows)
     if date is None:
         date = by_day[-1][0]
@@ -60,19 +62,57 @@ def run(rows, prev, cfg, date=None):
     trailing = counts[:-1]
     median = statistics.median(trailing[-cfg["triggers"]["trailing_days"]:]) \
         if trailing else 0
+    steps = [{"name": "pull", "title": "Pull the sky",
+              "detail": f"{len(rows)} detections across {len(by_day)} days "
+                        f"({by_day[0][0]} to {by_day[-1][0]})"}]
     res = _study.score(rows)
     top = res["ranking"][0]
     match = res["pattern_match"]
+    steps.append({
+        "name": "score", "title": "Study it with the frozen rules",
+        "detail": f"top story {top['id']} at "
+                  f"{round(top['probability'] * 100, 2)} support — "
+                  + ("identical to the frozen September ranking."
+                     if res["matches_frozen"] else
+                     "DIFFERS from the frozen ranking; reported, not adjusted."),
+        "matches_frozen": res["matches_frozen"]})
+    bar = cfg["triggers"]["speak_bar"]
+    if match["known"] and match["labelled"] >= bar:
+        mem_detail = (f"signature {res['signature'][:12]}: "
+                      f"{match['labelled']} labelled cases clear the bar "
+                      f"of {bar} — memory speaks this morning")
+    elif match["known"]:
+        mem_detail = (f"signature {res['signature'][:12]}: "
+                      f"{match['episodes']} past episodes, "
+                      f"{match['labelled']} labelled of {bar} needed — "
+                      "memory stays silent")
+    else:
+        mem_detail = (f"signature {res['signature'][:12]} matches no "
+                      "stored pattern — memory has nothing to say")
+    steps.append({"name": "memory", "title": "Ask the past",
+                  "detail": mem_detail,
+                  "episodes": match["episodes"],
+                  "labelled": match["labelled"],
+                  "speak_bar": bar,
+                  "speaks": bool(match["known"]
+                                 and match["labelled"] >= bar)})
     trigger, reason = _decide.evaluate(
         (date, today), trailing, match, prev, cfg)
+    steps.append({"name": "decide", "title": "Decide whether today is studied",
+                  "detail": (f"trigger: {trigger} — {reason}" if trigger
+                             else f"no trigger — {reason}"),
+                  "trigger": trigger})
     ctx = {"date": date, "count": today, "median": median,
            "top_id": top["id"], "top_prob": top["probability"],
-           "match": match, "speak_bar": cfg["triggers"]["speak_bar"]}
+           "match": match, "speak_bar": bar}
     snippet, block = _brief.render(trigger, ctx)
     missing = _brief.validate(snippet, block)
     if missing:
         raise RuntimeError(f"snippet numbers not in ledger block: {missing}")
-    return {
+    steps.append({"name": "snippet", "title": "Write the human lines",
+                  "detail": snippet + " Every number above was checked "
+                                      "against the ledger block first."})
+    return ({
         "date": date,
         "trigger": trigger,
         "reason": reason,
@@ -84,7 +124,7 @@ def run(rows, prev, cfg, date=None):
         "matches_frozen": res["matches_frozen"],
         "matched_pattern": bool(match["known"]),
         "detections": len(rows),
-    }
+    }, steps)
 
 
 def main(argv=None) -> int:
@@ -119,7 +159,7 @@ def main(argv=None) -> int:
     out = (pathlib.Path(args.out_dir) if args.out_dir
            else ROOT / "results" / "morning")
     records = _digest.load(out / "digest.json")
-    record = run(rows, _digest.last(records), cfg, date=args.date)
+    record, _ = run(rows, _digest.last(records), cfg, date=args.date)
     records = _digest.append(out / "digest.json", record)
     (out / f"pull_{record['date']}.json").write_text(
         json.dumps(rows, indent=1) + "\n")

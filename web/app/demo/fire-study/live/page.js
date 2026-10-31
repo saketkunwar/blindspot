@@ -1,17 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDemo2Fire } from "../../../../lib/api";
+import { getDemo2Fire, runMorning } from "../../../../lib/api";
 
 export default function FireLiveDemo() {
   const [brief, setBrief] = useState(null);
   const [error, setError] = useState("");
+  const [run, setRun] = useState(null);
+  const [running, setRunning] = useState(false);
+  const [runError, setRunError] = useState("");
 
   useEffect(() => {
     getDemo2Fire()
       .then((b) => setBrief(b))
       .catch((e) => setError(`API unreachable: ${e.message}`));
   }, []);
+
+  const startRun = () => {
+    setRunning(true);
+    setRunError("");
+    runMorning()
+      .then((r) => { setRun(r); setRunning(false); })
+      .catch((e) => { setRunError(`The agent could not run: ${e.message}`); setRunning(false); });
+  };
+
+  const today = new Date().toISOString().slice(0, 10);
 
   if (error) return <main className="demo"><p className="meta">{error}</p></main>;
   if (!brief) return <main className="demo"><p className="meta">Loading demo…</p></main>;
@@ -75,6 +88,7 @@ export default function FireLiveDemo() {
 
       <section>
         <h2>What today&apos;s evidence says</h2>
+        <p className="meta">Today is {today} (your browser&apos;s date). The reading below replays the {live.as_of} satellite pull — treat this page as a demo of the machinery, not a live operations feed: the numbers are real, but they are the {live.as_of} sky, not this morning&apos;s.</p>
         <p>
           Scored with the exact frozen September rules, today&apos;s {live.detections} detections say{" "}
           <strong>{live.ranking[0].title}</strong> at {(live.ranking[0].probability * 100).toFixed(1)} out
@@ -90,6 +104,50 @@ export default function FireLiveDemo() {
             <span className="bar-num">{(m.probability * 100).toFixed(1)}%</span>
           </div>
         ))}
+      </section>
+
+      <section>
+        <h2>Run the morning agent</h2>
+        <p>
+          This is the centerpiece: the collaborative agent doing its morning round in front of you —
+          pulling the sky, studying it with the frozen rules, asking the past, deciding, and writing
+          its lines. It runs the October 30 pull as a demo replay (no key, no network, the same code
+          path the operator&apos;s cron uses). Press the button and watch each step land below, including
+          exactly how — and whether — it used memory.
+        </p>
+        <p>
+          <button type="button" onClick={startRun} disabled={running}>
+            {running ? "The agent is working…" : run ? "Run the morning agent again" : "Run the morning agent"}
+          </button>
+        </p>
+        {runError && <p className="meta">{runError}</p>}
+        {running && !run && <p className="meta">Pulling, scoring, remembering, deciding…</p>}
+        {run && (
+          <>
+            <p className="meta">Replay of {run.as_of} · trigger: {run.trigger || "quiet"} · frozen ranking {run.matches_frozen ? "reproduced" : "DIFFERS — reported, not adjusted"}</p>
+            <ol className="steps">
+              {run.steps.map((s, i) => (
+                <li key={s.name}>
+                  <p><strong>Step {i + 1} — {s.title}.</strong></p>
+                  <p>{s.detail}</p>
+                  {s.name === "memory" && (
+                    <p className="meta">
+                      {s.speaks
+                        ? `Memory spoke: ${s.labelled} labelled cases clear the bar of ${s.speak_bar}.`
+                        : `Memory silent: ${s.labelled} of ${s.speak_bar} labelled cases needed. Nothing rounded up.`}
+                    </p>
+                  )}
+                  {s.name === "decide" && s.trigger && (
+                    <p className="meta">The preregistered rule that fired, with its reason — thresholds are versioned, never quietly retuned.</p>
+                  )}
+                </li>
+              ))}
+            </ol>
+            <p className="lede">The morning lines</p>
+            <p><strong>{run.snippet}</strong></p>
+            <p className="meta">{run.reason}</p>
+          </>
+        )}
       </section>
 
       <section>

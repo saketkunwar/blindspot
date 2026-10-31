@@ -126,11 +126,12 @@ def g3():
                 continue
             if "node_modules" in p.parts or ".next" in p.parts:
                 continue
-            if base == "web" and "demo" in p.parts:
-                continue  # demo pages are user-facing study prose (the study
-                # name itself is content there), not builder code that could
-                # embed scenario answers; engine/pipelines/agents/api and the
-                # rest of web/ stay fully scanned.
+            if base == "web" and ("demo" in p.parts or "demos" in p.parts):
+                continue  # demo pages (and the demos index) are user-facing
+                # study prose (the study name itself is content there), not
+                # builder code that could embed scenario answers;
+                # engine/pipelines/agents/api and the rest of web/ stay
+                # fully scanned.
             if base == "api" and "demo2_data" in p.parts:
                 continue  # committed Demo-2 snapshots are presentation data
                 # (episode cutoffs/windows are the content), generated from

@@ -66,10 +66,12 @@ app = FastAPI(title="BlindSpot")
 # The web console (another origin: different port) reads every number from
 # this API in the browser, so cross-origin reads are allowed. Writes do not
 # exist (read-only API); live recompute stays behind the operator token.
+# POST is allowed for one side-effect-free replay endpoint
+# (/api/demo2/morning-run), which writes nothing persistent.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["GET", "OPTIONS"],
+    allow_methods=["GET", "OPTIONS", "POST"],
     allow_headers=["Authorization"],
 )
 
@@ -514,6 +516,43 @@ def demo2_nepal_cascade(request: Request) -> JSONResponse:
                          "data": _read_json(_root() / "api" / "demo2_data" / "nepal.json",
                                             "demo2 snapshots not generated yet "
                                             "(run: python scripts/make_demo2.py)")})
+
+
+@app.post("/api/demo2/morning-run")
+def demo2_morning_run(request: Request, source: str = "fixture") -> JSONResponse:
+    """Run the morning agent as a demo and narrate its steps. Default
+    replays the committed pull (no key, no network, deterministic); with
+    ?source=live it pulls fresh data when a key is configured, else 400.
+    Scratch outputs only — never the operator digest."""
+    import csv as _csv
+    _ops_log("demo2.morning")
+    from collab_agent import morning as _morning
+    import yaml as _yaml
+    cfg = _yaml.safe_load(
+        (_root() / "collab_agent" / "config.yaml").read_text())
+    if source == "live":
+        from collab_agent import pull as _pull
+        try:
+            rows = _pull.fetch(cfg["study_box"], cfg["firms"]["day_range"],
+                               None, cfg)
+        except RuntimeError as exc:
+            raise HTTPException(status_code=400, detail=str(exc))
+        demo = False
+    else:
+        pull_path = (_root() / "api" / "demo2_data" /
+                     "live_pull_2026-10-30.csv")
+        with open(pull_path, newline="") as fh:
+            rows = list(_csv.DictReader(fh))
+        demo = True
+    record, steps = _morning.run(rows, None, cfg)
+    return JSONResponse({"mode": "demo" if demo else "live",
+                         "demo": demo,
+                         "as_of": record["date"],
+                         "trigger": record["trigger"],
+                         "reason": record["reason"],
+                         "snippet": record["snippet"],
+                         "steps": steps,
+                         "matches_frozen": record["matches_frozen"]})
 
 
 @app.get("/api/demo2/nepal-chain")

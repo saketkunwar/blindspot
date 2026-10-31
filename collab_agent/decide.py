@@ -33,8 +33,9 @@ def evaluate(today, trailing, match, prev, cfg):
     if med > 0 and count >= t["spike_multiple"] * med:
         ratio = count / med
         return ("spike",
-                f"{count} detections vs trailing median {med:g} "
-                f"({ratio:.1f}x the bar of {t['spike_multiple']}x)")
+                f"{count} detections today against a trailing median of "
+                f"{med:g} — roughly {ratio:.0f} times the normal level, "
+                f"past the {t['spike_multiple']:g}x bar that earns a study")
     if (prev is not None and prev.get("matched_pattern", False)
             and count < t["quiet_max"]):
         return ("quiet_after_match",

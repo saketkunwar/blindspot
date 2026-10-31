@@ -211,6 +211,45 @@
     "summary": "Demo2 Fire Study"
    }
   },
+  "/api/demo2/morning-run": {
+   "post": {
+    "description": "Run the morning agent as a demo and narrate its steps. Default\nreplays the committed pull (no key, no network, deterministic); with\n?source=live it pulls fresh data when a key is configured, else 400.\nScratch outputs only \u2014 never the operator digest.",
+    "operationId": "demo2_morning_run_api_demo2_morning_run_post",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "source",
+      "required": false,
+      "schema": {
+       "default": "fixture",
+       "title": "Source",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Demo2 Morning Run"
+   }
+  },
   "/api/demo2/nepal-cascade": {
    "get": {
     "description": "Demo-2 memory showcase for the flood study: frozen verdict, the\nbyte-identity proof, and why this domain holds no episodes yet.",

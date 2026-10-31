@@ -827,3 +827,20 @@ took the recommended path) prevented building against phantom inputs.
   in ledger, data/ clean, frozen briefs identical) green; openapi
   re-exported for the new endpoint. Full gate ALL PASS (G1-G25); web
   build green; judge JUDGE OK, 153 passed (147 + 6 new agent tests).
+
+## Demos index + live agent-run (2026-10-31)
+- `[plain]` New `/demos` index (all 6 demo routes, one line each). Live
+  fire page: "What today's evidence says" now dates today (browser date)
+  and labels the page a demo replay of the Oct 30 pull; new "Run the
+  morning agent" section posts to `/api/demo2/morning-run` (fixture
+  replay, scratch only) and renders all 5 steps with the memory step
+  spelled out (episodes/labelled/bar, silent-vs-speaks) plus the human
+  lines. POST required widening CORS (GET/OPTIONS -> +POST), pinned by
+  a preflight test; the endpoint writes nothing persistent.
+- `[hardened]` G3 tripped on the study name in the new index — same class
+  as the demo-page exclusion, extended to `demos/` with the rationale in
+  the comment. New serving tests (chain verdict, morning-run steps).
+  Full gate ALL PASS (G1-G25); web build green; judge JUDGE OK,
+  155 passed (153 + 2 new serving tests).
+- `[demo2]` Spike reason rewritten in human words ("roughly 8 times the
+  normal level, past the 2x bar that earns a study"); tests + gate green.

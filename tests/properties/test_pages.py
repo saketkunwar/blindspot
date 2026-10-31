@@ -53,3 +53,7 @@ def test_browser_cross_origin_reads_allowed():
                          headers={"Origin": "http://localhost:3000",
                                   "Access-Control-Request-Method": "GET"})
     assert pre.status_code == 200
+    pre_post = client.options("/api/demo2/morning-run",
+                              headers={"Origin": "http://localhost:3000",
+                                       "Access-Control-Request-Method": "POST"})
+    assert pre_post.status_code == 200

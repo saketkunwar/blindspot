@@ -81,3 +81,27 @@ def test_demo2_openapi_lists_both():
     spec = json.loads((ROOT / "api/openapi.json").read_text())
     assert "/api/demo2/fire-study" in spec["paths"]
     assert "/api/demo2/nepal-cascade" in spec["paths"]
+
+
+def test_demo2_chain_forces_verdict():
+    r = client.get("/api/demo2/nepal-chain")
+    assert r.status_code == 200
+    d = r.json()["data"]
+    assert d["subject"] == "bridges:0" and len(d["hops"]) == 4
+    assert d["composition"]["allowed"] == ["NTPP"]
+    assert d["composition"]["match"] is True
+    assert "skipped" in d["temporal"]
+
+
+def test_demo2_morning_run_narrates_steps():
+    r = client.post("/api/demo2/morning-run")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["demo"] is True and body["as_of"] == "2026-10-30"
+    names = [s["name"] for s in body["steps"]]
+    assert names == ["pull", "score", "memory", "decide", "snippet"]
+    mem = body["steps"][2]
+    assert mem["labelled"] == 4 and mem["speak_bar"] == 5
+    assert mem["speaks"] is False
+    assert body["trigger"] == "spike"
+    assert body["snippet"].startswith("2026-10-30: 150 detections")
