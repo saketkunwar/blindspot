@@ -22,14 +22,14 @@ export default function ChainDemo() {
       .catch((e) => setError(`API unreachable: ${e.message}`));
   }, []);
 
-  if (error) return <main className="demo"><p className="meta">{error}</p></main>;
-  if (!snap) return <main className="demo"><p className="meta">Loading demo…</p></main>;
+  if (error) return <main className="demo demo-flood"><p className="meta">{error}</p></main>;
+  if (!snap) return <main className="demo demo-flood"><p className="meta">Loading demo…</p></main>;
 
   const d = snap.data;
   const c = d.composition;
 
   return (
-    <main className="demo">
+    <main className="demo demo-flood">
       <header className="hero">
         <p className="eyebrow">BlindSpot demo · the algebra, hop by hop <span className="mode">{snap.mode}</span></p>
         <h1>One bridge, four hops, one forced answer</h1>

@@ -4,22 +4,23 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 
 const STYLES = [
+  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
   "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
   "https://demotiles.maplibre.org/style.json",
 ];
 
-// Flat palette per feature kind (kinds come from the API payloads).
+// Flat palette per feature kind, lifted for dark basemaps.
 const KIND_COLORS = {
-  "target reach": "#a33327",
-  "observed flood outline": "#0b5cad",
-  "pre-cutoff damage": "#b26a00",
-  may_be: "#0b5cad",
-  must_be: "#5c5c5c",
-  "fire cell": "#c2410c",
-  selected: "#a33327",
-  "flood-extent": "#444444",
+  "target reach": "#d65445",
+  "observed flood outline": "#5aa9e6",
+  "pre-cutoff damage": "#e09a2b",
+  may_be: "#5aa9e6",
+  must_be: "#9a9a9a",
+  "fire cell": "#e05a1a",
+  selected: "#d65445",
+  "flood-extent": "#999999",
 };
-const FALLBACK_COLOR = "#666666";
+const FALLBACK_COLOR = "#888888";
 
 const colorFor = (f) =>
   KIND_COLORS[f?.properties?.kind ?? f?.properties?.name] ?? FALLBACK_COLOR;

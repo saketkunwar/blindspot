@@ -23,8 +23,8 @@ export default function FireStudyDemo() {
     getDemo2Fire().then((m) => setMem(m)).catch(() => {});
   }, []);
 
-  if (error) return <main className="demo"><p className="meta">{error}</p></main>;
-  if (!brief) return <main className="demo"><p className="meta">Loading demo…</p></main>;
+  if (error) return <main className="demo demo-fire"><p className="meta">{error}</p></main>;
+  if (!brief) return <main className="demo demo-fire"><p className="meta">Loading demo…</p></main>;
 
   const d = brief.data;
   const facts = Object.entries(d.ledger.facts);
@@ -38,7 +38,7 @@ export default function FireStudyDemo() {
   ];
 
   return (
-    <main className="demo">
+    <main className="demo demo-fire">
       <header className="hero">
         <p className="eyebrow">BlindSpot demo · pre-cutoff autoinsight <span className="mode">{brief.mode}</span></p>
         <h1>Peatland fires: what the pre-cutoff evidence supports</h1>

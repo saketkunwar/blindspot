@@ -13,14 +13,14 @@ export default function NepalMemoryDemo() {
       .catch((e) => setError(`API unreachable: ${e.message}`));
   }, []);
 
-  if (error) return <main className="demo"><p className="meta">{error}</p></main>;
-  if (!brief) return <main className="demo"><p className="meta">Loading demo…</p></main>;
+  if (error) return <main className="demo demo-flood"><p className="meta">{error}</p></main>;
+  if (!brief) return <main className="demo demo-flood"><p className="meta">Loading demo…</p></main>;
 
   const d = brief.data;
   const id = d.identity;
 
   return (
-    <main className="demo">
+    <main className="demo demo-flood">
       <header className="hero">
         <p className="eyebrow">BlindSpot demo · the system&apos;s memory <span className="mode">{brief.mode}</span></p>
         <h1>Why this desk is empty — and why that is the point</h1>

@@ -26,12 +26,12 @@ export default function FireLiveDemo() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  if (error) return <main className="demo"><p className="meta">{error}</p></main>;
-  if (!brief) return <main className="demo"><p className="meta">Loading demo…</p></main>;
+  if (error) return <main className="demo demo-fire"><p className="meta">{error}</p></main>;
+  if (!brief) return <main className="demo demo-fire"><p className="meta">Loading demo…</p></main>;
 
   const live = brief.data.live;
   if (!live) return (
-    <main className="demo">
+    <main className="demo demo-fire">
       <header className="hero">
         <p className="eyebrow">BlindSpot demo · live fire watch</p>
         <h1>No live reading available</h1>
@@ -49,7 +49,7 @@ export default function FireLiveDemo() {
   const pm = live.pattern_match;
 
   return (
-    <main className="demo">
+    <main className="demo demo-fire">
       <header className="hero">
         <p className="eyebrow">BlindSpot demo · live fire watch <span className="mode">live data as of {live.as_of}</span></p>
         <h1>Kalimantan is burning right now</h1>
@@ -60,6 +60,18 @@ export default function FireLiveDemo() {
           reading of now, not a forecast of tomorrow: no forecasting model exists here.
         </p>
         <p className="meta">Source: NOAA-20 VIIRS, same sensor as the September study · every point verified inside the study box · last day still partial</p>
+        <div className="stats">
+          {[
+            { n: live.detections.toLocaleString(), l: "hotspots, five days" },
+            { n: (live.ranking[0].probability * 100).toFixed(1), l: "top story, out of 100" },
+            { n: `${pm.known ? pm.labelled : 0} of 5`, l: "past cases behind this shape" },
+          ].map((s) => (
+            <div className="stat" key={s.l}>
+              <p className="stat-num">{s.n}</p>
+              <p className="meta">{s.l}</p>
+            </div>
+          ))}
+        </div>
       </header>
 
       <section>

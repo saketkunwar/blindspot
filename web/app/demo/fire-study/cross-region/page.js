@@ -13,14 +13,14 @@ export default function CrossRegionDemo() {
       .catch((e) => setError(`API unreachable: ${e.message}`));
   }, []);
 
-  if (error) return <main className="demo"><p className="meta">{error}</p></main>;
-  if (!snap) return <main className="demo"><p className="meta">Loading demo…</p></main>;
+  if (error) return <main className="demo demo-fire"><p className="meta">{error}</p></main>;
+  if (!snap) return <main className="demo demo-fire"><p className="meta">Loading demo…</p></main>;
 
   const d = snap.data;
   const lead = d.top_patterns[0];
 
   return (
-    <main className="demo">
+    <main className="demo demo-fire">
       <header className="hero">
         <p className="eyebrow">BlindSpot demo · does fire rhyme across continents <span className="mode">{snap.mode}</span></p>
         <h1>One key, eleven firegrounds, {d.patterns} shapes</h1>
@@ -37,6 +37,19 @@ export default function CrossRegionDemo() {
           outcome rule and one frozen pattern key. {d.episodes} past episodes resulted,{" "}
           {d.labelled} with known outcomes, grouping into {d.patterns} distinct shapes.
         </p>
+        <div className="stats">
+          {[
+            { n: String(d.episodes), l: "past episodes" },
+            { n: String(d.labelled), l: "with known outcomes" },
+            { n: String(d.patterns), l: "distinct shapes" },
+            { n: String(d.cross_scene), l: "spanning regions" },
+          ].map((s) => (
+            <div className="stat" key={s.l}>
+              <p className="stat-num">{s.n}</p>
+              <p className="meta">{s.l}</p>
+            </div>
+          ))}
+        </div>
       </header>
 
       <section>

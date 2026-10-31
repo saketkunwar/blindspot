@@ -18,8 +18,8 @@ export default function FireMemoryDemo() {
       .catch((e) => setError(`API unreachable: ${e.message}`));
   }, []);
 
-  if (error) return <main className="demo"><p className="meta">{error}</p></main>;
-  if (!brief || !asOf) return <main className="demo"><p className="meta">Loading demo…</p></main>;
+  if (error) return <main className="demo demo-fire"><p className="meta">{error}</p></main>;
+  if (!brief || !asOf) return <main className="demo demo-fire"><p className="meta">Loading demo…</p></main>;
 
   const d = brief.data;
   const ms = d.memory_status;
@@ -31,7 +31,7 @@ export default function FireMemoryDemo() {
   const edgeMax = Math.max(Math.abs(nt.null_edge), Math.abs(nt.signal_edge));
 
   return (
-    <main className="demo">
+    <main className="demo demo-fire">
       <header className="hero">
         <p className="eyebrow">BlindSpot demo · the system&apos;s memory <span className="mode">{brief.mode}</span></p>
         <h1>What the system remembers — and what it refuses to claim</h1>

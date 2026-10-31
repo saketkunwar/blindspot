@@ -40,7 +40,7 @@ const DEMOS = [
 
 export default function DemosIndex() {
   return (
-    <main className="demo">
+    <main className="demo demo-index">
       <header className="hero">
         <p className="eyebrow">BlindSpot demos</p>
         <h1>Every demo, one page</h1>
