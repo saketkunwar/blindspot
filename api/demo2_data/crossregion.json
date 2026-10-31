@@ -1,0 +1,142 @@
+{
+ "episodes": 48,
+ "labelled": 26,
+ "patterns": 22,
+ "cross_scene": 9,
+ "scenes": [
+  {
+   "scene": "amazon_sep2026",
+   "episodes": 3,
+   "labelled": 1
+  },
+  {
+   "scene": "attica",
+   "episodes": 3,
+   "labelled": 1
+  },
+  {
+   "scene": "chaco_sep2026",
+   "episodes": 3,
+   "labelled": 1
+  },
+  {
+   "scene": "firms_cerrado_15d",
+   "episodes": 9,
+   "labelled": 7
+  },
+  {
+   "scene": "firms_iberia_15d",
+   "episodes": 9,
+   "labelled": 7
+  },
+  {
+   "scene": "firms_mozambique_10d",
+   "episodes": 4,
+   "labelled": 2
+  },
+  {
+   "scene": "firms_naustralia",
+   "episodes": 3,
+   "labelled": 1
+  },
+  {
+   "scene": "firms_texas_10d",
+   "episodes": 4,
+   "labelled": 2
+  },
+  {
+   "scene": "firms_wusa",
+   "episodes": 3,
+   "labelled": 1
+  },
+  {
+   "scene": "kalimantan_c",
+   "episodes": 4,
+   "labelled": 2
+  },
+  {
+   "scene": "zambia_sep2026",
+   "episodes": 3,
+   "labelled": 1
+  }
+ ],
+ "top_patterns": [
+  {
+   "labelled": 4,
+   "episodes": 6,
+   "scenes": {
+    "firms_iberia_15d": 5,
+    "firms_texas_10d": 1
+   }
+  },
+  {
+   "labelled": 4,
+   "episodes": 4,
+   "scenes": {
+    "firms_cerrado_15d": 4
+   }
+  },
+  {
+   "labelled": 3,
+   "episodes": 3,
+   "scenes": {
+    "amazon_sep2026": 1,
+    "firms_wusa": 1,
+    "kalimantan_c": 1
+   }
+  },
+  {
+   "labelled": 2,
+   "episodes": 5,
+   "scenes": {
+    "firms_iberia_15d": 1,
+    "firms_texas_10d": 2,
+    "firms_wusa": 2
+   }
+  },
+  {
+   "labelled": 2,
+   "episodes": 4,
+   "scenes": {
+    "amazon_sep2026": 1,
+    "chaco_sep2026": 1,
+    "firms_cerrado_15d": 1,
+    "firms_mozambique_10d": 1
+   }
+  },
+  {
+   "labelled": 2,
+   "episodes": 2,
+   "scenes": {
+    "chaco_sep2026": 1,
+    "firms_cerrado_15d": 1
+   }
+  },
+  {
+   "labelled": 2,
+   "episodes": 2,
+   "scenes": {
+    "firms_iberia_15d": 1,
+    "firms_texas_10d": 1
+   }
+  },
+  {
+   "labelled": 1,
+   "episodes": 4,
+   "scenes": {
+    "firms_naustralia": 2,
+    "kalimantan_c": 2
+   }
+  }
+ ],
+ "speak_bar": 5,
+ "pending_pulls": {
+  "iberia_ext": "pending",
+  "texas_ext": "pending",
+  "quiet": "pending"
+ },
+ "provenance": {
+  "results/memory_episodes.sqlite3": "f1a6cdd4ec67ee9cd3efe7dbd33e009bf46c471b02210aaf51ac4a9e602c7db5",
+  "config/preregistered_memory.yaml": "2dac04ae31b25bd3ed1cf2b5c28b5d6c5e5ed90d684d812d01d39e6fc1347720"
+ }
+}

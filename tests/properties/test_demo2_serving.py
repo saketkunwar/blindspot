@@ -93,6 +93,32 @@ def test_demo2_chain_forces_verdict():
     assert "skipped" in d["temporal"]
 
 
+def test_demo2_cross_region_standings():
+    r = client.get("/api/demo2/cross-region")
+    assert r.status_code == 200
+    d = r.json()["data"]
+    assert d["episodes"] >= 48 and d["patterns"] >= 22
+    assert d["cross_scene"] >= 9
+    lead = d["top_patterns"][0]
+    assert lead["labelled"] >= 4
+    assert "iberia_ext" in d["pending_pulls"]
+    assert sum(s["episodes"] for s in d["scenes"]) == d["episodes"]
+
+
+def test_demo2_cross_region_regenerates_identically(tmp_path):
+    import hashlib
+    import subprocess
+    import sys
+    before = hashlib.sha256(
+        (ROOT / "api/demo2_data/crossregion.json").read_bytes()).hexdigest()
+    r = subprocess.run([sys.executable, "scripts/make_crossregion.py"],
+                       cwd=ROOT, capture_output=True, text=True, timeout=300)
+    assert r.returncode == 0
+    after = hashlib.sha256(
+        (ROOT / "api/demo2_data/crossregion.json").read_bytes()).hexdigest()
+    assert before == after
+
+
 def test_demo2_morning_run_narrates_steps():
     r = client.post("/api/demo2/morning-run")
     assert r.status_code == 200

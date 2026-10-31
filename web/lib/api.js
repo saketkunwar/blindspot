@@ -17,6 +17,7 @@ export const getDemoFireGeo = () => get(`/api/demo/fire-study/geo`);
 export const getDemo2Fire = () => get(`/api/demo2/fire-study`);
 export const getDemo2Nepal = () => get(`/api/demo2/nepal-cascade`);
 export const getDemo2Chain = () => get(`/api/demo2/nepal-chain`);
+export const getDemo2CrossRegion = () => get(`/api/demo2/cross-region`);
 export const runMorning = (source = "fixture") =>
   fetch(`${API}/api/demo2/morning-run?source=${source}`, { method: "POST" }).then(async (r) => {
     if (!r.ok) throw new Error(`run failed: ${r.status}`);

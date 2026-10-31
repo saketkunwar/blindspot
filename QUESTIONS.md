@@ -266,3 +266,16 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   outcome window closes — never the same morning.
 - Changing any threshold later is a versioned config amendment with the
   reason recorded here, never a quiet retune.
+
+## Cross-region diagnosis (2026-10-31, before any new download)
+- Recomputed from `results/memory_episodes.sqlite3` under the v4 key: 22
+  patterns, 13 single-scene, 9 cross-scene. Leader (4 labelled / 6 eps):
+  5x Iberia + 1x Texas. Runner-up (4/4): Cerrado only. Third (3/3):
+  Amazon + W.USA + Kalimantan — three continents, one shape.
+- Download list this evidence supports: extend Iberia and Texas windows
+  (the leader needs one more labelled case), plus one quiet window for
+  a matched box (the missing arm). No new regions: different fuels add
+  patterns of one, and the key is strict on purpose.
+- Success reads: 5th label (memory speaks, before/after brief as demo),
+  pattern break (regionality finding, same weight), first quiet label
+  (missing arm exercised). All read as-is; rule and key stay frozen.

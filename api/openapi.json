@@ -194,6 +194,23 @@
     "summary": "Demo Nepal Cascade Geo"
    }
   },
+  "/api/demo2/cross-region": {
+   "get": {
+    "description": "Cross-region study showcase: per-pattern scene breakdown recomputed\nfrom the memory store, plus the status of the three pending pulls.\nBuilt by `scripts/make_crossregion.py`.",
+    "operationId": "demo2_cross_region_api_demo2_cross_region_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Demo2 Cross Region"
+   }
+  },
   "/api/demo2/fire-study": {
    "get": {
     "description": "Demo-2 memory showcase for the fire study: frozen verdict, episode\ncensus, pattern table, null-test arms, and the hill-climb report.\nCommitted snapshot built by `scripts/make_demo2.py`; 404 names the\nregeneration command instead of failing silently.",

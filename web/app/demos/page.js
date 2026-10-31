@@ -31,6 +31,11 @@ const DEMOS = [
     title: "Fire memory — 48 past cases, one short of speaking",
     body: "Rolling-origin backtests across 11 regions, the null test that keeps memory honest, the as-of slider, and the empty evolution desk. Best pattern stands at 4 labelled of the 5 the bar requires.",
   },
+  {
+    href: "/demo/fire-study/cross-region",
+    title: "Cross-region study — does fire rhyme across continents",
+    body: "Eleven firegrounds, one frozen key: which patterns repeat across regions and which stay local, the leader one labelled case from speaking, and the three pulls that decide it.",
+  },
 ];
 
 export default function DemosIndex() {

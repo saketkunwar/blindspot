@@ -842,6 +842,13 @@ took the recommended path) prevented building against phantom inputs.
   the comment. New serving tests (chain verdict, morning-run steps).
   Full gate ALL PASS (G1-G25); web build green; judge JUDGE OK,
   155 passed (153 + 2 new serving tests).
+- `[demo2]` Cross-region page `/demo/fire-study/cross-region`: snapshot
+  recomputed from the memory store (48 eps, 22 patterns, 9 cross-scene,
+  leader 4/5), background context, standings, the three pending pulls
+  with honest status, backfill routine + tests in the agent. Gate ALL
+  PASS; build green; judge JUDGE OK, 158 passed.
+- `[demo2]` Snapshot determinism pinned (re-run → identical sha, tested);
+  gate ALL PASS; judge JUDGE OK, 159 passed. Awaiting the three pulls.
 - `[demo2]` Headline claim planted everywhere it was missing ("reasons
   about what was not seen — days lost to cloud, ground between clear
   views — in space and time together"): both demo heroes, demos index,

@@ -555,6 +555,18 @@ def demo2_morning_run(request: Request, source: str = "fixture") -> JSONResponse
                          "matches_frozen": record["matches_frozen"]})
 
 
+@app.get("/api/demo2/cross-region")
+def demo2_cross_region(request: Request) -> JSONResponse:
+    """Cross-region study showcase: per-pattern scene breakdown recomputed
+    from the memory store, plus the status of the three pending pulls.
+    Built by `scripts/make_crossregion.py`."""
+    _ops_log("demo2.crossregion")
+    return JSONResponse({"mode": "cached",
+                         "data": _read_json(_root() / "api" / "demo2_data" / "crossregion.json",
+                                            "cross-region snapshot not generated yet "
+                                            "(run: python scripts/make_crossregion.py)")})
+
+
 @app.get("/api/demo2/nepal-chain")
 def demo2_nepal_chain(request: Request) -> JSONResponse:
     """Multi-hop algebra showcase: one honest flood chain (bridge, extent,

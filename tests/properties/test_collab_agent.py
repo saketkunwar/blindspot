@@ -1,10 +1,14 @@
 """Durable tests for the morning-brief agent (collab_agent/).
 
 Offline only: the October 30 committed pull is the fixture (no key, no
-network). Tree writes are forbidden here — every run targets tmp_path.
+network). Tree writes are forbidden here — every run targets tmp_path,
+except the backfill rebuild test, which curates one scene file under
+data/fire_kalimantan/ with --no-manifest-check, removes it in a finally
+block, and asserts data/MANIFEST.json is byte-identical throughout.
 """
 import csv
 import json
+import pathlib
 
 import yaml
 
@@ -116,3 +120,57 @@ def test_live_without_key_skips_cleanly(tmp_path, monkeypatch):
                         "--no-snapshot"])
     assert rc == 0
     assert not (tmp_path / "o" / "digest.json").exists()
+
+
+def _texas_slice_csv(path, n=40):
+    import json as _json
+    rows = _json.load(open("data/fire_kalimantan/firms_texas_10d.json"))[:n]
+    with open(path, "w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=["acq_date", "acq_time",
+                                           "latitude", "longitude"])
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: r[k] for k in
+                        ("acq_date", "acq_time", "latitude", "longitude")})
+
+
+def test_backfill_rebuilds_tmp_census(tmp_path):
+    import hashlib as _hl
+    import json as _json
+    from collab_agent import backfill as _backfill
+    manifest = pathlib.Path("data/MANIFEST.json").read_bytes()
+    pull = tmp_path / "slice.csv"
+    _texas_slice_csv(pull)
+    scene = pathlib.Path("data/fire_kalimantan/test_slice_tmp.json")
+    try:
+        rc = _backfill.main(["--pull", str(pull), "--tag", "test_slice_tmp",
+                             "--source-url", "test-fixture",
+                             "--db", str(tmp_path / "t.sqlite3"),
+                             "--census-out", str(tmp_path / "census.json"),
+                             "--digest", str(tmp_path / "digest.json"),
+                             "--no-manifest-check"])
+        assert rc == 0
+        census = _json.loads((tmp_path / "census.json").read_text())
+        assert census["stats"]["episodes"] > 0
+        recs = _json.loads((tmp_path / "digest.json").read_text())
+        assert recs[-1]["kind"] == "backfill"
+        assert recs[-1]["tag"] == "test_slice_tmp"
+    finally:
+        if scene.exists():
+            scene.unlink()
+    assert pathlib.Path("data/MANIFEST.json").read_bytes() == manifest
+
+
+def test_backfill_refuses_key_and_overwrite(tmp_path):
+    from collab_agent import backfill as _backfill
+    pull = tmp_path / "slice.csv"
+    _texas_slice_csv(pull)
+    assert _backfill.main(["--pull", str(pull), "--tag", "x",
+                           "--source-url",
+                           "https://x/?MAP_KEY=secret"]) == 2
+    assert _backfill.main(["--pull", str(pull), "--tag", "firms_texas_10d",
+                           "--source-url", "test-fixture",
+                           "--db", str(tmp_path / "t.sqlite3"),
+                           "--census-out", str(tmp_path / "c.json"),
+                           "--digest", str(tmp_path / "d.json"),
+                           "--no-manifest-check"]) != 0

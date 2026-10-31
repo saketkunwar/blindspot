@@ -82,3 +82,7 @@ novel-quiet test behaviour (8 synthetic detections open a study)
   | tests/properties/test_collab_agent.py + PROGRESS_ERROR.md chain+agent entry
 FIRMS area-API shape (csv/KEY/SOURCE/box/range/date, NOAA20, 1..5)
   | https://firms.modaps.eosdis.nasa.gov/api/area/ (fetched 2026-10-31)
+cross-region counts (48 eps, 22 patterns, 9 cross-scene, leader 4/5,
+  Iberia+Texas; trio Amazon/WUSA/Kalimantan at 3)
+  | scripts/make_crossregion.py over results/memory_episodes.sqlite3
+  (recomputed 2026-10-31; snapshot api/demo2_data/crossregion.json)
