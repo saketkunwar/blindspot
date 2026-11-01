@@ -461,76 +461,24 @@ highest (run 0.95, clumping 0.9).} \\
 \section{Role labels: the quiet foundation, and why it holds}
 \label{sec:roles}
 
-There is a namesake in this project from a field it has nothing to do with,
-and the relation is worth stating exactly, because it is not identity.
-Kordjamshidi, van Otterlo and Moens defined \emph{spatial} role labelling as
-the task of finding and classifying the spatial arguments of a spatial
-expression in a sentence: the \textsc{trajector} whose location matters
-(``the book''), the \textsc{landmark} it is located against (``the table''),
-and the \textsc{spatial indicator} relating them (``on''), typed as region,
-direction, or distance and mapped onto a formal backbone --- for regions, the
-RCC-8 calculus~\cite{kordjamshidi2010}. Their direction runs from words to
-space: tag the text so a machine can reason about the scene.
-
-BlindSpot runs the same shape in the opposite direction: from space to
-verdict. Every reach in the flood study wears exactly one tag --- upstream,
-downstream, or target --- assigned by a single spatial pass: within reach of
-the named tributary, else above or below one line drawn at the extent's own
-middle. Every fact the ledger computes reads those tags through the closed
-\texttt{ref\_filter} machinery and never touches a coordinate afterward. The
-fire study has its own version: each grid cell is hot or it is not, by a
-detection floor, and the clumping fact that leads the frozen ranking reads only
-that verdict. In both studies a dumb, auditable labelling pass decides what the
-scoring layer is allowed to reason about. Read their sentence diagrams as our
-ledger with the nouns swapped: damage features for trajectors, the surveyed
-tributary and extent for landmarks, the split line and proximity thresholds
-for indicators.
-
-That arrangement is powerful for the same reason it is dangerous. It is
-powerful because it compresses the world's mess into a vocabulary small enough
-to audit: three reach codes, two cell states, each one checkable by a human
-with a map. It is dangerous because a mislabelled tag poisons every fact built
-on it in the same direction at once, and not one of the twenty-five hardened
-gates would notice --- they check arithmetic, symmetry, and time discipline,
-not geography. A boundary drawn in the wrong place is a correlated error wearing
-an honest face, and correlated errors are the ones that move verdicts.
-
-So the first role study asked the fair question directly: move the line, and
-watch what wobbles. With the split latitude shifted half a kilometre either
-way --- a long walk in a mountain valley, far beyond any plausible surveying
-error in the extent outline --- at most four of four hundred reaches change
-their tag, one percent, and the per-reach damage shares return identical to
-the fourth decimal (upstream 0.2720, target 0.0153, downstream 0.4422 in all
-four reruns). The frozen verdict never even notices, because the ranking reads
-shapes while the ledger reads addresses. The target tag, assigned by proximity
-to the surveyed tributary rather than by the split line, does not move at all.
-The showcase triage page tells this as the story of the nametags that hold
-still, and for once the boring outcome is the good one: the foundation the
-whole page stands on turned out to be its sturdiest part.
-
-The kinship runs deeper than shape, and the differences are where the
-honesty lives. Their indicators map onto RCC-8, and so do ours: the gap
-auditor's transitions are literally scored in that calculus, so the two
-projects share a formal backbone without sharing a task. Their annotators are
-told to tag only what is explicitly expressed and perform no extra
-reasoning~\cite{kordjamshidi2010}; that sentence could stand as the ledger
-discipline of this project word for word. Their implicit landmarks, annotated
-\textsc{nil} when ellipsis deletes them, are our dateless features --- the
-absent argument both schemes must handle rather than invent. Their per-relation
-time stamp, recording the instant at which a spatial relation holds, is our
-cutoff discipline wearing a different coat. And their frame-of-reference tag,
-needed before any relation can be visualised, is our preregistered geometry:
-the line has to be declared before the tags mean anything.
-
-Two honest bounds come with that comfort. First, the study covers the flood's
-reach tags only; the fire's hot-cell floor --- the other role labeller in this
-project --- has not yet had its boundary wobbled, and its sensitivity is
-unknown. Second, these tags derive from surveyed geometry by fixed rules, not
-from a learned labeller trained on an annotated corpus; there is no corpus
-behind them, and the audit above substitutes a perturbation study for accuracy
-figures. The section earns its place anyway, because it names the layer every
-future study will share and gives the next one its procedure: perturb the
-boundary, count the re-tags, compare the shares, report as-is.
+Every fact in the flood ledger reads a reach tag --- upstream, downstream, or
+target --- assigned by one spatial pass over surveyed geometry, and never
+touches a coordinate afterward. A mislabelled tag would poison every fact built
+on it in the same direction at once, and no hardened gate would notice: the
+gates check arithmetic, symmetry, and time discipline, not geography. So the
+first role study moved the line and watched what wobbled. With the split
+latitude shifted half a kilometre either way, far beyond any plausible
+surveying error, at most four of four hundred reaches change their tag, and
+the per-reach damage shares return identical to the fourth decimal (upstream
+0.2720, target 0.0153, downstream 0.4422 in all four reruns); the frozen
+verdict never notices. The shape is borrowed from linguistics, where spatial
+role labelling tags the trajector, the landmark, and the indicator relating
+them~\cite{kordjamshidi2010} --- ours runs it in reverse, from space to
+verdict rather than words to scene. Two bounds: the flood tags only, the
+fire's hot-cell floor still unwobbled; and fixed rules, no corpus, so a
+perturbation study stands in for accuracy figures. The procedure for the next
+study: perturb the boundary, count the re-tags, compare the shares, report
+as-is.
 
 \section{Procedures: step by step, all three demonstrations}
 \label{sec:procedures}
