@@ -54,9 +54,11 @@ export default function NepalTriage() {
         <p className="meta">
           Scratch check, committed inputs only: ±250 m moves one reach, ±500 m moves at
           most four; upstream 0.2720, target 0.0153, downstream 0.4422 in all four reruns.
-          The idea is borrowed from linguistics — semantic role labelling, which tags who
-          stands where around a verb; here the tags stand around the flood. Told in full
-          in the paper&apos;s role-labels section.
+          The shape is borrowed from linguistics — spatial role labelling, which tags the
+          trajector, the landmark, and the indicator relating them; here the damage
+          features, the tributary, and the split line play those parts, in reverse —
+          from space to verdict rather than words to scene. Told in full, with the
+          differences kept honest, in the paper&apos;s role-labels section.
         </p>
       </section>
 
