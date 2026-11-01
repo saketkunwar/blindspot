@@ -47,8 +47,10 @@ export default function FireAwakening() {
           plus two same-shape windows the agent refused to judge because their scenes had run
           out of future. Four written trigger rules decided a spike study was warranted, and
           the human lines were assembled from templates, every number pre-checked, no model
-          writing a single word. The page had named sustained rain as its own falsifier in
-          advance. Then the rain came.
+          writing a single word. The watchman has manners, too: one morning, one brief, with
+          reruns cooling down instead of nagging — and if the archive ever moves beneath a
+          run, it stays silent rather than briefing from stale numbers. The page had
+          named sustained rain as its own falsifier in advance. Then the rain came.
         </p>
         <p><strong>New minds, same verdict.</strong> Two later models were each invited to frame the same fire: both passed the null test in a single round with zero citation errors, each topped a smouldering-restart story of its own naming — and both disagreed with the frozen ledger exactly as the first had, moving the frozen probabilities by 0.0000. Three minds, one untouched arithmetic: eloquence proposes, numbers dispose, which is the division of labour working as designed.</p>
         <p><a href="/demo/fire-study/live">The live page</a> <span className="meta">— run the morning round yourself, in front of everyone.</span></p>

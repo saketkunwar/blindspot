@@ -319,3 +319,25 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
   0.9/0.95, 1.3 the same pair). Frozen brief byte-identical across all three
   minds. Showcase beat updated from two minds to three; finding unchanged:
   the framing mind never moves the ledger.
+
+## Morning manners v2 (operator-approved, before the first guarded run)
+- The daemon learns manners, not powers: same-date rerun reports a cooldown
+  and writes nothing (one morning, one brief); the memory store is hashed
+  before the run and re-read after, and a moved store means silence instead
+  of a stale brief; an unreadable digest starts fresh with a spoken note
+  instead of crashing. Reads stay read-only; the validator still fails loud.
+- Config version 1 -> 2, additive manners block only; all trigger values
+  untouched. Borrowed pattern: fingerprint-then-reread before pushing, and
+  every failure degrading to silence.
+
+## Governed-write law (operator-approved, with the decision card)
+- The daily runner never writes an episode, a verdict, or a rule: its only
+  writes are its own digest lines and pull copies, all derived and untracked.
+  Backfill stays the single governed path that writes the archive, and review
+  stays the single path that writes verdicts. A proposal reaches the morning
+  brief only as a quoted card line in the steps, clearly marked as quoted and
+  never applied; the snippet and ranking it stands beside are byte-identical
+  with or without the quote (pinned by test).
+- Decision cards (`review_proposals.py card`) are the transcript-style record:
+  issue, evidence, latest replay, verdicts. The daemon proposes nothing and
+  applies nothing; the machine mines, the person decides, the card remembers.

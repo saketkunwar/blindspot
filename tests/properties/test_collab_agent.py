@@ -113,6 +113,97 @@ def test_trigger_priority():
                             full)[0] is None
 
 
+def test_second_run_same_day_cools_down(tmp_path):
+    out = _run_fixture(tmp_path)
+    before = (out / "digest.json").read_bytes()
+    rc = _morning.main(["--fixture", "oct30", "--out-dir", str(out),
+                        "--no-snapshot"])
+    assert rc == 0
+    assert (out / "digest.json").read_bytes() == before
+
+
+def test_corrupt_digest_starts_fresh_and_silent(tmp_path, capsys):
+    out = tmp_path / "o"
+    out.mkdir()
+    (out / "digest.json").write_text("{not json")
+    rc = _morning.main(["--fixture", "oct30", "--out-dir", str(out),
+                        "--no-snapshot"])
+    assert rc == 0
+    recs = json.loads((out / "digest.json").read_text())
+    assert len(recs) == 1 and recs[0]["trigger"] == "spike"
+    assert "unreadable digest" in capsys.readouterr().out
+
+
+def test_store_fingerprint_notices_a_moved_store(tmp_path):
+    db = tmp_path / "store.sqlite3"
+    db.write_bytes(b"v1")
+    first = _morning.store_fingerprint(db)
+    assert _morning.store_fingerprint(db) == first
+    db.write_bytes(b"v2")
+    assert _morning.store_fingerprint(db) != first
+    assert _morning.store_fingerprint(tmp_path / "missing.sqlite3") == \
+        "absent"
+
+
+def _evolver_db(path, decided=True):
+    import sqlite3 as _s3
+
+    from store import db as _db
+    con = _s3.connect(path)
+    try:
+        con.executescript(_db.SCHEMA)
+        pid = _db.add_proposal(con, "B", "pending",
+                               "frozen top never backed by outcomes", 5,
+                               {"weight": ["FF4", 2.0, 2.5]}, ["e@2026-09-17"],
+                               [], [])
+        if decided:
+            _db.add_verdict(con, pid, "approve",
+                            "replay clears the bar", "operator")
+        con.commit()
+    finally:
+        con.close()
+    return path
+
+
+def test_decision_card_records_issue_evidence_and_verdict(tmp_path):
+    from scripts import review_proposals as _rp
+    import sqlite3 as _s3
+
+    from store import db as _db
+    dbp = _evolver_db(str(tmp_path / "evo.sqlite3"))
+    con = _s3.connect(dbp)
+    try:
+        card = _rp.build_card(con, 1)
+        assert card["id"] == 1 and card["track"] == "B"
+        assert card["verdicts"][0]["decision"] == "approve"
+        text = _rp.format_card(card)
+        assert "Decision card #1" in text and "awaiting a human" not in text
+        assert _rp.cmd_card(
+            type("A", (), {"id": 99, "out": None})(), con) == 2
+    finally:
+        con.close()
+
+
+def test_morning_quotes_decided_proposals_without_applying(tmp_path):
+    import csv as _csv
+
+    from scripts import review_proposals as _rp
+    dbp = _evolver_db(str(tmp_path / "evo.sqlite3"))
+    rows = list(_csv.DictReader(
+        open("api/demo2_data/live_pull_2026-10-30.csv", newline="")))
+    cfg = _cfg()
+    plain, _ = _morning.run(rows, None, cfg)
+    quoted, steps = _morning.run(rows, None, cfg, evolver_db=dbp)
+    assert plain["snippet"] == quoted["snippet"]
+    assert plain["ranking"] == quoted["ranking"]
+    evo = [s for s in steps if s["name"] == "evolution"]
+    assert len(evo) == 1 and "approved" in evo[0]["detail"]
+    assert "untouched" in evo[0]["detail"]
+    empty = _evolver_db(str(tmp_path / "evo2.sqlite3"), decided=False)
+    _, steps2 = _morning.run(rows, None, cfg, evolver_db=empty)
+    assert all(s["name"] != "evolution" for s in steps2)
+
+
 def test_live_without_key_skips_cleanly(tmp_path, monkeypatch):
     for name in ("FIRMS_MAP_KEY", "NASA_FIRMS_MAP_KEY"):
         monkeypatch.delenv(name, raising=False)

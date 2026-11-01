@@ -17,7 +17,10 @@ def last(records: list) -> dict | None:
 
 
 def append(digest_path: pathlib.Path, record: dict) -> list:
-    records = load(digest_path)
+    try:
+        records = load(digest_path)
+    except (ValueError, UnicodeDecodeError, OSError):
+        records = []
     record = dict(record)
     record["seq"] = len(records) + 1
     if records:

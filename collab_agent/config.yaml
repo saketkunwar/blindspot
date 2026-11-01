@@ -1,8 +1,19 @@
-# collab_agent/config.yaml — version 1.
+# collab_agent/config.yaml — version 2.
 # Preregistered 2026-10-31; every value's reason lives in QUESTIONS.md
 # ("Morning-brief triggers"). Changing a value is a versioned amendment
 # with the reason recorded there, never a quiet retune.
-version: 1
+# Version 2 ADDS the manners block (operator-approved, before the first
+# guarded run): the daemon never nags, never briefs from a moved store,
+# and never crashes on an unreadable digest. Reads stay read-only.
+version: 2
+manners:
+  # Same-date rerun: report the cooldown and write nothing. The daemon
+  # runs once per morning; a second run the same day is a nag, not news.
+  cooldown_same_date: true
+  # Fingerprint the memory store before the run and re-read it after.
+  # A moved store means the brief would speak from stale numbers, so the
+  # run stays silent instead. Mirrors the stale-dossier guard pattern.
+  fingerprint_store: true
 study_box:
   # The box the October 30 pull verified against (see _live_snapshot's
   # bbox_check in scripts/make_demo2.py). FIRMS wants west,south,east,north.

@@ -17,6 +17,7 @@ Exit 0 in all honest cases, including quiet days and missing keys.
 """
 import argparse
 import csv
+import hashlib
 import json
 import pathlib
 import statistics
@@ -48,12 +49,25 @@ def _by_day(rows):
     return sorted(days.items())
 
 
-def run(rows, prev, cfg, date=None):
+def store_fingerprint(memory_db=None):
+    """Hash of the memory store the run reads. Anything the brief says
+    about the past is said against exactly these bytes; if they move
+    mid-run, the brief stays silent instead of speaking stale."""
+    p = (pathlib.Path(memory_db) if memory_db
+         else ROOT / "results" / "memory_episodes.sqlite3")
+    try:
+        return hashlib.sha256(p.read_bytes()).hexdigest()
+    except OSError:
+        return "absent"
+
+
+def run(rows, prev, cfg, date=None, evolver_db=None):
     """One morning from pull rows. Pure orchestration; returns
     (record, steps). The steps are the agent narrating its own work for
     the demo page, including how and whether it used memory. Raises on
     validator failure — a snippet that fails its number check is never
-    written."""
+    written. When evolver_db is given, the brief may quote decided
+    proposals; it never applies them."""
     by_day = _by_day(rows)
     if date is None:
         date = by_day[-1][0]
@@ -102,6 +116,26 @@ def run(rows, prev, cfg, date=None):
                   "detail": (f"trigger: {trigger} — {reason}" if trigger
                              else f"no trigger — {reason}"),
                   "trigger": trigger})
+    if evolver_db is not None:
+        import sqlite3 as _sqlite3
+
+        from scripts import review_proposals as _cards
+        try:
+            _con = _sqlite3.connect(
+                f"file:{pathlib.Path(evolver_db).resolve()}?mode=ro",
+                uri=True)
+            try:
+                quote = _cards.latest_approved_summary(_con)
+            finally:
+                _con.close()
+        except (_sqlite3.Error, OSError):
+            quote = None
+        if quote is not None:
+            steps.append({
+                "name": "evolution",
+                "title": "What the evolver decided",
+                "detail": quote + " Quoted, not applied: the frozen "
+                                  "ranking above is untouched."})
     ctx = {"date": date, "count": today, "median": median,
            "top_id": top["id"], "top_prob": top["probability"],
            "match": match, "speak_bar": bar}
@@ -138,6 +172,9 @@ def main(argv=None) -> int:
                     help="redirect results/morning here (tests)")
     ap.add_argument("--no-snapshot", action="store_true",
                     help="skip writing api/demo2_data/morning.json")
+    ap.add_argument("--evolver-db", default=None,
+                    help="quote decided proposals in the steps "
+                         "(read-only; never applied)")
     args = ap.parse_args(argv)
     cfg = _load_cfg()
 
@@ -158,8 +195,27 @@ def main(argv=None) -> int:
 
     out = (pathlib.Path(args.out_dir) if args.out_dir
            else ROOT / "results" / "morning")
-    records = _digest.load(out / "digest.json")
-    record, _ = run(rows, _digest.last(records), cfg, date=args.date)
+    manners = cfg.get("manners", {})
+    try:
+        records = _digest.load(out / "digest.json")
+    except (ValueError, UnicodeDecodeError, OSError) as exc:
+        print(f"morning: unreadable digest ({exc}); starting fresh, "
+              "saying nothing about the past it cannot read")
+        records = []
+    before = (store_fingerprint()
+              if manners.get("fingerprint_store", True) else None)
+    record, _ = run(rows, _digest.last(records), cfg, date=args.date,
+                    evolver_db=args.evolver_db)
+    if before is not None and store_fingerprint() != before:
+        print("morning: the memory store moved under this run; staying "
+              "silent rather than briefing from stale numbers")
+        return 0
+    if manners.get("cooldown_same_date", True) and records and \
+            records[-1].get("date") == record["date"]:
+        print(f"morning {record['date']}: already briefed today "
+              f"(trigger={records[-1].get('trigger')}); cooling down, "
+              "writing nothing")
+        return 0
     records = _digest.append(out / "digest.json", record)
     (out / f"pull_{record['date']}.json").write_text(
         json.dumps(rows, indent=1) + "\n")

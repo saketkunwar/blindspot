@@ -9,3 +9,6 @@ meta_usage.json
 
 # private judge material — never in repo (README-FIRST)
 blindspot-spec-kit/private/
+
+# showcase footage lives here but never in git (operator decision)
+videos/

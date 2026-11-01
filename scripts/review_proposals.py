@@ -17,12 +17,15 @@ fails loudly instead of sliding through:
 - reject: records a refusal with its reason, so the next run stops
   re-proposing it.
 - list: every proposal with its status, latest replay edge, and verdict.
+- card: one proposal as a decision card (issue, evidence, latest replay,
+  verdicts) — the transcript-style record the morning brief may quote.
 
 Usage:
   python scripts/review_proposals.py --db <evolver.sqlite3> submit --file proposal.json --memory-db M --traces-db T
   python scripts/review_proposals.py --db <evolver.sqlite3> replay --id N --memory-db M [--as-of ISO-day]
   python scripts/review_proposals.py --db <evolver.sqlite3> approve --id N --reason "..." [--override "..."]
   python scripts/review_proposals.py --db <evolver.sqlite3> reject --id N --reason "..."
+  python scripts/review_proposals.py --db <evolver.sqlite3> card --id N [--out card.json]
 """
 from __future__ import annotations
 
@@ -293,6 +296,87 @@ def cmd_list(a, con) -> int:
     return 0
 
 
+def build_card(con, pid: int) -> dict:
+    """One proposal as a decision card: the issue, its evidence, the
+    latest replay, and the human verdict — the transcript-style record
+    the morning brief may quote and a person can audit."""
+    props = {p["rowid"]: p for p in _db.proposals_for(con)}
+    prop = props.get(pid)
+    if prop is None:
+        raise KeyError(f"no proposal {pid}")
+    reps = _db.replays_for(con, pid)
+    verdicts = _db.verdicts_for(con, pid)
+    latest = reps[-1]["result"] if reps else None
+    return {
+        "id": pid, "track": prop["track"], "status": prop["status"],
+        "issue": prop["issue"], "recurrence": prop["recurrence"],
+        "change": json.loads(prop["change_json"] or "{}"),
+        "cited_episodes": json.loads(prop["cited_episodes"] or "[]"),
+        "cited_traces": json.loads(prop["cited_traces"] or "[]"),
+        "rejected": json.loads(prop["rejected"] or "[]"),
+        "latest_replay": latest, "replays": len(reps),
+        "verdicts": [{"decision": v["decision"], "reason": v["reason"],
+                      "operator": v["operator"],
+                      "recorded_at": v["recorded_at"]} for v in verdicts],
+    }
+
+
+def format_card(card: dict) -> str:
+    lines = [f"Decision card #{card['id']} [{card['track']}/"
+             f"{card['status']}]"]
+    lines.append(f"Issue: {card['issue']}")
+    lines.append(f"Evidence: {card['recurrence']} recurrences; episodes "
+                 f"{card['cited_episodes'] or 'none cited'}; traces "
+                 f"{card['cited_traces'] or 'none cited'}")
+    lines.append(f"Change: {json.dumps(card['change'], sort_keys=True)}")
+    if card["latest_replay"] is None:
+        lines.append("Replay: none yet — untested, undecidable")
+    else:
+        r = card["latest_replay"]
+        lines.append(f"Replay: edge {r.get('edge')} over "
+                     f"{r.get('episodes')} held-out episodes "
+                     f"(as_of {r.get('as_of')}); frozen top kept: "
+                     f"{r.get('frozen_top_kept')}; "
+                     f"contaminated: {r.get('contaminated')}")
+    if not card["verdicts"]:
+        lines.append("Verdict: none yet — awaiting a human")
+    for v in card["verdicts"]:
+        who = f" by {v['operator']}" if v["operator"] else ""
+        lines.append(f"Verdict: {v['decision']}{who}: {v['reason']}")
+    return "\n".join(lines)
+
+
+def cmd_card(a, con) -> int:
+    try:
+        card = build_card(con, a.id)
+    except KeyError as exc:
+        return _refuse(str(exc))
+    text = format_card(card)
+    print(text)
+    if a.out:
+        out = pathlib.Path(a.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(card, indent=1, sort_keys=True,
+                                  default=str) + "\n")
+    return 0
+
+
+def latest_approved_summary(con) -> str | None:
+    """One quotable line for the morning brief, or None when nothing was
+    approved. The brief quotes decisions; it never applies them."""
+    best = None
+    for p in _db.proposals_for(con):
+        for v in _db.verdicts_for(con, p["rowid"]):
+            if v["decision"] == "approve" and (
+                    best is None or v["recorded_at"] >= best[1]):
+                best = (p, v["recorded_at"])
+    if best is None:
+        return None
+    p = best[0]
+    return (f"proposal #{p['rowid']} ({p['track']}) was approved and waits "
+            f"for a new rules version: {p['issue'][:160]}")
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", required=True)
@@ -318,10 +402,15 @@ def main(argv=None) -> int:
     j.add_argument("--reason", default=None)
     j.add_argument("--operator", default="")
     sub.add_parser("list")
+    c = sub.add_parser("card")
+    c.add_argument("--id", type=int, required=True)
+    c.add_argument("--out", default=None)
     a = ap.parse_args(argv)
     con = sqlite3.connect(a.db)
     try:
         con.executescript(_db.SCHEMA)
+        if a.cmd == "card":
+            return cmd_card(a, con)
         if a.cmd == "submit":
             return cmd_submit(a, con)
         if a.cmd == "replay":

@@ -108,3 +108,7 @@ three-mind framing result: 1.3 + wonder-1.0 live runs, null PASS, 0 errors,
   identical; tab:llm to 4 rows; cassette count corrected 986->19, manifest
   1,006 (state-drift catch)
   | /tmp setup reports + meta_usage.json + MANIFEST (live key, since rotated)
+manners + card + law in paper: morning manners paragraph, evolver passage
+  corrected to actual state (deterministic mining, human-authored proposals,
+  model Proposer unbuilt), decision cards, governed-write law
+  | paper.tex; tectonic clean rebuild
