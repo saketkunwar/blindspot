@@ -2,7 +2,7 @@ export default function NepalAlgebra() {
   return (
     <main className="demo demo-flood">
       <header className="hero">
-        <p className="eyebrow">Showcase · Nepal flood, demo three of six</p>
+        <p className="eyebrow">Showcase · Nepal flood, demo three of seven</p>
         <h1>The maths that cannot teleport</h1>
         <p className="lede">
           River simulators drown in missing bathymetry and noisy outlines. This page shows the

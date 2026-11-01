@@ -458,6 +458,63 @@ highest (run 0.95, clumping 0.9).} \\
 \normalsize
 \end{table}
 
+\section{Role labels: the quiet foundation, and why it holds}
+\label{sec:roles}
+
+There is a borrowing in this project from a field it has nothing to do with,
+and it earns its place. In linguistics, semantic role labelling asks, for each
+verb in a sentence, who did what to whom: the same noun phrase can be the agent
+of one verb, the patient of the next, and a mere location after that. Gildea
+and Jurafsky showed the tags could be assigned automatically from annotated
+frames~\cite{gildea2002}, and the field has survived ever since on one insight:
+roles describe a filler \emph{relative to an event}, not what it is by itself,
+and everything downstream reasons about the tags, never the raw words again.
+
+BlindSpot does the same thing to geography without having known the name for
+it. Every reach in the flood study wears exactly one tag --- upstream,
+downstream, or target --- assigned by a single spatial pass: within reach of
+the named tributary, else above or below one line drawn at the extent's own
+middle. Every fact the ledger computes reads those tags through the closed
+\texttt{ref\_filter} machinery and never touches a coordinate afterward. The
+fire study has its own version: each grid cell is hot or it is not, by a
+detection floor, and the clumping fact that leads the frozen ranking reads only
+that verdict. In both studies a dumb, auditable labelling pass decides what the
+scoring layer is allowed to reason about, exactly the way a role labeller
+decides what the parser downstream gets to see.
+
+That arrangement is powerful for the same reason it is dangerous. It is
+powerful because it compresses the world's mess into a vocabulary small enough
+to audit: three reach codes, two cell states, each one checkable by a human
+with a map. It is dangerous because a mislabelled tag poisons every fact built
+on it in the same direction at once, and not one of the twenty-five hardened
+gates would notice --- they check arithmetic, symmetry, and time discipline,
+not geography. A boundary drawn in the wrong place is a correlated error wearing
+an honest face, and correlated errors are the ones that move verdicts.
+
+So the first role study asked the fair question directly: move the line, and
+watch what wobbles. With the split latitude shifted half a kilometre either
+way --- a long walk in a mountain valley, far beyond any plausible surveying
+error in the extent outline --- at most four of four hundred reaches change
+their tag, one percent, and the per-reach damage shares return identical to
+the fourth decimal (upstream 0.2720, target 0.0153, downstream 0.4422 in all
+four reruns). The frozen verdict never even notices, because the ranking reads
+shapes while the ledger reads addresses. The target tag, assigned by proximity
+to the surveyed tributary rather than by the split line, does not move at all.
+The showcase triage page tells this as the story of the nametags that hold
+still, and for once the boring outcome is the good one: the foundation the
+whole page stands on turned out to be its sturdiest part.
+
+Two honest bounds come with that comfort. First, the study covers the flood's
+reach tags only; the fire's hot-cell floor --- the other role labeller in this
+project --- has not yet had its boundary wobbled, and its sensitivity is
+unknown. Second, these tags derive from surveyed geometry by fixed rules, not
+from a learned labeller, so there is no training bias to audit and no
+FrameNet-style annotated corpus behind them; the audit above substitutes a
+perturbation study for the accuracy figures the linguistics literature
+reports~\cite{gildea2002}. The section earns its place anyway, because it names
+the layer every future study will share and gives the next one its procedure:
+perturb the boundary, count the re-tags, compare the shares, report as-is.
+
 \section{Procedures: step by step, all three demonstrations}
 \label{sec:procedures}
 
@@ -1121,10 +1178,10 @@ and only reading. The demo is an
 operator's morning brief that wrote its own audit trail overnight. Unfreezing
 anything more remains an evidence decision, not an anticipation.
 
-\section{The six stories: what the showcase pages show}
+\section{The seven stories: what the showcase pages show}
 \label{sec:showcase}
 
-The results above live twice: once in this draft, once as six story-first
+The results above live twice: once in this draft, once as seven story-first
 pages off the demos index, written for a visitor who will never read a gate
 table. Each pairs what the engine saw inside a sensing gap with the proof it
 could not have cheated, quoting the command and its output verbatim. The flood
@@ -1137,7 +1194,10 @@ freeze). The fire trio: the zombie fire read from absence at 0.8425 with the
 future sealed, the halved map returning identical probabilities to six decimal
 places of zero drift, and the awakening --- five windows across three
 continents ending the silence, then the model-less morning watch naming its
-rain falsifier in advance. The pages add no new claims; every number on them
+rain falsifier in advance. And the seventh story belongs to the collaborator
+itself: one October morning minute by minute, the manners that restrain it,
+the decision cards it quotes but never applies, and the mind it honestly lacks
+yet. The pages add no new claims; every number on them
 already appears in the sections above, which is precisely why they can be
 told like stories.
 
@@ -1186,6 +1246,10 @@ Spatial Cognition and Computation, 4(1):69--103, 2004.
 \bibitem{garcez2002} A.~S.~d'Avila Garcez, K.~B. Broda, and D.~M. Gabbay.
 \textit{Neural-Symbolic Learning Systems: Foundations and Applications.}
 Springer, 2002.
+
+\bibitem{gildea2002} D.~Gildea and D.~Jurafsky.
+\textit{Automatic labeling of semantic roles.}
+Computational Linguistics, 28(3):245--288, 2002.
 \end{thebibliography}
 
 \end{document}

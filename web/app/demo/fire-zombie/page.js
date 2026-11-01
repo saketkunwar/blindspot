@@ -2,7 +2,7 @@ export default function FireZombie() {
   return (
     <main className="demo demo-fire">
       <header className="hero">
-        <p className="eyebrow">Showcase · Kalimantan fire, demo four of six</p>
+        <p className="eyebrow">Showcase · Kalimantan fire, demo four of seven</p>
         <h1>The zombie fire under the smoke</h1>
         <p className="lede">
           Peat burns underground, vanishes from the satellites for days, and erupts the moment

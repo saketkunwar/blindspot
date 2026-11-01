@@ -2,7 +2,7 @@ export default function NepalBlindfold() {
   return (
     <main className="demo demo-flood">
       <header className="hero">
-        <p className="eyebrow">Showcase · Nepal flood, demo one of six</p>
+        <p className="eyebrow">Showcase · Nepal flood, demo one of seven</p>
         <h1>The blindfold reveal</h1>
         <p className="lede">
           Anyone can predict a disaster after seeing the aftermath. This page proves, live and

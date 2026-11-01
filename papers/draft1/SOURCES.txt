@@ -112,3 +112,7 @@ manners + card + law in paper: morning manners paragraph, evolver passage
   corrected to actual state (deterministic mining, human-authored proposals,
   model Proposer unbuilt), decision cards, governed-write law
   | paper.tex; tectonic clean rebuild
+showcase section to seven: watchman page joined, no new claims
+  | paper.tex sec:showcase
+roles section (SRL borrowing, Gildea&Jurafsky 2002 verified via web search 2026-11-01) + gildea2002 bibitem: paper.tex sec:roles; triage SRL cross-ref
+  | FF4 lead-evidence/hot>=3 wording verified against demo/fire_study/rules.json before commit

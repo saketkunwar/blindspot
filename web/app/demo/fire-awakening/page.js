@@ -2,7 +2,7 @@ export default function FireAwakening() {
   return (
     <main className="demo demo-fire">
       <header className="hero">
-        <p className="eyebrow">Showcase · Kalimantan fire, demo six of six</p>
+        <p className="eyebrow">Showcase · Kalimantan fire, demo six of seven</p>
         <h1>The awakening, and the morning watch</h1>
         <p className="lede">
           For months the archive counted four matching fires and stayed silent. Then the fifth

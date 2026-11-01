@@ -69,6 +69,11 @@ const SHOWCASE = [
     title: "The awakening, and the morning watch",
     body: "Four was silence and five was a voice across three continents — then the model-less morning watch, the Iberian lookalikes, and the rain that arrived on cue.",
   },
+  {
+    href: "/demo/morning-watch",
+    title: "The watchman who never touches anything",
+    body: "The collaborator's own story: one October morning minute by minute, manners instead of powers, the decision cards it quotes but never applies — and the mind it honestly lacks yet.",
+  },
 ];
 
 export default function DemosIndex() {
@@ -88,7 +93,7 @@ export default function DemosIndex() {
         </p>
       </header>
       <section>
-        <h2>The showcase: six stories, told like stories</h2>
+        <h2>The showcase: seven stories, told like stories</h2>
         <p>
           Start here for the presentation. Each story pairs what the engine saw inside the
           sensing gap with the proof it could not have cheated — every command quoted, every

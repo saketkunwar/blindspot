@@ -2,7 +2,7 @@ export default function FireHalfmap() {
   return (
     <main className="demo demo-fire">
       <header className="hero">
-        <p className="eyebrow">Showcase · Kalimantan fire, demo five of six</p>
+        <p className="eyebrow">Showcase · Kalimantan fire, demo five of seven</p>
         <h1>Cut the map in half</h1>
         <p className="lede">
           Delete the entire eastern half of the fire — 3,071 detections gone in one stroke —

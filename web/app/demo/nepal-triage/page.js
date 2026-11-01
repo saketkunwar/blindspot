@@ -2,7 +2,7 @@ export default function NepalTriage() {
   return (
     <main className="demo demo-flood">
       <header className="hero">
-        <p className="eyebrow">Showcase · Nepal flood, demo two of six</p>
+        <p className="eyebrow">Showcase · Nepal flood, demo two of seven</p>
         <h1>The triage map, and the doctor who said safe</h1>
         <p className="lede">
           While the valley was still blind, two questions burned: where must rescue go first,
@@ -34,6 +34,29 @@ export default function NepalTriage() {
           against those borders and five distance bands, nearest first. No simulation, no
           bathymetry, no twelve-hour supercomputer run — just relations, and an answer in time
           to matter: 171 bridges, 10 power stations, 14 helipads inside the country of maybe.
+        </p>
+      </section>
+
+      <section>
+        <h2>The nametags hold still when the line wobbles</h2>
+        <p>
+          Every reach label on this page — upstream, downstream, target — comes from one
+          line drawn across the valley at the extent&apos;s own middle, plus the three
+          tributary reaches the survey named. The engine never sees coordinates afterwards,
+          only those tags, so a fair question is whether moving the line moves the truth.
+          It barely moves the tags: shifting the boundary half a kilometre either way —
+          a long walk in a mountain valley — re-tags at most four of four hundred reaches,
+          one percent, and the per-reach damage shares come back identical to the fourth
+          decimal. The verdict never even notices, because the ranking reads shapes while
+          the ledger reads addresses. Role labels, in the linguist&apos;s sense of who stands
+          where around the event, turn out to be the sturdiest things on this page.
+        </p>
+        <p className="meta">
+          Scratch check, committed inputs only: ±250 m moves one reach, ±500 m moves at
+          most four; upstream 0.2720, target 0.0153, downstream 0.4422 in all four reruns.
+          The idea is borrowed from linguistics — semantic role labelling, which tags who
+          stands where around a verb; here the tags stand around the flood. Told in full
+          in the paper&apos;s role-labels section.
         </p>
       </section>
 
