@@ -38,6 +38,39 @@ const DEMOS = [
   },
 ];
 
+const SHOWCASE = [
+  {
+    href: "/demo/nepal-blindfold",
+    title: "The blindfold reveal",
+    body: "The valley's verdict, spoken without ever seeing the aftermath — then the sealed ground truth opened to 754 matching features. With the replay command quoted.",
+  },
+  {
+    href: "/demo/nepal-triage",
+    title: "The triage map, and the doctor who said safe",
+    body: "195 assets sorted into the country of maybe, and the three rounds where the model cried safe and the kernel overruled it: M_fluvial, 42 citation errors, M6.",
+  },
+  {
+    href: "/demo/nepal-algebra",
+    title: "The maths that cannot teleport",
+    body: "Directions instead of coordinates, and the gates that bit: the shifted composition table, the vacuous-truth trap, the 313,269-to-one bug that became 1.06.",
+  },
+  {
+    href: "/demo/fire-zombie",
+    title: "The zombie fire under the smoke",
+    body: "A disappearance read as evidence at 0.8425, with the future riding along sealed and unread until the fingerprint froze. Replay command quoted.",
+  },
+  {
+    href: "/demo/fire-halfmap",
+    title: "Cut the map in half",
+    body: "Delete the entire eastern half live and watch all four probabilities return to the sixth decimal of zero drift. The exact check, quoted.",
+  },
+  {
+    href: "/demo/fire-awakening",
+    title: "The awakening, and the morning watch",
+    body: "Four was silence and five was a voice across three continents — then the model-less morning watch, the Iberian lookalikes, and the rain that arrived on cue.",
+  },
+];
+
 export default function DemosIndex() {
   return (
     <main className="demo demo-index">
@@ -54,6 +87,20 @@ export default function DemosIndex() {
           views — in space and time together. That is what every demo on this page exercises.
         </p>
       </header>
+      <section>
+        <h2>The showcase: six stories, told like stories</h2>
+        <p>
+          Start here for the presentation. Each story pairs what the engine saw inside the
+          sensing gap with the proof it could not have cheated — every command quoted, every
+          number carrying its receipt.
+        </p>
+      </section>
+      {SHOWCASE.map((d) => (
+        <section key={d.href}>
+          <h2><a href={d.href}>{d.title}</a></h2>
+          <p>{d.body}</p>
+        </section>
+      ))}
       {DEMOS.map((d) => (
         <section key={d.href}>
           <h2><a href={d.href}>{d.title}</a></h2>

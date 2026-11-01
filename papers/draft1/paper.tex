@@ -238,6 +238,19 @@ places, with a largest-residual correction so they sum to exactly one (a
 artifact rather than the tolerance). The frozen fire ranking is shown in
 Figure~\ref{fig:rank}; the flood ranking appears in Table~\ref{tab:rankings}.
 
+\paragraph{Where this sits.} The relation families are textbook qualitative
+spatial and temporal reasoning in the lineage surveyed by Cohn and
+Hazarika~\cite{cohn2001}: regions and connection after Randell
+et~al.~\cite{randell1992}, intervals after Allen~\cite{allen1983}. What that
+literature rarely does is refuse to interpolate: snapshot ontologies in the
+SNAP/SPAN spirit~\cite{grenon2004} describe what is seen at successive instants,
+while the gap auditor reasons about what happened between the snapshots, and
+the holdouts score whether it was right. Against neural-symbolic systems in the
+Garcez tradition~\cite{garcez2002}, the division of labour here is deliberately
+lopsided: the model proposes vocabulary, never numbers, and a deterministic
+gate holds the only vote --- learning to speak, rather than learning to
+calculate, which is why the memory layer earns trust by staying silent.
+
 \section{What the language model does, and what it is forbidden from doing}
 \label{sec:llm}
 
@@ -316,7 +329,15 @@ days confirmed the restart. For the spatial check, the same frozen rules
 were recomputed over the western half of the map only (3,071 of 6,142
 detections kept): the ranking came back identical, probabilities equal to
 four decimals --- identical because scoring depends on which facts are
-active, not their magnitudes. Every gate still passes on half the map, which
+active, not their magnitudes. The activation thresholds behind that sentence
+were not fitted to the September window: count above zero, five distinct burn
+days, clumping at three or more, the noise floor of three, all sit in the
+frozen study rules, which mirror preregistered decisions D-1 through D-6
+tagged \texttt{prereg} before any pipeline ran. Stating the other edge of
+that sword too: binary actives buy pervasiveness at the price of magnitude
+blindness --- a thin clump and a vast one both read simply ``active,'' so the
+holdout proves the shape is everywhere, never how much of it there is. Every
+gate still passes on half the map, which
 is itself the finding: the fire signal is spatially pervasive, not one
 hotspot's doing. Figure~\ref{fig:valid} summarises all four holdout cells.
 
@@ -652,7 +673,8 @@ A pattern's signature is a short hash over binned fact values only: gap
 dictionaries project to binned day-gaps, raw floats (areas, magnitudes) leave
 the key entirely, because an early key fingerprinted every slice and produced
 48 patterns of one. After the approved retune, 48 patterns collapse to 22
-with cross-scene grouping --- and for months the strongest stood at four
+with cross-scene grouping, growing to 26 distinct shapes once the three
+targeted pulls land --- and for months the strongest stood at four
 labelled cases against a speaking threshold of five (Figure~\ref{fig:census},
 drawn from that era). Memory stayed silent then, for a verified reason rather
 than a promised one: with the section absent, briefs are byte-identical to
@@ -842,7 +864,7 @@ what ``hardened'' means, why the project needs it, and where its limits lie.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{f6_gates.png}
-\caption{Ten setup gates grew to twenty-four. Each phase added the gates for
+\caption{Ten setup gates grew to twenty-five. Each phase added the gates for
 its own new failure modes; the annotations mark what the additions caught.}
 \label{fig:gates}
 \end{figure}
@@ -862,7 +884,7 @@ prints only claim identifiers, and the phase is not done until the full run
 reports ALL PASS. An independent judge then replays the durable suite from
 scratch (147 checks green at last observation).
 
-\paragraph{The two moments: coding-time and execution-time.} The twenty-four
+\paragraph{The two moments: coding-time and execution-time.} The twenty-five
 gates in Table~\ref{tab:gates} split into two moments, and they catch
 different defects. \emph{Coding-time} checks run while the system is being
 built: property tests asserting math facts the code must obey
@@ -873,13 +895,13 @@ and demand proof: the leakage re-run with hidden inputs (G12), the frozen
 replay demanding identical bytes (G14), the content-vs-input reconciliation
 (G11), the memory silence/leakage/null trio (G19--G21), the restore drill
 (G17). Figure~\ref{fig:gates} shows the set growing from ten setup gates to
-twenty-four as each phase added the gates for its own new failure modes.
+twenty-five as each phase added the gates for its own new failure modes.
 
 \begin{table}[t]
 \centering
 \caption{The hardened gate inventory. G3b is a cross-study variant of G3;
 G15 covers the P0 study-gate criteria; G16--G18 cover rebuild, restore, and
-ingest; G19--G24 cover memory and evolution.}
+ingest; G19--G24 cover memory and evolution; G25 pins the morning round.}
 \label{tab:gates}
 \footnotesize
 \begin{tabular}{ll}
@@ -901,6 +923,7 @@ G17, G18 & Restore drill; raw-ingest watch \\
 G19, G20 & Memory silence and memory leakage (as-of filtering) \\
 G21 & Null red-team: shuffled labels must not beat frozen \\
 G22, G23, G24 & Evolution discipline; loop bounds; feedback leakage \\
+G25 & Morning digest deterministic; data/ untouched; frozen briefs unmoved \\
 \bottomrule
 \end{tabular}
 \normalsize
@@ -984,18 +1007,22 @@ Kalimantan fire. The rain fell after the last satellite pull, so it sits
 outside every frozen number in this draft --- which is precisely the
 arrangement the outlook specified: sustained rain moves the live reading out
 of the restart signature, and the next pull verifies it the moment daily
-counts fall. If confirmed, the quench becomes the archive's first quiet: the
-fifth labelled case, the one that lets memory speak, and the first test of
-the quiet mapping the labelling rule has never yet exercised. A draft that
-predicts its own falsifier and then watches it arrive is either lucky or
-honest; the pull CSV will decide which, and whatever it says gets recorded
-as-is.
+counts fall. If confirmed, the quench becomes the archive's first quiet:
+the missing arm exercised at last, and the first test of the quiet mapping
+the labelling rule has never yet used. It is not the fifth label that lets
+memory speak --- the Amazon-led shape already stands at five of five and
+speaks; the live reading belongs to the Iberia-led shape at four, and a
+confirmed quench under that shape would carry it over the bar with a quiet
+rather than a restart, the hardest possible way to earn the fifth chair. A
+draft that predicts its own falsifier and then watches it arrive is either
+lucky or honest; the pull CSV will decide which, and whatever it says gets
+recorded as-is.
 
 \section{Limitations}
 \label{sec:limits}
 
 A first draft is allowed cons, and this system has specific ones. The history
-is one-sided: 26 restarts, zero quiets, so every learned rate is a rate of
+is one-sided: 32 restarts, zero quiets, so every learned rate is a rate of
 restarting and the quiet mapping is untested code in the scientific sense.
 Neighbouring backtest cutoffs overlap heavily, so episodes are not
 independent no matter how the independence gap is set; the held-out splits
@@ -1009,7 +1036,12 @@ inputs; both committed rounds ran without the card. One recorded deviation
 bends the freeze discipline: the fire rules were amended after first freeze
 with weights locked and outcomes accepted, counted as amendment rather than
 tuning, with per-amendment rationale on file --- future studies must freeze
-the learnings pass explicitly instead. And there is no forecast anywhere in
+the learnings pass explicitly instead. Concretely, the amendment moved weight
+placement, rebound fact FF4 to the scoped cluster operation, and tightened the
+prompt contract; no weight value changed, no outcome was re-decided, and the
+brief bytes before and after are identical except the intended additions. A
+reviewer suspecting the outcome was gamed should check exactly that diff: the
+verdict 0.8425 does not move across it. And there is no forecast anywhere in
 the system: every forward-looking sentence is a validated pattern pointed at
 today, extended one careful step.
 
@@ -1019,12 +1051,15 @@ today, extended one careful step.
 Each item below ends in a demonstration that is hard to copy precisely
 because it requires the machinery above to already exist.
 
-\paragraph{The day memory speaks.} One more labelled case under the current
-best pattern --- five of five --- and briefs gain a second, labelled ranking
-that a null test has already proven cannot invent skill. The demo writes
-itself: the same brief, before and after the fifth label, with the silence
-proof and the speech proof side by side. No system without a preregistered
-bar and a byte-identity silence proof can show that transition honestly.
+\paragraph{The day memory spoke --- and the day a second shape speaks.} Memory
+already spoke once: the Amazon-led shape crossed to five of five, and briefs
+gained the labelled second ranking a null test had proven cannot invent skill,
+with the silence proof and the speech proof side by side. The demonstration
+other systems will lack is the second crossing: the Iberia-led shape stands at
+four, and whichever closed window carries it over --- a restart or, harder, the
+first quiet --- shows the transition a second time, on demand rather than in
+hindsight. No system without a preregistered bar and a byte-identity silence
+proof can show either crossing honestly.
 
 \paragraph{Flood dated observations and the missing spatial cell.} Collecting
 dated damage observations plus a preregistered flood outcome rule unlocks
@@ -1056,6 +1091,26 @@ small form — running on the operator's machine, on the operator's schedule,
 and only reading. The demo is an
 operator's morning brief that wrote its own audit trail overnight. Unfreezing
 anything more remains an evidence decision, not an anticipation.
+
+\section{The six stories: what the showcase pages show}
+\label{sec:showcase}
+
+The results above live twice: once in this draft, once as six story-first
+pages off the demos index, written for a visitor who will never read a gate
+table. Each pairs what the engine saw inside a sensing gap with the proof it
+could not have cheated, quoting the command and its output verbatim. The flood
+trio: the blindfold reveal (the 0.9426 verdict spoken without the aftermath,
+then 754 sealed features matching it), the triage map with the overruled model
+(195 assets sorted into the maybe-band; M\_fluvial rejected, forty-two
+citation errors, M6 passed yet outvoted 0.9426 to 0.0009), and the teleport-proof
+algebra (the symmetry and vacuity gates that caught real bugs before the
+freeze). The fire trio: the zombie fire read from absence at 0.8425 with the
+future sealed, the halved map returning identical probabilities to six decimal
+places of zero drift, and the awakening --- five windows across three
+continents ending the silence, then the model-less morning watch naming its
+rain falsifier in advance. The pages add no new claims; every number on them
+already appears in the sections above, which is precisely why they can be
+told like stories.
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -1090,6 +1145,18 @@ Berkeley, 1989.
 Near-real-time MODIS and VIIRS active-fire detections, distributed by NASA's
 Land, Atmosphere Near real-time Capability for EO (LANCE).
 \url{https://firms.modaps.eosdis.nasa.gov/}. Accessed October 2026.
+
+\bibitem{cohn2001} A.~G. Cohn and S.~M. Hazarika.
+\textit{Qualitative spatial representation and reasoning: an overview.}
+Fundamenta Informaticae, 46(1--2):1--29, 2001.
+
+\bibitem{grenon2004} P.~Grenon and B.~Smith.
+\textit{SNAP and SPAN: towards dynamic spatial ontology.}
+Spatial Cognition and Computation, 4(1):69--103, 2004.
+
+\bibitem{garcez2002} A.~S.~d'Avila Garcez, K.~B. Broda, and D.~M. Gabbay.
+\textit{Neural-Symbolic Learning Systems: Foundations and Applications.}
+Springer, 2002.
 \end{thebibliography}
 
 \end{document}

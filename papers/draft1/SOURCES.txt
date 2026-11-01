@@ -97,3 +97,9 @@ recall tier (v5): live query 4x distance-0 Iberia 09-24..27 + 1x d1, 2 same-shap
   | engine/memory.py::nearest_cases + api/demo2_data/fire.json recall blocks
   (top_k 5 preregistered); live page "Windows shaped like today", memory page
   "Past windows shaped like the study"
+draft2 fixes: 4 contradictions reconciled (Iberia 4/5 vs Amazon 5/5, 22->26
+  shapes, 32 restarts); figs F2/F3/F4/F6/F7 layout collisions fixed, F6 to
+  G25; thresholds prereg (D-1..D-6) + amendment content stated; refs +3
+  (Cohn/Hazarika, Grenon/Smith, Garcez et al., all verified); new showcase
+  section; gates table to 25
+  | paper.tex + make_figs.py; tectonic clean rebuild, 20pp

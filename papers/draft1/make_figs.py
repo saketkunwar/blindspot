@@ -85,7 +85,8 @@ daily_live = sorted(Counter(r["acq_date"] for r in live_rows).items())
 assert sum(daily_sep) == 6142, daily_sep
 assert sum(v for _, v in daily_live) == 675, daily_live
 
-fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 2.7), sharey=False)
+fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 3.1), sharey=False)
+fig.subplots_adjust(top=0.80, wspace=0.22)
 xs = list(range(len(daily_sep)))
 a1.bar(xs, daily_sep, color=ACCENT, edgecolor="white")
 a1.set_xticks(xs)
@@ -110,14 +111,16 @@ fig.suptitle("Same peat fire, two eras: the study the brief was frozen on, and t
 save(fig, "f2_fire_counts.png")
 
 # F3: frozen ranking + null-test margins -----------------------------------
-fig, (b1, b2) = plt.subplots(1, 2, figsize=(7.2, 2.9),
+fig, (b1, b2) = plt.subplots(1, 2, figsize=(7.2, 3.2),
                              gridspec_kw={"width_ratios": [1.5, 1]})
+fig.subplots_adjust(top=0.78, wspace=0.35)
 mechs = ["suppression\nthen restart", "continued\nspread", "fuel\nburnout",
          "sustained\nsuppression"]
 probs = [0.8425, 0.1140, 0.0419, 0.0016]
 bars = b1.barh(mechs, probs, color=[ACCENT, GREY, GREY, GREY], edgecolor="white")
 b1.set_xlabel("frozen probability")
 b1.set_title("Frozen ranking (Sep 16-20 ledger)", fontsize=9, weight="bold")
+b1.set_xlim(0, 1.0)
 for bar, p in zip(bars, probs):
     b1.text(p + 0.015, bar.get_y() + bar.get_height() / 2, f"{p:.4f}",
             va="center", fontsize=8)
@@ -126,8 +129,10 @@ b2.axhline(0.02, color=WARM, ls="--", lw=1)
 b2.axhline(0.05, color=ACCENT, ls="--", lw=1)
 b2.bar(["null\n(shuffled)", "signal\n(perfect)"], [-0.130, 0.270],
        color=[BLUE, ACCENT], edgecolor="white", width=0.6)
-b2.text(1.02, 0.02, "null must stay\nbelow +0.02", fontsize=6.8, color=WARM, va="center")
-b2.text(1.02, 0.05, "signal must clear +0.05", fontsize=6.8, color=ACCENT, va="center")
+b2.text(1.02, 0.02, "null must stay\nbelow +0.02", fontsize=6.8, color=WARM, va="center",
+        bbox=dict(facecolor="white", edgecolor="none", pad=1.5))
+b2.text(1.02, 0.05, "signal must clear +0.05", fontsize=6.8, color=ACCENT, va="center",
+        bbox=dict(facecolor="white", edgecolor="none", pad=1.5))
 b2.set_ylabel("top-match edge vs frozen")
 b2.set_title("Memory null test (seed 7,\n200 trials)", fontsize=9, weight="bold")
 fig.suptitle("The verdict, and the test that keeps memory honest.",
@@ -148,8 +153,9 @@ n_unlab = n_ep - n_lab
 xr = json.load(open(ROOT / "api" / "demo2_data" / "crossregion.json"))
 n_pat = xr["patterns"]
 best = xr["top_patterns"][0]["labelled"]
-fig, (c1, c2) = plt.subplots(1, 2, figsize=(7.2, 2.9),
+fig, (c1, c2) = plt.subplots(1, 2, figsize=(7.2, 3.1),
                              gridspec_kw={"width_ratios": [1, 1.2]})
+fig.subplots_adjust(top=0.80, wspace=0.30)
 c1.bar(["cases with\na known outcome", "cases without\none"], [n_lab, n_unlab],
        color=[ACCENT, GREY], edgecolor="white", width=0.6)
 c1.set_title(f"{n_ep} past cases, {n_lab} usable", fontsize=9, weight="bold")
@@ -160,9 +166,10 @@ c2.barh(["distinct\nshapes found", "best shape\n(known outcomes)", "bar to\nspea
         [n_pat, best, 5], color=[BLUE, ACCENT, INK], edgecolor="white")
 c2.set_title(f"Best shape: {best} of 5", fontsize=9, weight="bold")
 c2.set_xlabel("count")
-c2.text(best, 1, f"{best} cases" + (" — speaks" if best >= 5 else ""),
-        ha="center", va="bottom", fontsize=8, weight="bold", color=ACCENT)
-c2.text(5, 2, "bar is 5", ha="center", va="bottom", fontsize=8, color=INK)
+c2.set_xlim(0, max(n_pat, 5) + 8)
+c2.text(best + 0.4, 1, f"{best} cases" + (" — speaks" if best >= 5 else ""),
+        ha="left", va="center", fontsize=8, weight="bold", color=ACCENT)
+c2.text(5.4, 2, "bar is 5", ha="left", va="center", fontsize=8, color=INK)
 fig.suptitle("The census, read honestly: the best-known pattern against the bar.",
              fontsize=9.5, weight="bold", color=INK)
 save(fig, "f4_census.png")
@@ -214,13 +221,13 @@ for i in range(len(steps) - 1):
     x2 = steps[i + 1][0]
     ax.add_patch(FancyArrowPatch((x1, 2.5), (x2, 2.5), arrowstyle="-|>",
                                  color=INK, lw=1.2, mutation_scale=10))
-ax.text(2.5, 0.85, "guardrails: keys in environment only · pull never enters data/",
+ax.text(5, 0.95, "guardrails: keys in environment only · pull never enters data/",
         ha="center", fontsize=7.5, style="italic", color="#444444")
-ax.text(7.5, 0.85, "snippets are templates · every number pre-checked",
+ax.text(5, 0.45, "snippets are templates · every number pre-checked",
         ha="center", fontsize=7.5, style="italic", color="#444444")
 ax.text(5, 4.35, "No model writes a word; the human lines are assembled, not composed.",
         ha="center", fontsize=8, style="italic", color=WARM, weight="bold")
-ax.set_title("The morning round: five steps from sky to human lines, all of them checkable.",
+ax.set_title("The morning round: from sky to human lines, all checkable.",
              fontsize=9.5, weight="bold", color=INK, pad=10)
 save(fig, "f7_morning.png")
 
@@ -228,21 +235,21 @@ save(fig, "f7_morning.png")
 fig, ax = plt.subplots(figsize=(7.2, 3.0))
 steps = ["Setup-\nPipes\n(G1-10)", "Hardening\n(+G11)", "Nepal\ndemo\n(+G12)",
          "P0 flex\n(+G13-15)", "P1/P2\n(+G16-18)", "Memory\n(+G19-21)",
-         "Evolver\n(+G22-24)"]
-cum = [10, 11, 12, 15, 18, 21, 24]
+         "Evolver\n(+G22-24)", "Morning\n(+G25)"]
+cum = [10, 11, 12, 15, 18, 21, 24, 25]
 ax.step(range(len(steps)), cum, where="mid", color=ACCENT, lw=2)
 ax.scatter(range(len(steps)), cum, color=ACCENT, zorder=3)
 ax.set_xticks(range(len(steps)))
-ax.set_xticklabels(steps, fontsize=7.5)
+ax.set_xticklabels(steps, fontsize=7)
 ax.set_ylabel("hardened gates (cumulative)")
-ax.set_ylim(0, 26)
+ax.set_ylim(0, 27)
 catches = [(1, "empty-output\nhole closed"), (2, "reads no\npost-cutoff byte"),
            (5, "silence +\nleakage +\nnull gates"), (6, "propose-test-\nwait human")]
 for x, txt in catches:
     ax.annotate(txt, (x, cum[x]), textcoords="offset points", xytext=(12, -22),
                 fontsize=6.8, color="#444444",
                 arrowprops=dict(arrowstyle="-", color=GREY, lw=0.8))
-ax.set_title("The gate set grew with the system: 10 setup gates to 24, each phase adding its own.",
-             fontsize=9.5, weight="bold", color=INK, pad=10)
+ax.set_title("The gate set grew with the system: 10 setup gates to 25, each phase adding its own.",
+             fontsize=9, weight="bold", color=INK, pad=10)
 save(fig, "f6_gates.png")
 print("all figures done")

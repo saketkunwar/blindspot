@@ -136,6 +136,15 @@ ol.steps p { margin: 6px 0; }
 .demo-index section a { text-decoration: none; }
 .demo-index section a:hover { text-decoration: underline; }
 
+/* Receipt box: the command and what it prints, quoted exactly. */
+.receipt { background: #101310; border: 1px solid var(--line);
+  border-radius: 10px; padding: 18px 22px; overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+.receipt .cmd { color: var(--accent-ink); }
+.story-drop { font-family: var(--serif); font-size: 19px; line-height: 1.6;
+  color: var(--ink-soft); max-width: 64ch; }
+
 @media (max-width: 640px) {
   .demo { padding: 24px 14px 80px; }
   .hero, .demo section { padding: 24px 20px; border-radius: 10px; }
