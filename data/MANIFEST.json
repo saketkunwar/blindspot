@@ -155,6 +155,18 @@
   "sha256": "60a47444325444de329c855ec7f0cea7344fb8c71835dae842df409b1e8ec15f",
   "source_url": "HOT Nepal flood response OSM/Overture local export (Sep 2026)"
  },
+ "model_cassettes/098530bd2995b9be4adef6dc8eae67adf57551e0d1a5ec60e59776a55115dc37.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "153aa651ed87d87fa13fff611d6b8711d2223aaecf3e0cdbd34f2583da96199a",
+  "source_url": "Meta Model API live call, operator key via env"
+ },
+ "model_cassettes/0dee35e9e69cf0606ed32f9fe624614e0aa445c3e98fa9fe85da84c097989003.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "1497844255366e8bd3178a6846ec09ed18625d26fd10259171c33a3b8165050b",
+  "source_url": "Meta Model API live call, operator key via env"
+ },
  "model_cassettes/18f6aa37332451985f787462a5b8b143a06c41bfe72e00675bf87693a3399991.json": {
   "kind": "synthetic",
   "license": "project synthetic",
@@ -173,11 +185,41 @@
   "sha256": "60816c4b1bce0fa6ca919fab804c90cd78c56e51f41e43024a2018d29846ccb7",
   "source_url": "recorded Muse Spark 1.2-Contributor cassette (probe or insight round)"
  },
+ "model_cassettes/48bc03704d555f52822c4c41627a2617cb9502559d23a3e5bf8c04e2bc83f994.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "a6c6d618a3223d24a6e660463f585307e61134b8871adc1812aa2afa1de295fe",
+  "source_url": "Meta Model API live call, operator key via env"
+ },
+ "model_cassettes/5856f84bd114e63df5ff5a995685ca73325451448274e0c7c3aa1eb7d6255541.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "e1874be18a25d0aa4bc778420f584b9a80653e8b1b7971fc4a79db85d2f48b50",
+  "source_url": "Meta Model API live call, operator key via env"
+ },
+ "model_cassettes/58e6638a7b5b42d4bc1d6db6b5202b054b87838fc0af74404b84c5b5c050eafd.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "06456e22316dbccf2992d44a0a836fd0c3bf6b86ac404472deeecc953215ffa2",
+  "source_url": "Meta Model API live call, operator key via env"
+ },
  "model_cassettes/87d243167ddb4dd51a22612e0cbcc77a76f7a124e15e10449242c46b5ec80928.json": {
   "kind": "synthetic",
   "license": "project synthetic",
   "sha256": "93722cefae260a3ee51906a6c4bcaac69d0183518e150d407856f08f87fc22a4",
   "source_url": "recorded Muse Spark 1.2-Contributor cassette (probe or insight round)"
+ },
+ "model_cassettes/8fb5de77b77a7b9d151b9279d853bd311c4473f742a8b44674428e15efcd78bc.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "b5184c4aaf919948b51318d47be197b660b632e0bb6047ff0575c202f1e522c3",
+  "source_url": "Meta Model API live call, operator key via env"
+ },
+ "model_cassettes/991628562f558eeaf88c9f7ce6f0957366006e832d97539126aaf3940bea1cef.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "84b751562c6014c1277f5a0a0c0a9a886ca3aaf4faf5c81d69543f2b12bf2705",
+  "source_url": "Meta Model API live call, operator key via env"
  },
  "model_cassettes/a1528a49715eb3be782d28523fc87e8a8038f22dda3dedefefebcc242aa14c06.json": {
   "kind": "synthetic",
@@ -202,6 +244,12 @@
   "license": "project synthetic",
   "sha256": "59a2ec256110642586562d783ea805f7457525ae3d63d1db9991a897d06ea06f",
   "source_url": "recorded Muse Spark 1.2-Contributor cassette (probe or insight round)"
+ },
+ "model_cassettes/da9f54f8edda9845fe5e8986f9b9842285c11b7e0b07632e5d5b06aa3df78c2a.json": {
+  "kind": "real",
+  "license": "As-published, no explicit licence stated (operator-confirm)",
+  "sha256": "1b3a6f7203eaf637fe2e748f674ccf26b34035886a5db566bd07f908efa8afea",
+  "source_url": "Meta Model API live call, operator key via env"
  },
  "model_cassettes/e0d4fe88c1e49ebaae5aa3745bac3ce954b7596a9e02932b62653ac838786b34.json": {
   "kind": "synthetic",

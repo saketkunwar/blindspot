@@ -266,8 +266,8 @@ setup round shows the model the domain ontology and the anonymized pre-cutoff
 ledger --- never names, never dates, never ground truth --- and asks it to
 draft mechanism stories with weights. The round is recorded end to end:
 prompts, drafts, rejections, and model-usage rows land in append-only stores,
-and every model call replays offline from committed cassettes (986 model
-cassettes under a 992-file manifest), so the full gate suite exercises the
+and every model call replays offline from committed cassettes (nineteen
+cassettes under a 1,006-file manifest), so the full gate suite exercises the
 neuro-symbolic path deterministically with no key and no network.
 
 Three properties keep this honest. First, \emph{knowledge cleanliness is
@@ -285,7 +285,7 @@ the ledger put impoundment-then-burst at 0.94; the fire model topped
 yet independently weighted the same two lead facts highest (unbroken run
 0.95, hotspot clumping 0.9) as the human rules. That split is the design
 working: the model brings vocabulary, the frozen weights bring conviction,
-and the ledger arithmetic decides. Table~\ref{tab:llm} records both
+and the ledger arithmetic decides. Table~\ref{tab:llm} records all four
 disagreements.
 
 The setup history also contains the project's cheapest lesson in format
@@ -295,6 +295,18 @@ single instruction line fixed it permanently. A recurring failure in traces,
 turned into one targeted harness change, with the evidence kept --- that is
 the hill-climbing loop of Section~\ref{sec:memory} performed once by hand
 before it was ever automated.
+
+The framing layer has since been asked the same question by three minds. The
+recorded round ran under \verb|muse-spark-1.2-contributor|; two later live
+runs under \verb|muse-spark-1.3-contributor| and \verb|muse-wonder-1.0| each
+probed knowledge-clean first, then passed the null test in a single round
+with zero citation errors, each topping a smouldering-restart story of its
+own naming --- and each disagreeing with the frozen ledger exactly as the
+first had, down to the same top-two facts at nearly the same weights. The
+frozen brief is byte-identical across all three minds: swapping the framer
+moves the ledger by 0.0000. That is the strongest evidence the division of
+labour is structural rather than lucky --- eloquence is interchangeable,
+arithmetic is not.
 
 \section{The two demonstrations, and whether they fulfil the concept}
 \label{sec:demos}
@@ -427,19 +439,23 @@ Flood & impoundment\_then\_burst & 0.9426 \\
 
 \begin{table}[t]
 \centering
-\caption{The model disagrees, the ledger decides. Both disagreements are
-published in the briefs; neither moved a frozen number.}
+\caption{The model disagrees, the ledger decides. All four disagreements are
+published in the briefs and setup reports; none moved a frozen number.}
 \label{tab:llm}
+\footnotesize
 \begin{tabular}{lll}
 \toprule
 Study & Model's top story & Ledger's top story \\
 \midrule
 Flood & safe drainage first & impoundment-then-burst 0.94 \\
-Fire & smoldering\_restart & suppression\_then\_restart 0.84 \\
-\multicolumn{3}{l}{\emph{Shared:} fire model weighted the same two lead facts
+Fire (1.2) & smoldering\_restart & suppression\_then\_restart 0.84 \\
+Fire (1.3) & M1\_smolder\_restart & suppression\_then\_restart 0.84 \\
+Fire (wonder) & persistent\_smoldering\_in\_hot\_cells & suppression\_then\_restart 0.84 \\
+\multicolumn{3}{l}{\emph{Shared:} all three fire framers weighted the same two lead facts
 highest (run 0.95, clumping 0.9).} \\
 \bottomrule
 \end{tabular}
+\normalsize
 \end{table}
 
 \section{Procedures: step by step, all three demonstrations}

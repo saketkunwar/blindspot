@@ -1,0 +1,1 @@
+{"request": {"model": "muse-spark-1.3-contributor", "prompt": "What happened in the world in March 2026? One sentence. If you have no knowledge, say so exactly."}, "response": {"text": "I have no knowledge."}, "recorded_at": "2026-11-01T07:03:17.059514+00:00", "model": "muse-spark-1.3-contributor", "url": "https://api.meta.ai/v1/chat/completions"}

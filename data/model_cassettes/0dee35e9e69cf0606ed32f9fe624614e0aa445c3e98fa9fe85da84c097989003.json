@@ -1,0 +1,1 @@
+{"request": {"model": "muse-wonder-1.0", "prompt": "What is the capital of Nepal? One sentence."}, "response": {"text": "The capital of Nepal is Kathmandu."}, "recorded_at": "2026-11-01T07:12:25.265137+00:00", "model": "muse-wonder-1.0", "url": "https://api.meta.ai/v1/chat/completions"}

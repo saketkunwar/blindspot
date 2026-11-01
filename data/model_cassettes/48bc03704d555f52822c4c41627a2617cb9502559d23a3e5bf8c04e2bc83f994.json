@@ -1,0 +1,1 @@
+{"request": {"model": "muse-wonder-1.0", "prompt": "What happened on the Bhote Koshi in Nepal in late August 2026? One paragraph. If you have no knowledge of this, say so exactly."}, "response": {"text": "I have no knowledge of this."}, "recorded_at": "2026-11-01T07:12:10.819878+00:00", "model": "muse-wonder-1.0", "url": "https://api.meta.ai/v1/chat/completions"}

@@ -1,0 +1,28 @@
+{
+ "model": "muse-wonder-1.0",
+ "probes": [
+  {
+   "probe": "flood",
+   "status": "answered-ignorant",
+   "source": "cassette",
+   "chars": 28,
+   "excerpt": "I have no knowledge of this."
+  },
+  {
+   "probe": "control-1",
+   "status": "answered-ignorant",
+   "source": "cassette",
+   "chars": 20,
+   "excerpt": "I have no knowledge."
+  },
+  {
+   "probe": "control-2",
+   "status": "answered-substantive",
+   "source": "cassette",
+   "chars": 34,
+   "excerpt": "The capital of Nepal is Kathmandu."
+  }
+ ],
+ "verdict": "CLEAN-or-pending (probe did not demonstrate knowledge)",
+ "note": "Substantive flood answers exclude the model; ignorance or structural evidence admits it."
+}

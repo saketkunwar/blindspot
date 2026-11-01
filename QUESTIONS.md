@@ -299,3 +299,23 @@ Builder code must never contain expected counts/distances/cell ids from any pitc
 - Scope held: brief-level memory (autoinsight note + adjust math) is
   untouched, so G19/G20-pinned briefs do not move. Recall first appears in
   the Demo-2 snapshots (study-shaped and live-shaped queries) and pages.
+
+## Model-swap comparison (live run, operator key via env)
+- Fire setup re-run under challenger `muse-spark-1.3-contributor` (--no-card,
+  out-dir /tmp, 4 new cassettes manifested as real): null PASS, 0 citation
+  errors, top `M1_smolder_restart`, top_agrees False — mirroring the recorded
+  1.2 round (null PASS, 0 errors, top `smoldering_restart`, agrees False).
+  Frozen brief byte-identical across the run. Probe reported the challenger
+  knowledge-clean first. Finding: swapping the framing mind moves the frozen
+  ledger by 0.0000; the harness discriminates identically across the family.
+- The pasted chat key is exposed: rotate it. No key material in cassettes,
+  usage log, or repo (scanned before manifesting).
+
+## Third mind: muse-wonder-1.0 (live run, same key, same discipline)
+- Fire setup under `muse-wonder-1.0` (--no-card, /tmp, 4 new cassettes
+  manifested as real): probe clean, null PASS, 0 citation errors, top
+  `persistent_smoldering_in_hot_cells`, top_agrees False. Weights agree with
+  both predecessors on the top-two facts (FF4 0.95, FF5 0.9; 1.2 had them
+  0.9/0.95, 1.3 the same pair). Frozen brief byte-identical across all three
+  minds. Showcase beat updated from two minds to three; finding unchanged:
+  the framing mind never moves the ledger.

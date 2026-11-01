@@ -103,3 +103,8 @@ draft2 fixes: 4 contradictions reconciled (Iberia 4/5 vs Amazon 5/5, 22->26
   (Cohn/Hazarika, Grenon/Smith, Garcez et al., all verified); new showcase
   section; gates table to 25
   | paper.tex + make_figs.py; tectonic clean rebuild, 20pp
+three-mind framing result: 1.3 + wonder-1.0 live runs, null PASS, 0 errors,
+  tops M1_smolder_restart / persistent_smoldering_in_hot_cells, frozen brief
+  identical; tab:llm to 4 rows; cassette count corrected 986->19, manifest
+  1,006 (state-drift catch)
+  | /tmp setup reports + meta_usage.json + MANIFEST (live key, since rotated)
