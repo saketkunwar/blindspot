@@ -43,9 +43,12 @@ export default function ChainDemo() {
         <p className="meta">Subject: {d.subject} · nothing here is illustrated; every value replays from pinned files</p>
       </header>
 
+      <div className="trace">
       {d.hops.map((h) => (
-        <section key={h.n}>
-          <h2>Hop {h.n}: {h.a} → {h.b}</h2>
+        <section key={h.n} className="hop">
+          <p className="hop-n">{h.n}</p>
+          <h2>{h.a} → {h.b}</h2>
+          <p className="relbadge">{h.fwd ? `${h.fwd.rcc8} · ${REL[h.fwd.rcc8] || ""}` : "cluster rule"}</p>
           <p>{h.says}.</p>
           {h.fwd ? (
             <table className="kv"><tbody>
@@ -64,6 +67,7 @@ export default function ChainDemo() {
           )}
         </section>
       ))}
+      </div>
 
       <section>
         <h2>The closing step: compose, don&apos;t assert</h2>

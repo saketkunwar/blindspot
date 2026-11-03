@@ -225,9 +225,37 @@ def _verified_brief(study_id: str) -> dict:
     return brief
 
 
-def study_geo(study_id: str, request: Request) -> JSONResponse:
+def _gt_after_layers(study_id: str, cap: int = 500) -> tuple:
+    """Ground-truth reveal layers: post-event features the brief never saw.
+    GT-marked kind, stride-capped deterministically. Display only — no fact
+    op reads these; the ledger inputs are untouched."""
+    if study_id != "nepal-cascade":
+        return [], 0
+    try:
+        feats = json.loads((_root() / "data" / "flood_nepal"
+                            / "destroyed_after.geojson").read_text())["features"]
+    except (OSError, json.JSONDecodeError, KeyError):
+        return [], 0
+    step = max(1, len(feats) // cap)
+    layers = []
+    for f in feats[::step][:cap]:
+        if not isinstance(f.get("geometry"), dict):
+            continue
+        p = f.get("properties") or {}
+        layers.append({"type": "Feature",
+                       "properties": {"kind": "ground truth (after)",
+                                      "id": p.get("id"),
+                                      "label": p.get("name_latin") or p.get("name"),
+                                      "status": p.get("status"),
+                                      "place": p.get("adm3_name") or p.get("adm2_name")},
+                       "geometry": f["geometry"]})
+    return layers, len(feats)
+
+
+def study_geo(study_id: str, request: Request, after: bool = False) -> JSONResponse:
     """Map layers from curated inputs: target reach, outline box, capped
-    pre-cutoff damage sample. Static inputs, so always cached."""
+    pre-cutoff damage sample. Static inputs, so always cached. With
+    after=True, GT-marked post-event layers are appended for the reveal."""
     _require_study(study_id, request)
     extent, target, pre = _geo_parts(study_id)
     cap = 500
@@ -239,10 +267,15 @@ def study_geo(study_id: str, request: Request) -> JSONResponse:
                [x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]}}
     layers = ([{**f, "properties": {"kind": "target reach"}} for f in target]
               + [box] + pts)
-    _ops_log("study.geo", study=study_id, layers=len(layers))
+    gt_total = 0
+    if after:
+        gt, gt_total = _gt_after_layers(study_id, cap)
+        layers = layers + gt
+    _ops_log("study.geo", study=study_id, layers=len(layers), after=after)
     return JSONResponse({"mode": "cached",
                          "data": {"layers": layers, "sample_cap": cap,
-                                  "pre_cutoff_total": len(pre)}})
+                                  "pre_cutoff_total": len(pre),
+                                  "gt_after_total": gt_total}})
 
 
 def study_gt(study_id: str, mode: str, request: Request) -> JSONResponse:
@@ -421,8 +454,8 @@ def v1_study_brief(study_id: str, request: Request, mode: str = "cached") -> JSO
 
 
 @app.get("/v1/studies/{study_id}/geo")
-def v1_study_geo(study_id: str, request: Request) -> JSONResponse:
-    return study_geo(study_id, request)
+def v1_study_geo(study_id: str, request: Request, after: bool = False) -> JSONResponse:
+    return study_geo(study_id, request, after=after)
 
 
 @app.get("/v1/studies/{study_id}/gt")
@@ -449,9 +482,9 @@ def demo_nepal_cascade(request: Request, mode: str = "cached") -> JSONResponse:
 
 
 @app.get("/api/demo/nepal-cascade/geo")
-def demo_nepal_cascade_geo(request: Request) -> JSONResponse:
+def demo_nepal_cascade_geo(request: Request, after: bool = False) -> JSONResponse:
     """Legacy alias of `/v1/studies/nepal-cascade/geo` (same behaviour)."""
-    return study_geo("nepal-cascade", request)
+    return study_geo("nepal-cascade", request, after=after)
 
 
 @app.get("/api/demo/fire-study")
@@ -461,15 +494,17 @@ def demo_fire_study(request: Request, mode: str = "cached") -> JSONResponse:
 
 
 @app.get("/api/demo/fire-study/geo")
-def demo_fire_study_geo(request: Request) -> JSONResponse:
+def demo_fire_study_geo(request: Request, after: bool = False) -> JSONResponse:
     """Map layers for the fire demo: the 30 curated grid cells as one
     `fire cell` kind (a color MapPane already knows), plus the study-box
-    outline for framing. Static inputs, so always cached."""
+    outline for framing. Static inputs, so always cached. With after=True,
+    the October live pull is appended as GT-marked reveal points."""
     _require_study("kalimantan-fire", request)
     demo = _study_dir("kalimantan-fire")
     try:
         cells = json.loads((demo / "inputs" / "cells.geojson").read_text())["features"]
         box = json.loads((demo / "inputs" / "extent.json").read_text())["bbox"]
+        dets = json.loads((demo / "inputs" / "detections.geojson").read_text())["features"]
     except (OSError, json.JSONDecodeError, KeyError) as e:
         raise HTTPException(status_code=502, detail=f"fire geo inputs unreadable: {e}")
     layers = []
@@ -482,16 +517,56 @@ def demo_fire_study_geo(request: Request) -> JSONResponse:
                                       "days": props.get("days", []),
                                       "total": props.get("total", 0)},
                        "geometry": c["geometry"]})
+    # Detection points ride the same "fire cell" kind the map already knows,
+    # so the serving contract (kinds, counts) is unchanged; the heat layer
+    # and circles give them glow and body.
+    for f in dets:
+        dprops = f.get("properties") or {}
+        if not isinstance(f.get("geometry"), dict):
+            continue
+        layers.append({"type": "Feature",
+                       "properties": {"kind": "fire cell",
+                                      "id": dprops.get("src_id"),
+                                      "day": dprops.get("day")},
+                       "geometry": f["geometry"]})
     x0, y0, x1, y1 = box
     layers.append({"type": "Feature", "properties": {"kind": "observed fire outline"},
                    "geometry": {"type": "Polygon", "coordinates": [[
                        [x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]}})
-    _ops_log("demo.fire.geo", cells=len(layers) - 1)
+    gt_after_total = 0
+    if after:
+        # October live pull as the reveal: post-cutoff ground truth the
+        # September brief never saw. GT-marked kind, display only.
+        try:
+            import csv as _csv
+            with open(_root() / "api" / "demo2_data" / "live_pull_2026-10-30.csv",
+                      newline="") as fh:
+                for i, r in enumerate(_csv.DictReader(fh)):
+                    try:
+                        lon, lat = float(r["longitude"]), float(r["latitude"])
+                    except (KeyError, TypeError, ValueError):
+                        continue
+                    layers.append({"type": "Feature",
+                                   "properties": {"kind": "ground truth (after)",
+                                                  "id": f"live-{i}",
+                                                  "day": r.get("acq_date"),
+                                                  "label": "October live detection"},
+                                   "geometry": {"type": "Point",
+                                                "coordinates": [lon, lat]}})
+                    gt_after_total += 1
+        except OSError:
+            pass
+    _ops_log("demo.fire.geo", cells=len(layers) - 1, after=after)
+    ncells = sum(1 for f in layers
+                 if f["properties"].get("kind") == "fire cell"
+                 and f.get("geometry", {}).get("type") in ("Polygon", "MultiPolygon"))
     return JSONResponse({"mode": "cached",
-                         "data": {"layers": layers, "cell_count": len(layers) - 1,
+                         "data": {"layers": layers, "cell_count": ncells,
+                                  "gt_after_total": gt_after_total,
                                   "detections": sum(
                                       (f.get("properties") or {}).get("total", 0)
-                                      for f in layers if f["properties"].get("kind") == "fire cell")}})
+                                      for f in layers if f["properties"].get("kind") == "fire cell"
+                                      and f.get("geometry", {}).get("type") in ("Polygon", "MultiPolygon"))}})
 
 
 @app.get("/api/demo2/fire-study")

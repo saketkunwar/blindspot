@@ -89,3 +89,21 @@ def test_fire_demo_brief_and_geo():
     assert g["cell_count"] == 30 and g["detections"] == 6142
     kinds = {f["properties"]["kind"] for f in g["layers"]}
     assert kinds == {"fire cell", "observed fire outline"}
+
+
+def test_reveal_layers_are_gt_marked_and_opt_in():
+    # Default geo carries no ground truth; ?after=true appends GT-marked
+    # reveal layers only (display contract for the Before/After switch).
+    g = client.get("/api/demo/fire-study/geo").json()["data"]
+    assert "ground truth (after)" not in {f["properties"]["kind"] for f in g["layers"]}
+    a = client.get("/api/demo/fire-study/geo?after=true").json()["data"]
+    kinds = {f["properties"]["kind"] for f in a["layers"]}
+    assert "ground truth (after)" in kinds
+    assert a["gt_after_total"] == 675
+    assert a["cell_count"] == 30 and a["detections"] == 6142
+    n = client.get("/api/demo/nepal-cascade/geo?after=true").json()["data"]
+    kinds = {f["properties"]["kind"] for f in n["layers"]}
+    assert "ground truth (after)" in kinds
+    assert n["gt_after_total"] == 3965
+    d = client.get("/api/demo/nepal-cascade/geo").json()["data"]
+    assert "ground truth (after)" not in {f["properties"]["kind"] for f in d["layers"]}

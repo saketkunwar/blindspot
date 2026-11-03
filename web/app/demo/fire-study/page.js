@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MapPane, { legendOf } from "../../../components/MapPane";
+import MapPane, { legendOf, featureBounds } from "../../../components/MapPane";
 import { getDemoFire, getDemoFireGeo, getDemo2Fire } from "../../../lib/api";
 
 const STEPS = [
@@ -15,6 +15,10 @@ export default function FireStudyDemo() {
   const [geo, setGeo] = useState(null);
   const [mem, setMem] = useState(null);
   const [error, setError] = useState("");
+  const [scenario, setScenario] = useState("before");
+  const [afterGeo, setAfterGeo] = useState(null);
+  const [fly, setFly] = useState(null);
+  const [flyN, setFlyN] = useState(0);
 
   useEffect(() => {
     Promise.all([getDemoFire(), getDemoFireGeo()])
@@ -23,12 +27,34 @@ export default function FireStudyDemo() {
     getDemo2Fire().then((m) => setMem(m)).catch(() => {});
   }, []);
 
+  // Before/after reveal: the October live pull is fetched once, on first
+  // flip, and swapped in place with the viewport locked.
+  const flip = (s) => {
+    setScenario(s);
+    if (s === "after" && !afterGeo) {
+      getDemoFireGeo(true).then((g) => setAfterGeo(g)).catch(() => setScenario("before"));
+    }
+  };
+
   if (error) return <main className="demo demo-fire"><p className="meta">{error}</p></main>;
   if (!brief) return <main className="demo demo-fire"><p className="meta">Loading demo…</p></main>;
 
   const d = brief.data;
   const facts = Object.entries(d.ledger.facts);
-  const layers = geo ? geo.data.layers : [];
+  const showingAfter = scenario === "after" && afterGeo;
+  // Guided flight target: the highest-total cell's own bounds.
+  const flyTarget = () => {
+    const polys = layers.filter((f) => f?.properties?.kind === "fire cell"
+      && /Polygon/.test(f?.geometry?.type || ""));
+    let best = null;
+    polys.forEach((f) => {
+      const t = f?.properties?.total || 0;
+      if (!best || t > (best?.properties?.total || 0)) best = f;
+    });
+    const b = featureBounds(best ? [best] : layers);
+    if (b) { setFlyN((n) => n + 1); setFly({ bounds: b, nonce: flyN + 1 }); }
+  };
+  const layers = showingAfter ? afterGeo.data.layers : geo ? geo.data.layers : [];
   const counts = d.inputs_audit.counts;
   const counters = [
     { n: counts.detections.toLocaleString(), l: "pre-cutoff FIRMS detections" },
@@ -40,12 +66,22 @@ export default function FireStudyDemo() {
   return (
     <main className="demo demo-fire">
       <header className="hero">
+        <span className="actnum" aria-hidden="true">02</span>
         <p className="eyebrow">BlindSpot demo · pre-cutoff autoinsight <span className="mode">{brief.mode}</span></p>
-        <h1>Peatland fires: what the pre-cutoff evidence supports</h1>
+        <h1>The fire that came back from underground</h1>
         <p className="lede">{d.verdict}</p>
         <p>Most systems interpolate what was seen. BlindSpot reasons about what was not seen — the days lost to cloud and the ground between clear views — in space and time together, and every conclusion carries the relations it came from.</p>
         <p className="meta">{d.probability_semantics} · snapshot {d.as_of_label}</p>
       </header>
+
+      <section>
+        <h2>The story in three beats</h2>
+        <div className="beats">
+          <div className="beat"><h3>What was lost</h3><p>Five days of smoke over the peatlands of Central Kalimantan. Satellites counted 6,142 detections and then the sky went blind — nothing above ground showed whether the peat kept smouldering below it.</p></div>
+          <div className="beat"><h3>What the ledger said</h3><p>Clumping near hot cells and one unbroken burn run carried the frozen weights to suppression-then-restart at 0.8425 — and the same number came back, to four decimals, with half the map deleted.</p></div>
+          <div className="beat"><h3>What proved it</h3><p>The late-September restart was held out before the freeze and matched. In October the morning agent pulled 675 fresh detections on its own round — the spike the story said was coming, read live.</p></div>
+        </div>
+      </section>
 
       <section>
         <h2>Survey findings</h2>
@@ -110,19 +146,35 @@ export default function FireStudyDemo() {
       )}
 
       <section>
-        <h2>Legend map</h2>
-        <div className="legend">
-          {legendOf(layers).map(([kind, color]) => (
-            <span className="legend-chip" key={kind}>
-              <span className="swatch" style={{ background: color }} />{kind}
-            </span>
-          ))}
-          <span className="meta legend-note">
-            {geo ? `${geo.data.cell_count} cells · ${geo.data.detections.toLocaleString()} detections` : "loading layers…"}
-          </span>
-        </div>
-        <div className="mapwrap">
-          <MapPane layers={layers} />
+        <h2>Map</h2>
+        <div className="demomap">
+          <aside className="rail">
+            <h3>The verdict</h3>
+            <p className="verdictblock">Suppression, then restart — 0.8425. The peat kept smouldering underground and came back, exactly as scored, and exactly as repeated with half the map deleted. In October the watchman caught the spike live.</p>
+            <h3>Field notes</h3>
+            <p>Peat fires smoulder unseen, then restart. Fly into the hottest cell — the core the clumping fact never leaves.</p>
+            <button type="button" className="item flybtn" onClick={flyTarget}>Fly to the hot core</button>
+            <div className="legend">
+              {legendOf(layers).map(([kind, color]) => (
+                <span className="legend-chip" key={kind}>
+                  <span className="swatch" style={{ background: color }} />{kind}
+                </span>
+              ))}
+              <span className="meta legend-note">
+                {geo ? `${geo.data.cell_count} cells · ${geo.data.detections.toLocaleString()} detections` : "loading layers…"}
+              </span>
+            </div>
+            <div className="scenario">
+              <button type="button" className={scenario === "before" ? "item active" : "item"}
+                onClick={() => flip("before")}>Before: September detections</button>
+              <button type="button" className={scenario === "after" ? "item active" : "item"}
+                onClick={() => flip("after")}>After: the October restart it predicted</button>
+              {showingAfter && <span className="meta"> {afterGeo.data.gt_after_total.toLocaleString()} October detections, post-cutoff ground truth.</span>}
+            </div>
+          </aside>
+          <div className="mapwrap">
+            <MapPane layers={layers} basemap="satellite" lockView={scenario === "after" && !!afterGeo} flyTo={fly} />
+          </div>
         </div>
       </section>
 

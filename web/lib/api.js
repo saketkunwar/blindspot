@@ -9,11 +9,11 @@ async function get(path) {
 export const getFlood = (mode = "cached") => get(`/api/results/flood?mode=${mode}`);
 export const getFire = (mode = "cached") => get(`/api/results/fire?mode=${mode}`);
 export const getDemoNepal = (mode = "cached") => get(`/api/demo/nepal-cascade?mode=${mode}`);
-export const getDemoNepalGeo = () => get(`/api/demo/nepal-cascade/geo`);
+export const getDemoNepalGeo = (after = false) => get(`/api/demo/nepal-cascade/geo${after ? "?after=true" : ""}`);
 export const getFloodAssets = () => get(`/api/results/flood/assets`);
 export const getFloodNames = () => get(`/api/results/flood/names`);
 export const getDemoFire = (mode = "cached") => get(`/api/demo/fire-study?mode=${mode}`);
-export const getDemoFireGeo = () => get(`/api/demo/fire-study/geo`);
+export const getDemoFireGeo = (after = false) => get(`/api/demo/fire-study/geo${after ? "?after=true" : ""}`);
 export const getDemo2Fire = () => get(`/api/demo2/fire-study`);
 export const getDemo2Nepal = () => get(`/api/demo2/nepal-cascade`);
 export const getDemo2Chain = () => get(`/api/demo2/nepal-chain`);

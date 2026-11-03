@@ -123,8 +123,20 @@
   },
   "/api/demo/fire-study/geo": {
    "get": {
-    "description": "Map layers for the fire demo: the 30 curated grid cells as one\n`fire cell` kind (a color MapPane already knows), plus the study-box\noutline for framing. Static inputs, so always cached.",
+    "description": "Map layers for the fire demo: the 30 curated grid cells as one\n`fire cell` kind (a color MapPane already knows), plus the study-box\noutline for framing. Static inputs, so always cached. With after=True,\nthe October live pull is appended as GT-marked reveal points.",
     "operationId": "demo_fire_study_geo_api_demo_fire_study_geo_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "after",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "After",
+       "type": "boolean"
+      }
+     }
+    ],
     "responses": {
      "200": {
       "content": {
@@ -133,6 +145,16 @@
        }
       },
       "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
      }
     },
     "summary": "Demo Fire Study Geo"
@@ -181,6 +203,18 @@
    "get": {
     "description": "Legacy alias of `/v1/studies/nepal-cascade/geo` (same behaviour).",
     "operationId": "demo_nepal_cascade_geo_api_demo_nepal_cascade_geo_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "after",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "After",
+       "type": "boolean"
+      }
+     }
+    ],
     "responses": {
      "200": {
       "content": {
@@ -189,6 +223,16 @@
        }
       },
       "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
      }
     },
     "summary": "Demo Nepal Cascade Geo"
@@ -547,6 +591,16 @@
       "schema": {
        "title": "Study Id",
        "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "after",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "After",
+       "type": "boolean"
       }
      }
     ],

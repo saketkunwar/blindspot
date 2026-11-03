@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MapPane, { legendOf } from "../../../components/MapPane";
+import MapPane, { legendOf, featureBounds } from "../../../components/MapPane";
 import { getDemoNepal, getDemoNepalGeo, getDemo2Nepal } from "../../../lib/api";
 
 const STEPS = [
@@ -15,6 +15,10 @@ export default function NepalCascadeDemo() {
   const [geo, setGeo] = useState(null);
   const [mem, setMem] = useState(null);
   const [error, setError] = useState("");
+  const [scenario, setScenario] = useState("before");
+  const [afterGeo, setAfterGeo] = useState(null);
+  const [fly, setFly] = useState(null);
+  const [flyN, setFlyN] = useState(0);
 
   useEffect(() => {
     Promise.all([getDemoNepal(), getDemoNepalGeo()])
@@ -23,12 +27,28 @@ export default function NepalCascadeDemo() {
     getDemo2Nepal().then((m) => setMem(m)).catch(() => {});
   }, []);
 
+  // Before/after reveal: the after-layers are fetched once, on first flip,
+  // and swapped in place with the viewport locked — the reveal, not a refit.
+  const flip = (s) => {
+    setScenario(s);
+    if (s === "after" && !afterGeo) {
+      getDemoNepalGeo(true).then((g) => setAfterGeo(g)).catch(() => setScenario("before"));
+    }
+  };
+
   if (error) return <main className="demo demo-flood"><p className="meta">{error}</p></main>;
   if (!brief) return <main className="demo demo-flood"><p className="meta">Loading demo…</p></main>;
 
   const d = brief.data;
   const facts = Object.entries(d.ledger.facts);
-  const layers = geo ? geo.data.layers : [];
+  const showingAfter = scenario === "after" && afterGeo;
+  const layers = showingAfter ? afterGeo.data.layers : geo ? geo.data.layers : [];
+  // Guided flight target: the red reach's own bounds, from live layers.
+  const flyTarget = () => {
+    const t = layers.filter((f) => f?.properties?.kind === "target reach");
+    const b = featureBounds(t.length ? t : layers);
+    if (b) { setFlyN((n) => n + 1); setFly({ bounds: b, nonce: flyN + 1 }); }
+  };
   const counts = d.inputs_audit.counts;
   const counters = [
     { n: counts.kept_pre_cutoff.toLocaleString(), l: "pre-cutoff damage features" },
@@ -40,12 +60,22 @@ export default function NepalCascadeDemo() {
   return (
     <main className="demo demo-flood">
       <header className="hero">
+        <span className="actnum" aria-hidden="true">01</span>
         <p className="eyebrow">BlindSpot demo · pre-cutoff autoinsight <span className="mode">{brief.mode}</span></p>
-        <h1>Valley survey: what the pre-cutoff evidence supports</h1>
+        <h1>The valley that burst upstream</h1>
         <p className="lede">{d.verdict}</p>
         <p>Most systems interpolate what was seen. BlindSpot reasons about what was not seen — the days lost to cloud and the ground between clear views — in space and time together, and every conclusion carries the relations it came from.</p>
         <p className="meta">{d.probability_semantics} · snapshot {d.as_of_label}</p>
       </header>
+
+      <section>
+        <h2>The story in three beats</h2>
+        <div className="beats">
+          <div className="beat"><h3>What was lost</h3><p>Forty-eight blind hours over the Langtang Valley. No satellite saw the tributary swell, the debris dam grow, or the water pond behind it — the survey that returned held only the before.</p></div>
+          <div className="beat"><h3>What the ledger said</h3><p>From pre-cutoff geometry alone — 2,092 damaged features against one red tributary and the shapes around it — the frozen weights read impoundment-then-burst at 0.9426, and triaged 171 bridges inside a 172.8 kilometre maybe-band.</p></div>
+          <div className="beat"><h3>What proved it</h3><p>The ground truth stayed sealed until the freeze. Unopened, it held 754 newly destroyed features in the pattern the burst story predicts — and the model&apos;s safe-drainage all-clear, recorded and overruled in the brief, is still there to read.</p></div>
+        </div>
+      </section>
 
       <section>
         <h2>Survey findings</h2>
@@ -110,19 +140,35 @@ export default function NepalCascadeDemo() {
       )}
 
       <section>
-        <h2>Legend map</h2>
-        <div className="legend">
-          {legendOf(layers).map(([kind, color]) => (
-            <span className="legend-chip" key={kind}>
-              <span className="swatch" style={{ background: color }} />{kind}
-            </span>
-          ))}
-          <span className="meta legend-note">
-            {geo ? `${layers.length} drawn of ${geo.data.pre_cutoff_total}, cap ${geo.data.sample_cap}` : "loading layers…"}
-          </span>
-        </div>
-        <div className="mapwrap">
-          <MapPane layers={layers} />
+        <h2>Map</h2>
+        <div className="demomap">
+          <aside className="rail">
+            <h3>The verdict</h3>
+            <p className="verdictblock">Impoundment, then burst — 0.9426. The dam grew upstream, the pond broke, and 171 bridges inside a 172.8 kilometre band were told to move first. The sealed ground truth, 754 destroyed features, proved the call.</p>
+            <h3>Field notes</h3>
+            <p>A blind valley read from geometry alone. Fly to the red reach — the tributary that gave the game away.</p>
+            <button type="button" className="item flybtn" onClick={flyTarget}>Fly to the target reach</button>
+            <div className="legend">
+              {legendOf(layers).map(([kind, color]) => (
+                <span className="legend-chip" key={kind}>
+                  <span className="swatch" style={{ background: color }} />{kind}
+                </span>
+              ))}
+              <span className="meta legend-note">
+                {geo ? `${layers.length} drawn of ${geo.data.pre_cutoff_total}, cap ${geo.data.sample_cap}` : "loading layers…"}
+              </span>
+            </div>
+            <div className="scenario">
+              <button type="button" className={scenario === "before" ? "item active" : "item"}
+                onClick={() => flip("before")}>Before: what the survey saw</button>
+              <button type="button" className={scenario === "after" ? "item active" : "item"}
+                onClick={() => flip("after")}>After: ground truth the brief never saw</button>
+              {showingAfter && <span className="meta"> {afterGeo.data.gt_after_total.toLocaleString()} post-event features, quarantined until the freeze.</span>}
+            </div>
+          </aside>
+          <div className="mapwrap">
+            <MapPane layers={layers} basemap="satellite" lockView={scenario === "after" && !!afterGeo} flyTo={fly} />
+          </div>
         </div>
       </section>
 

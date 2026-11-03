@@ -73,12 +73,12 @@ export default function Console() {
       // whole band and a 100 m bridge line goes sub-pixel. The may_be
       // wash stays out of this view so the selection reads cleanly.
       const hit = g ? [{ type: "Feature",
-        properties: { name: "selected", id: sel.id }, geometry: g }] : [];
+        properties: { name: "selected", id: sel.id, label: names[sel.id] ?? sel.id }, geometry: g }] : [];
       return [...hit, ...extentFeat];
     }
     if (sel.kind === "claim") return fireCells;
     return [];
-  }, [flood, sel, fireCells, assets, extentFeat]);
+  }, [flood, sel, fireCells, assets, extentFeat, names]);
 
   const detail = useMemo(() => {
     if (!flood || !sel) return null;

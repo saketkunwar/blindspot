@@ -163,7 +163,7 @@ export default function FireLiveDemo() {
       </section>
 
       <section>
-        <h2>Does the past recognise today?</h2>
+        <h2>Has today happened before?</h2>
         <p>
           {pm.known
             ? `Yes. Today matches a familiar pattern: ${pm.episodes} past episodes, ${pm.labelled} with known outcomes, all restarts. It stands at ${pm.labelled} of 5 — still silent, one closed window away from speaking.`
@@ -210,7 +210,7 @@ export default function FireLiveDemo() {
         <p>Five days of satellite fire detections for the study box, October 26–30: 675 detections (25, 12, 12, 476, 150 day by day), with the map bounds double-checked and the source matching September&apos;s. The access keys live in the operator&apos;s environment only — never in files or logs. The raw pull lands in a temp folder first, and a copy ships beside this page so every number stays checkable. It never enters the frozen study.</p>
         <p className="lede">Step 2 — Score it with the locked September rules</p>
         <p>The exact same machinery as September — same cell lists, same six facts, same weights — runs over the live slice. The result must equal the frozen ranking to within five hundred-thousandths. It does, identically: no re-tuning, no new weights, no exceptions.</p>
-        <p className="lede">Step 3 — Ask the past whether it recognises today</p>
+        <p className="lede">Step 3 — Look today&apos;s shape up in the archive</p>
         <p>Today&apos;s evidence shape is looked up against the 60 stored past episodes: it lands inside a familiar pattern — 6 episodes, 4 with known outcomes, all restarts — still one case short of the 5 the bar requires for that shape, so for today&apos;s reading memory stays silent, and this page says so instead of rounding up. (Elsewhere in the archive a different shape has since reached 5 of 5 — see the memory page.)</p>
         <p className="lede">Step 4 — Publish with the boundary on its face</p>
         <p>A snapshot script writes this page&apos;s numbers; the page carries the full timeline (study window, hidden test, live days dated to October 30), states it is a reading and not a forecast, and makes the November outlook conditional both ways — dry return means elevated restart risk, rain holding means the pattern breaks. When the rain arrived after the last pull, no step changed: the next pull verifies it the moment daily counts fall.</p>
