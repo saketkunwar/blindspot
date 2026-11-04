@@ -105,7 +105,7 @@ export default function MapPane({ layers, onStatus, focusId, maxZoom, basemap, l
       const calm = typeof window !== "undefined" && window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       flyingRef.current = true;
-      map.fitBounds(flyTo.bounds, { padding: 60, maxZoom: 13,
+      map.fitBounds(flyTo.bounds, { padding: 30, maxZoom: 14,
         duration: calm ? 0 : 8000 });
       map.once("moveend", () => { flyingRef.current = false; });
       setStatus("flying to target");
